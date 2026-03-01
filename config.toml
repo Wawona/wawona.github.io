@@ -1,0 +1,39 @@
+base_url = "https://wawona.github.io"
+title = "Wawona"
+description = "A nested Wayland compositor for macOS"
+theme = "apollo"
+default_language = "en"
+compile_sass = true
+minify_html = true
+build_search_index = true
+taxonomies = [{ name = "tags" }]
+
+[search]
+index_format = "elasticlunr_javascript"
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+
+
+[markdown]
+highlighting = { theme = "solarized-dark" }
+
+[extra]
+index_format = "elasticlunr_javascript"
+
+author = "Wawona Team"
+theme = "dark" # dark, light, auto, toggle
+favicon = "images/logo/wawona.png"
+logo = "images/logo/wawona.png"
+fancy_code = true
+
+menu = [
+    { name = "/posts", url = "posts", weight = 1 },
+    { name = "/docs", url = "docs", weight = 2 },
+    { name = "/gallery", url = "gallery", weight = 3 },
+]
+
+socials = [
+    { name = "github", url = "https://github.com/aspauldingcode/Wawona", icon = "github" },
+]

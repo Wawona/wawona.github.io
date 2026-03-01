@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% macro home_page(section) %}
+<main>
+    <article>
+        <section class="body homepage">
+            {{ post_macros::page_header(title=section.title) }}
+            {{ section.content | safe }}
+        </section>
+    </article>
+</main>
+
+<!-- Recent Posts & Latest Releases Grid -->
+<div class="home-grid">
+    <!-- Recent Posts -->
+    <div class="home-card">
+        <div class="home-card-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path
+                    d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+            </svg>
+            <h2>Recent Posts</h2>
+        </div>
+        <div class="home-card-body">
+            {% set posts_section = get_section(path="posts/_index.md") %}
+            {% for page in posts_section.pages | slice(end=3) %}
+            <a href="{{ page.permalink | safe }}" class="home-list-item">
+                <div class="home-list-meta">
+                    <time>{{ page.date | date(format="%b %d, %Y") }}</time>
+                </div>
+                <h3>{{ page.title }}</h3>
+                {% if page.description %}
+                <p>{{ page.description }}</p>
+                {% elif page.summary %}
+                <p>{{ page.summary | striptags | truncate(length=120) }}</p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div class="home-card-footer">
+            <a href="{{ get_url(path='posts') }}" class="home-card-link">View all posts →</a>
+        </div>
+    </div>
+
+    <!-- Latest Releases (fetched from GitHub) -->
+    <div class="home-card">
+        <div class="home-card-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v4" />
+                <path d="m15.2 7.4.8-.8 2.8 2.8-.8.8" />
+                <path d="M12 10a4 4 0 1 0 0 8" />
+                <path d="M12 18v4" />
+                <circle cx="12" cy="14" r="1" />
+            </svg>
+            <h2>Latest Releases</h2>
+        </div>
+        <div class="home-card-body" id="releases-list">
+            <div class="releases-loading">
+                <div class="loading-spinner"></div>
+                <span>Loading releases...</span>
+            </div>
+        </div>
+        <div class="home-card-footer">
+            <a href="https://github.com/Wawona/Wawona/releases" target="_blank" rel="noopener"
+                class="home-card-link">View all releases →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function fetchReleases() {
+        const container = document.getElementById('releases-list');
+        try {
+            const res = await fetch('https://api.github.com/repos/Wawona/Wawona/releases?per_page=3');
+            if (!res.ok) throw new Error('GitHub API error');
+            const releases = await res.json();
+
+            if (releases.length === 0) {
+                container.innerHTML = '<p class="releases-empty">No releases yet.</p>';
+                return;
+            }
+
+            container.innerHTML = releases.map(release => {
+                const name = release.name || release.tag_name;
+                const date = new Date(release.published_at).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'short', day: 'numeric'
+                });
+                // Extract first meaningful paragraph from body
+                let summary = '';
+                if (release.body) {
+                    const lines = release.body.split('\n')
+                        .map(l => l.replace(/^#+\s*/, '').replace(/\r/g, '').trim())
+                        .filter(l => l && !l.startsWith('[') && !l.startsWith('---'));
+                    // Find first non-header, non-empty line
+                    const meaningful = lines.find(l => l.length > 20 && !l.startsWith('#'));
+                    summary = meaningful ? meaningful.substring(0, 140) + (meaningful.length > 140 ? '…' : '') : '';
+                }
+                return `
+                        <a href="${release.html_url}" target="_blank" rel="noopener" class="home-list-item">
+                            <div class="home-list-meta">
+                                <time>${date}</time>
+                                <span class="release-tag">${release.tag_name}</span>
+                            </div>
+                            <h3>${name}</h3>
+                            ${summary ? `<p>${summary}</p>` : ''}
+                        </a>
+                    `;
+            }).join('');
+        } catch (e) {
+            container.innerHTML = `
+                    <div class="releases-error">
+                        <p>Could not load releases.</p>
+                        <a href="https://github.com/Wawona/Wawona/releases" target="_blank" rel="noopener">View on GitHub →</a>
+                    </div>
+                `;
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchReleases);
+    } else {
+        fetchReleases();
+    }
+</script>
+
+<style>
+    .homepage {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .homepage>p {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        color: var(--text-1);
+        line-height: 1.7;
+    }
+
+    /* ---- Home Grid ---- */
+    .home-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .home-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .home-card {
+        background-color: var(--bg-1);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .home-card:hover {
+        border-color: var(--primary-color);
+    }
+
+    :root.dark .home-card {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    :root.dark .home-card:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    :root.light .home-card {
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    :root.light .home-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .home-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .home-card-header svg {
+        color: var(--primary-color);
+        flex-shrink: 0;
+    }
+
+    .home-card-header h2 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        font-family: var(--header-font);
+        letter-spacing: -0.01em;
+    }
+
+    .home-card-body {
+        flex: 1;
+        padding: 0.5rem 0;
+    }
+
+    .home-card-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .home-card-link {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary-color) !important;
+        text-decoration: none;
+        border-bottom: none !important;
+    }
+
+    .home-card-link:hover {
+        background-color: transparent !important;
+        opacity: 0.8;
+    }
+
+    /* ---- List Items ---- */
+    .home-list-item {
+        display: block;
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        border-bottom: none !important;
+        transition: background-color 0.2s ease;
+    }
+
+    .home-list-item:hover {
+        background-color: var(--bg-2) !important;
+        color: inherit !important;
+    }
+
+    .home-list-item+.home-list-item {
+        border-top: 1px solid var(--border-color);
+    }
+
+    .home-list-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .home-list-meta time {
+        font-size: 0.75rem;
+        font-family: var(--mono-text-font);
+        color: var(--text-2);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .release-tag {
+        font-size: 0.7rem;
+        font-family: var(--mono-text-font);
+        font-weight: 600;
+        color: var(--primary-color);
+        background-color: var(--bg-0);
+        padding: 0.1rem 0.45rem;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+    }
+
+    .home-list-item h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        font-family: var(--header-font);
+        line-height: 1.3;
+    }
+
+    .home-list-item p {
+        margin: 0;
+        font-size: 0.82rem;
+        color: var(--text-2);
+        line-height: 1.45;
+    }
+
+    /* ---- Loading & Error States ---- */
+    .releases-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 2.5rem 1.5rem;
+        color: var(--text-2);
+        font-size: 0.85rem;
+    }
+
+    .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .releases-empty,
+    .releases-error {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        color: var(--text-2);
+        font-size: 0.85rem;
+    }
+
+    .releases-error a {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+</style>
+{% endmacro home_page %}
+
+{% block main_content %}
+{{ self::home_page(section=section) }}
+{% endblock main_content %}

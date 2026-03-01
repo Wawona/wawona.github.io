@@ -1,0 +1,47 @@
+<div class="screenshot-wrapper" style="margin-top: {{ margin_top | default(value='2rem') }};">
+    <figure style="margin: 0; animation: fadeIn 1s ease-out;">
+        <div class="screenshot-container" onmouseover="this.style.transform='scale(1.02)'"
+            onmouseout="this.style.transform='scale(1)'">
+            <img src="{{ src }}" alt="{{ alt | default(value='Wawona Screenshot') }}"
+                style="width: 100%; height: auto; display: block;">
+        </div>
+        {% if caption %}
+        <figcaption
+            style="margin-top: 1.5rem; text-align: center; color: var(--text-2); font-family: var(--header-font); font-size: 1rem; letter-spacing: 0.02em;">
+            {{ caption }}
+        </figcaption>
+        {% endif %}
+    </figure>
+</div>
+
+<style>
+    .screenshot-container {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: var(--premium-shadow);
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-1);
+    }
+
+    :root.dark {
+        --premium-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    :root.light {
+        --premium-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

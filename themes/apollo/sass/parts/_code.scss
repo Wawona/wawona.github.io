@@ -1,0 +1,196 @@
+// Define base colors and fonts for light and dark themes
+:root {
+  --code-font: var(--code-font), monospace;
+  --bg-primary: var(--bg-1);
+  --text-color: var(--text-0); // Color of the code text
+  --label-color: #f0f0f0; // Text color of the label
+
+  --highlight-color: #f0f0f0;
+}
+
+:root.dark {
+  --highlight-color: #204e8a;
+}
+
+// Define language colors map
+$language-colors: (
+  "js": (#f7df1e, "JavaScript"),
+  "yaml": (#f71e6a, "YAML"),
+  "shell": (#4eaa25, "Shell"),
+  "json": (dodgerblue, "JSON"),
+  "python": (#3572a5, "Python"),
+  "css": (#264de4, "CSS"),
+  "go": (#00add8, "Go"),
+  "markdown": (#0000ff, "Markdown"),
+  "rust": (#ff4647, "Rust"),
+  "java": (#f89820, "Java"),
+  "csharp": (#178600, "C#"),
+  "ruby": (#701516, "Ruby"),
+  "swift": (#f05138, "Swift"),
+  "php": (#777bb4, "PHP"),
+  "typescript": (#3178c6, "TypeScript"),
+  "scala": (#c22d40, "Scala"),
+  "kotlin": (#f18e33, "Kotlin"),
+  "lua": (#000080, "Lua"),
+  "perl": (#0298c3, "Perl"),
+  "haskell": (#5e5086, "Haskell"),
+  "r": (#198ce7, "R"),
+  "dart": (#00d2b8, "Dart"),
+  "elixir": (#6e4a7e, "Elixir"),
+  "clojure": (#5881d8, "Clojure"),
+  "bash": (#4eaa25, "Bash"),
+  "sh": (#4eaa25, "Bash"),
+  "zsh": (#4eaa25, "Bash"),
+  "shellscript": (#4eaa25, "Bash"),
+  "shell-script": (#4eaa25, "Bash"),
+  "default": (#333, "Code"),
+);
+
+pre {
+  background-color: var(--bg-primary) !important;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  line-height: 1.4;
+  overflow-x: auto;
+  padding: 1em;
+  margin-top: 0.75rem;
+  position: relative;
+
+  mark {
+    background-color: var(--highlight-color) !important;
+    padding: 0;
+    border-radius: 0px;
+  }
+}
+
+@mixin base-label-style($bg-color, $text-color: var(--label-color)) {
+  background: $bg-color;
+  color: $text-color;
+  border-radius: 0 0 0.25rem 0.25rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.025rem;
+  padding: 0.2rem 0.6rem;
+  text-align: center;
+  text-transform: uppercase;
+  position: absolute;
+  right: 2.8rem; // Moved over to make room for the copy button
+  top: 0; // Pinned to the very top edge
+  border-radius: 0 0 4px 4px; // Rounded only at the bottom
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  user-select: none; // Prevent text selection
+}
+
+.code-label {
+  @include base-label-style(#333);
+}
+
+@each $lang, $color-info in $language-colors {
+  .label-#{$lang} {
+    @include base-label-style(nth($color-info, 1));
+  }
+}
+
+code {
+  background-color: var(--bg-primary);
+  padding: 0.1em 0.2em;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  font-family: var(--code-font);
+}
+
+pre code {
+  background-color: transparent !important;
+  color: var(--text-color);
+  font-size: 100%;
+  padding: 0;
+  border: none;
+  font-family: var(--code-font);
+
+  table {
+    margin: 0;
+    border-collapse: collapse;
+    font-family: var(--code-font);
+
+    mark {
+      display: block;
+      color: unset;
+      padding: 0;
+      background-color: var(--highlight-color) !important;
+      filter: brightness(1.2);
+    }
+  }
+
+  td,
+  th,
+  tr {
+    padding: 0;
+    border: none;
+  }
+
+  tbody td:first-child {
+    text-align: center;
+    user-select: none;
+    min-width: 60px;
+    border-right: none;
+  }
+
+  tbody tr:nth-child(even),
+  thead tr {
+    background-color: unset;
+  }
+}
+
+.clipboard-button {
+  appearance: none;
+  background: var(--bg-0);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 32px; // Fixed pixel size for consistent rendering
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 0; // Pinned to the very top edge
+  right: 0.5rem;
+  border-top: none; // Blend with the pre border
+  border-radius: 0 0 6px 6px; // Rounded only at the bottom
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  opacity: 0.8;
+  user-select: none;
+  overflow: visible; // Ensure no internal clipping
+
+  &:hover {
+    opacity: 1;
+    color: var(--primary-color);
+    background-color: var(--bg-1);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    width: 16px; // Fixed size to prevent sub-pixel rendering issues
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    display: block;
+    pointer-events: none;
+    transition: transform 0.1s ease;
+  }
+
+  &:active svg {
+    transform: scale(0.9);
+  }
+}
