@@ -1,6 +1,6 @@
 base_url = "https://wawona.github.io"
 title = "Wawona"
-description = "A nested Wayland compositor for macOS"
+description = "A native Wayland substrate for macOS, iOS, and Android"
 theme = "apollo"
 default_language = "en"
 compile_sass = true
