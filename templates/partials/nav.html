@@ -1,109 +1,55 @@
-<!-- Donation Banner -->
-<div class="donation-banner">
-    <div class="banner-content">
-        <span class="banner-text">
-            🚀 <strong>Support Wawona:</strong> As a student developer, I fund this project personally. Please consider
-            supporting to help keep Wawona growing!
-        </span>
-        <a href="https://ko-fi.com/aspauldingcode" class="banner-button">Support Now</a>
-    </div>
-</div>
-
-<style>
-    .donation-banner {
-        background-color: var(--bg-1);
-        border: 1px solid var(--border-color);
-        border-left: 4px solid var(--primary-color);
-        border-radius: 4px;
-        margin-bottom: 2rem;
-        padding: 1rem 1.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: var(--banner-shadow);
-        transition: box-shadow 0.3s ease;
-    }
-
-    :root.dark {
-        --banner-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    :root.light {
-        --banner-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .banner-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        gap: 1.5rem;
-    }
-
-    .banner-text {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: var(--text-0);
-        font-family: var(--text-font);
-    }
-
-    .banner-text strong {
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-
-    .banner-button {
-        background-color: var(--primary-color);
-        color: var(--hover-color) !important;
-        padding: 0.5rem 1.2rem;
-        border-radius: 4px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 600;
-        white-space: nowrap;
-        transition: opacity 0.2s ease;
-    }
-
-    .banner-button:hover {
-        background-color: #f77 !important;
-        color: var(--hover-color) !important;
-    }
-
-    @media (max-width: 768px) {
-        .banner-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
-        }
-
-        .banner-button {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-
 <nav>
     <div class="left-nav">
-        <a href={{ config.base_url }} class="logo"
-            style="display: flex; align-items: center; gap: 0.8rem; text-decoration: none; font-weight: bold; font-size: 1.2rem;">
+        <a href={{ config.base_url }} class="logo" data-hint="Home">
             {% if config.extra.logo %}
-            <img alt="{{ config.title }}" src="{{ get_url(path=config.extra.logo) }}" style="height: 1.8rem;" />
+            <img alt="{{ config.title }}" src="{{ get_url(path=config.extra.logo) }}" />
             {% endif %}
             <span>{{ config.title }}</span>
         </a>
 
-        <div class="socials">
-            {% if config.markdown.external_links_target_blank %}
-            {% set link_attrs = "rel='me noopener' target='_blank'" %}
-            {% else %}
-            {% set link_attrs = "rel='me'" %}
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <div class="socials">
+                {% if config.markdown.external_links_target_blank %}
+                {% set link_attrs = "rel='me noopener' target='_blank'" %}
+                {% else %}
+                {% set link_attrs = "rel='me'" %}
+                {% endif %}
+                {% for social in config.extra.socials %}
+                <a {{ link_attrs | safe }} href="{{ social.url }}" class="social" {% if social.name=="github"
+                    %}data-hint="View Source" {% endif %}>
+                    <img alt="{{ social.name }}" src="{{ get_url(path='icons/social/' ~ social.icon ~ '.svg') }}" />
+                </a>
+                {% endfor %}
+            </div>
+
+            {% if config.build_search_index %}
+            <button id="search-button" class="search-button" data-hint="Search">
+                <img src="{{ get_url(path='icons/search.svg') }}" alt="Search" class="search-icon" />
+            </button>
             {% endif %}
-            {% for social in config.extra.socials %}
-            <a {{ link_attrs | safe }} href="{{ social.url }}" class="social">
-                <img alt="{{ social.name }}" src="{{ get_url(path='icons/social/' ~ social.icon ~ '.svg') }}" />
+
+            {% if config.extra.theme == "toggle" %}
+            <a id="dark-mode-toggle" onclick="toggleTheme(); event.preventDefault();" href="#" data-hint="Change Theme">
+                <img src="{{ get_url(path='icons/sun.svg') }}" id="sun-icon" alt="Light" />
+                <img src="{{ get_url(path='icons/moon.svg') }}" id="moon-icon" style="filter: invert(1)" alt="Dark" />
+                <img src="{{ get_url(path='icons/auto.svg') }}" id="auto-icon" style="filter: invert(1)" alt="Auto" />
             </a>
-            {% endfor %}
+
+            <!-- WebGL ripple shader overlay -->
+            <script src="{{ get_url(path='js/ripple-shader.js') }}"></script>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>
+                updateItemToggleTheme()
+            </script>
+            {% endif %}
+
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu"
+                onclick="document.querySelector('.right-nav').classList.toggle('active')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24" height="24">
+                    <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -113,10 +59,6 @@
         {% endfor %}
 
         {% if config.build_search_index %}
-        <button id="search-button" class="search-button" title="$SHORTCUT to open search">
-            <img src="{{ get_url(path='icons/search.svg') }}" alt="Search" class="search-icon" />
-        </button>
-
         <div id="searchModal" class="search-modal js" role="dialog" aria-labelledby="modalTitle">
             <div id="modal-content">
                 <h1 id="modalTitle" class="page-header">
@@ -146,18 +88,282 @@
             </div>
         </div>
         {% endif %}
-
-        {% if config.extra.theme == "toggle" %}
-        <a id="dark-mode-toggle" onclick="toggleTheme(); event.preventDefault();" href="#">
-            <img src="{{ get_url(path='icons/sun.svg') }}" id="sun-icon" alt="Light" />
-            <img src="{{ get_url(path='icons/moon.svg') }}" id="moon-icon" style="filter: invert(1)" alt="Dark" />
-            <img src="{{ get_url(path='icons/auto.svg') }}" id="auto-icon" style="filter: invert(1)" alt="Auto" />
-        </a>
-
-        <!-- Initialize the theme toggle icons -->
-        <script>
-            updateItemToggleTheme()
-        </script>
-        {% endif %}
     </div>
 </nav>
+
+<!-- Donation Banner -->
+<div class="donation-banner" id="donationBanner" style="display: none;">
+    <div class="banner-inner">
+        <div class="banner-content">
+            <span class="banner-icon">🚀</span>
+            <span class="banner-text">
+                <strong>Support Wawona:</strong> As a student developer, I fund this project personally. Please consider
+                supporting to help keep Wawona growing!
+            </span>
+        </div>
+        <div class="banner-actions">
+            <a href="https://ko-fi.com/aspauldingcode" class="banner-button" target="_blank" rel="noopener noreferrer">
+                <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofi-icon" />
+                Support Now
+            </a>
+            <button class="banner-close" aria-label="Dismiss banner" onclick="dismissDonationBanner()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path
+                        d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .donation-banner,
+    .donation-banner * {
+        box-sizing: border-box;
+    }
+
+    .donation-banner {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        z-index: 50;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        max-height: 400px;
+        /* Enough to fit content */
+        overflow: hidden;
+        opacity: 1;
+    }
+
+    .donation-banner.dismissing {
+        max-height: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        opacity: 0;
+        transform: translateY(-20px);
+        pointer-events: none;
+    }
+
+    .banner-inner {
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-0));
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0.75rem 1.25rem 0.75rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(10px);
+        vertical-align: middle;
+        gap: 1.5rem;
+        animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .banner-inner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        opacity: 0.7;
+    }
+
+    :root.dark .banner-inner {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .banner-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .banner-icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .banner-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--text-0);
+        font-family: var(--text-font);
+    }
+
+    .banner-text strong {
+        color: var(--primary-color);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .banner-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .banner-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        background-color: var(--primary-color);
+        color: var(--hover-color) !important;
+        padding: 0.5rem 1.25rem;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        filter: brightness(1.1);
+    }
+
+    .kofi-icon {
+        height: 15px !important;
+        width: 22px !important;
+        display: inline-block;
+        animation: kofi-wiggle 3s infinite;
+        vertical-align: middle;
+    }
+
+    @keyframes kofi-wiggle {
+        0% {
+            transform: rotate(0) scale(1);
+        }
+
+        60% {
+            transform: rotate(0) scale(1);
+        }
+
+        75% {
+            transform: rotate(0) scale(1.12);
+        }
+
+        80% {
+            transform: rotate(0) scale(1.1);
+        }
+
+        84% {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        88% {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        92% {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        96% {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        100% {
+            transform: rotate(0) scale(1);
+        }
+    }
+
+    .banner-close {
+        background: none;
+        border: none;
+        color: var(--text-1);
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .banner-close:hover {
+        color: var(--text-0);
+        background-color: var(--bg-2);
+    }
+
+    @media (max-width: 768px) {
+        .banner-inner {
+            flex-direction: column;
+            text-align: center;
+            align-items: stretch;
+            padding: 2rem 1.25rem 1.25rem 1.25rem;
+            gap: 1rem;
+        }
+
+        .banner-content {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .banner-icon {
+            margin-bottom: 0.25rem;
+        }
+
+        .banner-actions {
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .banner-button {
+            width: 100%;
+            text-align: center;
+        }
+
+        .banner-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--bg-2);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var banner = document.getElementById("donationBanner");
+        if (banner && localStorage.getItem("hideDonationBanner") !== "true") {
+            banner.style.display = "flex";
+        }
+    });
+
+    function dismissDonationBanner() {
+        var banner = document.getElementById("donationBanner");
+        if (banner) {
+            banner.classList.add('dismissing');
+            setTimeout(function () {
+                banner.style.display = "none";
+            }, 500); // Wait for transition to complete
+        }
+        localStorage.setItem("hideDonationBanner", "true");
+    }
+</script>

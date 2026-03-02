@@ -56,9 +56,9 @@
         <div class="card-content">
             <h1 class="card-title">
                 {% if page.extra.link_to %}
-                <a href={{ page.extra.link_to }}>{{ page.title }}</a>
+                <a href={{ page.extra.link_to }} class="stretched-link">{{ page.title }}</a>
                 {% elif page.content %}
-                <a href={{ page.permalink | safe }}>{{ page.title }}</a>
+                <a href={{ page.permalink | safe }} class="stretched-link">{{ page.title }}</a>
                 {% else %}
                 {{ page.title }}
                 {% endif %}

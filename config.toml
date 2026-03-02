@@ -18,12 +18,13 @@ include_content = true
 
 [markdown]
 highlighting = { theme = "solarized-dark" }
+external_links_target_blank = true
 
 [extra]
 index_format = "elasticlunr_javascript"
 
 author = "Wawona Team"
-theme = "dark" # dark, light, auto, toggle
+theme = "toggle" # dark, light, auto, toggle
 favicon = "images/logo/wawona.png"
 logo = "images/logo/wawona.png"
 fancy_code = true
@@ -32,6 +33,7 @@ menu = [
     { name = "/posts", url = "posts", weight = 1 },
     { name = "/docs", url = "docs", weight = 2 },
     { name = "/gallery", url = "gallery", weight = 3 },
+    { name = "/download", url = "download", weight = 4 },
 ]
 
 socials = [

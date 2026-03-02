@@ -52,7 +52,9 @@ body {
   display: flex;
   flex-grow: 1;
   padding: 0.9rem;
-  padding-bottom: 1.5rem;
+  padding-left: calc(0.9rem + env(safe-area-inset-left));
+  padding-right: calc(0.9rem + env(safe-area-inset-right));
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   margin-bottom: 1.5rem;
   min-height: calc(100vh - 150px);
 
@@ -108,4 +110,180 @@ body {
 
 
   }
+}
+
+/* HDR + Transition Variables */
+:root {
+  --hdr-red: oklch(0.6 0.3 25);
+  --reveal-r: 0px;
+}
+
+@media (dynamic-range: high) {
+  :root {
+    --hdr-red: oklch(0.65 0.35 25);
+  }
+}
+
+/* Phase A: Implode — slow buildup → violent collapse */
+html.theme-preparing {
+  transform-origin: var(--reveal-x, 50%) var(--reveal-y, 50%);
+  animation: implode-pull 1.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+/* Radial vignette — slow darken, focuses eye on button */
+html.theme-preparing::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--reveal-x, 50%) var(--reveal-y, 50%),
+      transparent 0%,
+      transparent 15%,
+      rgba(0, 0, 0, 0.8) 100%);
+  animation: vignette-in 1.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+/* Flash at the collapse point */
+html.theme-preparing::after {
+  content: '';
+  position: fixed;
+  left: var(--reveal-x, 50%);
+  top: var(--reveal-y, 50%);
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  z-index: 100000;
+  pointer-events: none;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 80px 40px white, 0 0 160px 80px var(--hdr-red);
+  animation: flash-collapse 1.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes implode-pull {
+
+  /* Slow creep — barely perceptible tension */
+  0% {
+    transform: scale(1);
+    filter: none;
+  }
+
+  30% {
+    transform: scale(0.998);
+    filter: saturate(1.2);
+  }
+
+  50% {
+    transform: scale(0.993);
+    filter: saturate(1.6) brightness(0.95);
+  }
+
+  /* Acceleration — it's pulling harder */
+  65% {
+    transform: scale(0.98);
+    filter: saturate(2) brightness(0.85);
+  }
+
+  /* Violent shake as it collapses */
+  75% {
+    transform: scale(0.965) translate3d(-5px, 0, 0);
+    filter: saturate(2.5) brightness(0.8);
+  }
+
+  80% {
+    transform: scale(0.96) translate3d(6px, 0, 0);
+  }
+
+  85% {
+    transform: scale(0.96) translate3d(-7px, 0, 0);
+  }
+
+  90% {
+    transform: scale(0.965) translate3d(4px, 0, 0);
+  }
+
+  95% {
+    transform: scale(0.975) translate3d(-2px, 0, 0);
+  }
+
+  /* Snap back — release into ripple */
+  100% {
+    transform: scale(1);
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes vignette-in {
+  0% {
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 0.2;
+  }
+
+  60% {
+    opacity: 0.7;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash-collapse {
+
+  0%,
+  80% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  90% {
+    width: 40px;
+    height: 40px;
+    opacity: 0.7;
+  }
+
+  95% {
+    width: 120px;
+    height: 120px;
+    opacity: 1;
+  }
+
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Phase B: Water Ripple Reveal */
+::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: none;
+  clip-path: circle(0px at 50% 50%);
+  filter: drop-shadow(1px 0 0 rgba(255, 0, 0, 0.5)) drop-shadow(-1px 0 0 rgba(0, 255, 255, 0.5)) drop-shadow(0 0 10px var(--hdr-red));
+}
+
+/* Concentric water ripple rings — injected by JS */
+.ripple-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100001;
+  border: 2px solid var(--hdr-red);
+  box-shadow: 0 0 8px var(--hdr-red), inset 0 0 8px var(--hdr-red);
+  transform: translate(-50%, -50%);
 }

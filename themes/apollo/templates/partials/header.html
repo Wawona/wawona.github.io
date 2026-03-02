@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="base" content="{{ config.base_url }}" />
 
     {% if config.extra.fediverse %}
@@ -67,6 +67,14 @@
     {% if config.extra.favicon %}
     <link rel="icon" type="image/png" href="{{ get_url(path=config.extra.favicon) }}" />
     {% endif %}
+
+    {# Preload Logos and Icons for Performance #}
+    {% if config.extra.logo %}
+    <link rel="preload" as="image" href="{{ get_url(path=config.extra.logo) }}" />
+    {% endif %}
+    {% for social in config.extra.socials %}
+    <link rel="preload" as="image" href="{{ get_url(path='icons/social/' ~ social.icon ~ '.svg') }}" />
+    {% endfor %}
 
     {# Premium Fonts from Google Fonts CDN #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -227,6 +235,7 @@
     {%- endif -%}
 
     {# Main search script #}
-    <script defer src="{{ get_url(path='js/searchElasticlunr.min.js', cachebust=true) | safe }}"></script>
+    <script defer src="{{ get_url(path='js/fzf.umd.min.js', cachebust=true) | safe }}"></script>
+    <script defer src="{{ get_url(path='js/searchFZF.js', cachebust=true) | safe }}"></script>
     {%- endif -%}
 </head>

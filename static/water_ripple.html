@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Water Ripple Demo</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #triggerButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #triggerButton:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="glCanvas"></canvas>
+    <button id="triggerButton">Create Ripple</button>
+    <script>
+        class RippleEffect {
+            constructor() {
+                this.canvas = document.getElementById('glCanvas');
+                this.gl = this.canvas.getContext('webgl2');
+                if (!this.gl) {
+                    alert('WebGL 2.0 not supported');
+                    return;
+                }
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                this.setupShaders();
+                this.setupGeometry();
+                this.loadTexture();
+                this.setupRipple();
+                document.getElementById('triggerButton').addEventListener('click', () => this.createRipple());
+                this.animate();
+            }
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+            }
+            setupShaders() {
+                const vertexShaderSource = `#version 300 es
+                precision highp float;
+                in vec4 position;
+                in vec2 texCoord;
+                uniform mat4 projection;
+                uniform float rippleAmplitude;
+                uniform vec2 rippleCenter;
+                uniform float time;
+                out vec2 texCoordVarying;
+                out float rippleEffect;
+                void main() {
+                    vec4 pos = position;
+                    vec2 centerDiff = pos.xy - rippleCenter;
+                    float distFromCenter = length(centerDiff);
+                    float wave = sin(distFromCenter * 20.0 - time * 8.0) *
+                                 exp(-distFromCenter * 3.0) * rippleAmplitude;
+                    if (distFromCenter > 0.0) {
+                        vec2 direction = normalize(centerDiff);
+                        pos.xy += direction * wave;
+                    }
+                    gl_Position = projection * pos;
+                    texCoordVarying = texCoord;
+                    rippleEffect = wave;
+                }`;
+                const fragmentShaderSource = `#version 300 es
+                precision highp float;
+                in vec2 texCoordVarying;
+                in float rippleEffect;
+                uniform sampler2D samplerRGB;
+                out vec4 FragColor;
+                void main() {
+                    vec4 texColor = texture(samplerRGB, texCoordVarying);
+                    vec3 rippleHighlight = vec3(rippleEffect * 0.5 + 0.5);
+                    vec3 finalColor = texColor.rgb + rippleHighlight * 0.2;
+                    FragColor = vec4(finalColor, texColor.a);
+                }`;
+                this.program = this.createProgram(vertexShaderSource, fragmentShaderSource);
+            }
+            createProgram(vsSource, fsSource) {
+                const gl = this.gl;
+                const vShader = this.compileShader(vsSource, gl.VERTEX_SHADER);
+                const fShader = this.compileShader(fsSource, gl.FRAGMENT_SHADER);
+                const program = gl.createProgram();
+                gl.attachShader(program, vShader);
+                gl.attachShader(program, fShader);
+                gl.linkProgram(program);
+                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                    console.error('Program link error:', gl.getProgramInfoLog(program));
+                }
+                return program;
+            }
+            compileShader(source, type) {
+                const gl = this.gl;
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+                }
+                return shader;
+            }
+            setupGeometry() {
+                const gl = this.gl;
+                const vertices = new Float32Array([
+                    -1.0, -1.0, 0.0,
+                    1.0, -1.0, 0.0,
+                    -1.0, 1.0, 0.0,
+                    1.0, 1.0, 0.0
+                ]);
+                const texCoords = new Float32Array([
+                    0.0, 0.0,
+                    1.0, 0.0,
+                    0.0, 1.0,
+                    1.0, 1.0
+                ]);
+                const indices = new Uint16Array([0, 1, 2, 2, 1, 3]);
+                const positionBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+                const texCoordBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
+                const indexBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+                const vao = gl.createVertexArray();
+                gl.bindVertexArray(vao);
+                const posLoc = gl.getAttribLocation(this.program, 'position');
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.enableVertexAttribArray(posLoc);
+                gl.vertexAttribPointer(posLoc, 3, gl.FLOAT, false, 0, 0);
+                const texLoc = gl.getAttribLocation(this.program, 'texCoord');
+                gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+                gl.enableVertexAttribArray(texLoc);
+                gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                this.vao = vao;
+                this.indexCount = indices.length;
+            }
+            loadTexture() {
+                const gl = this.gl;
+                const size = 256;
+                const data = new Uint8Array(size * size * 4);
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.random() * 255;
+                    data[i + 1] = Math.random() * 255;
+                    data[i + 2] = Math.random() * 255;
+                    data[i + 3] = 255;
+                }
+                const tex = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, tex);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                this.texture = tex;
+            }
+            setupRipple() {
+                this.rippleActive = false;
+                this.rippleStartTime = 0;
+                this.rippleCenter = [0.5, 0.5];
+                this.rippleAmplitude = 0.0;
+            }
+            createRipple() {
+                this.rippleActive = true;
+                this.rippleStartTime = Date.now() / 1000;
+                this.rippleAmplitude = 0.3;
+                this.rippleCenter = [Math.random() * 0.8 + 0.1, Math.random() * 0.8 + 0.1];
+            }
+            animate() {
+                const loop = (time) => {
+                    const now = time / 1000;
+                    if (this.rippleActive) {
+                        const elapsed = now - this.rippleStartTime;
+                        this.rippleAmplitude = 0.3 * Math.max(0, 1 - elapsed * 1.5);
+                        if (elapsed > 2) this.rippleActive = false;
+                    }
+                    this.render(now);
+                    requestAnimationFrame(loop);
+                };
+                requestAnimationFrame(loop);
+            }
+            render(time) {
+                const gl = this.gl;
+                gl.clearColor(0, 0, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.useProgram(this.program);
+                gl.bindVertexArray(this.vao);
+                const proj = this.createOrthoMatrix(-1, 1, -1, 1, -1, 1);
+                const projLoc = gl.getUniformLocation(this.program, 'projection');
+                gl.uniformMatrix4fv(projLoc, false, proj);
+                gl.uniform1f(gl.getUniformLocation(this.program, 'rippleAmplitude'), this.rippleAmplitude);
+                gl.uniform2f(gl.getUniformLocation(this.program, 'rippleCenter'), this.rippleCenter[0], this.rippleCenter[1]);
+                gl.uniform1f(gl.getUniformLocation(this.program, 'time'), time);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
+                gl.uniform1i(gl.getUniformLocation(this.program, 'samplerRGB'), 0);
+                gl.drawElements(gl.TRIANGLES, this.indexCount, gl.UNSIGNED_SHORT, 0);
+            }
+            createOrthoMatrix(left, right, bottom, top, near, far) {
+                const rl = 1 / (right - left);
+                const tb = 1 / (top - bottom);
+                const fn = 1 / (far - near);
+                const out = new Float32Array(16);
+                out[0] = 2 * rl;
+                out[5] = 2 * tb;
+                out[10] = -2 * fn;
+                out[12] = -(right + left) * rl;
+                out[13] = -(top + bottom) * tb;
+                out[14] = -(far + near) * fn;
+                out[15] = 1;
+                return out;
+            }
+        }
+        window.addEventListener('DOMContentLoaded', () => new RippleEffect());
+    </script>
+</body>
+
+</html>

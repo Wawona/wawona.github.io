@@ -1,0 +1,8 @@
+name = "apollo-light"
+description = "Light variant of the Apollo theme (Demonstration of second theme setup)"
+min_version = "0.14.0"
+license = "MIT"
+homepage = "https://github.com/not-matthias/apollo"
+
+[extra]
+theme = "light"

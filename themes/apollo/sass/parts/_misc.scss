@@ -68,7 +68,10 @@ main {
     border-bottom: 2px solid var(--primary-color);
 
     // Make sure the underline is at the top
-    position: relative; // needed for z-index
+    &:not(.stretched-link) {
+      position: relative; // needed for z-index
+    }
+
     z-index: 1;
   }
 
@@ -101,8 +104,26 @@ time {
   }
 
   .list-item {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     list-style-type: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-1);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      .readmore {
+        text-decoration: underline;
+        text-decoration-color: var(--primary-color);
+      }
+    }
   }
 
   .post-header {
@@ -111,21 +132,18 @@ time {
 
     @media all and (max-width: 640px) {
       grid-template-rows: auto 1fr;
+      gap: 0.5rem;
     }
 
     @media all and (min-width: 640px) {
       grid-template-columns: auto 1fr;
-      gap: 1rem;
-    }
-
-    @media only screen and (max-width: 640px) {
-      margin: 1.6rem 0px;
+      gap: 1.5rem;
     }
 
     h1 {
       margin: 0;
       font-size: 1.15rem;
-      font-weight: normal;
+      font-weight: 600;
       font-family: var(--header-font);
 
       a {
@@ -136,11 +154,11 @@ time {
     time {
       font-family: var(--mono-text-font);
       text-align: left;
-
+      color: var(--text-2);
+      font-size: 0.9rem;
       margin: 0;
     }
   }
-
 }
 
 // change the line-through color
@@ -154,4 +172,36 @@ del {
 .MathJax_SVG_Display {
   overflow-x: auto;
   overflow-y: hidden;
+}
+
+.readmore {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  /* Ensure no default underline */
+
+  /* Hover effect for the text itself */
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--primary-color);
+  }
+}
+
+.stretched-link {
+  text-decoration: none !important;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    content: "";
+    pointer-events: auto;
+    /* Ensure it catches clicks */
+  }
 }

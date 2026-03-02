@@ -20,6 +20,15 @@
   border-radius: 10px;
   break-inside: avoid;
   margin-bottom: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
   &-media {
     width: 100%;
@@ -79,12 +88,16 @@
     align-items: center;
     gap: 12px;
     margin-top: auto;
+    position: relative;
+    z-index: 10;
   }
 
   &-links {
     display: flex;
     gap: 10px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
   }
 
   &-tags {

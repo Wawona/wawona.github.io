@@ -14,28 +14,200 @@
     <div class="content">
         {% include "partials/nav.html" %}
 
-        {# Post page is the default #}
-        {% block main_content %}
-        Nothing here?!
-        {% endblock main_content %}
+        <div id="spa-main">
+            {# Post page is the default #}
+            {% block main_content %}
+            Nothing here?!
+            {% endblock main_content %}
 
-        {% if page.extra.comment is defined %}
-        {% set show_comment = page.extra.comment %}
-        {% else %}
-        {% set show_comment = false %}
-        {% endif %}
+            {% if page.extra.comment is defined %}
+            {% set show_comment = page.extra.comment %}
+            {% else %}
+            {% set show_comment = false %}
+            {% endif %}
 
-        {% if show_comment %}
-        <div class="giscus">
+            {% if show_comment %}
+            <div class="giscus">
+            </div>
+            {% include "_giscus_script.html" %}
+            {% endif %}
         </div>
-        {% include "_giscus_script.html" %}
-        {% endif %}
     </div>
 
     <div class="right-content">
         {% block right_content %}
         {% endblock right_content %}
     </div>
+
+    <!-- SPA Router Script -->
+    <script>
+        // On-page highlighter for search results
+        function highlightOnPage() {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('h');
+            if (!query) return;
+
+            // Remove the query param from URL without reloading to keep it clean
+            const newUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState({}, '', newUrl);
+
+            const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+            if (words.length === 0) return;
+
+            const spaMain = document.getElementById('spa-main');
+            const walker = document.createTreeWalker(spaMain, NodeFilter.SHOW_TEXT, null, false);
+            const nodes = [];
+            let firstMatch = null;
+
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+
+            nodes.forEach(node => {
+                const text = node.nodeValue;
+                const lowerText = text.toLowerCase();
+                let hasMatch = false;
+
+                // Simple version: check if any word matches
+                words.forEach(word => {
+                    if (lowerText.includes(word)) hasMatch = true;
+                });
+
+                if (hasMatch) {
+                    const span = document.createElement('span');
+                    let newHtml = text;
+                    words.forEach(word => {
+                        const re = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        newHtml = newHtml.replace(re, '<mark style="background: var(--primary-color); color: var(--hover-color); border-radius: 2px; padding: 0 2px;">$1</mark>');
+                    });
+                    span.innerHTML = newHtml;
+                    if (!firstMatch) firstMatch = span;
+                    node.parentNode.replaceChild(span, node);
+                }
+            });
+
+            if (firstMatch) {
+                firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        document.addEventListener('click', async (e) => {
+            const link = e.target.closest('a');
+            if (
+                !link ||
+                link.target === '_blank' ||
+                link.host !== window.location.host ||
+                link.hasAttribute('download') ||
+                link.pathname.startsWith('/api/') ||
+                e.ctrlKey || e.metaKey || e.shiftKey
+            ) {
+                return;
+            }
+
+            e.preventDefault();
+            const url = link.href;
+
+            // Close the mobile menu automatically if it's open
+            const rightNav = document.querySelector('.right-nav');
+            if (rightNav) rightNav.classList.remove('active');
+
+            // If it's the same URL with different search/hash, we still want to handle highlighting
+            // but fetch might be redundant if we just want to highlight on same page.
+            // For now, let it fetch to be safe.
+
+            try {
+                // Dim content to show loading
+                const spaMain = document.getElementById('spa-main');
+                spaMain.style.opacity = '0.5';
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+
+                const newContent = doc.getElementById('spa-main');
+                if (newContent) {
+                    spaMain.innerHTML = newContent.innerHTML;
+                    document.title = doc.title;
+                    history.pushState({}, '', url);
+
+                    // Reset opacity and scroll to top
+                    spaMain.style.opacity = '1';
+                    window.scrollTo(0, 0);
+
+                    // Run highlighter
+                    highlightOnPage();
+
+                    // Check banner state post-navigation
+                    const banner = document.getElementById("donationBanner");
+                    if (banner && localStorage.getItem("hideDonationBanner") !== "true") {
+                        banner.style.display = "flex";
+                        banner.style.opacity = "1";
+                        banner.style.transform = "translateY(0)";
+                    }
+
+                    // Re-run any necessary scripts within the new content (e.g. giscus)
+                    const scripts = spaMain.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+                } else {
+                    // Fallback to normal navigation if spa-main is not found
+                    window.location.href = url;
+                }
+            } catch (error) {
+                console.error('SPA navigation failed:', error);
+                window.location.href = url;
+            }
+        });
+
+        window.addEventListener('popstate', async () => {
+            try {
+                const response = await fetch(window.location.href);
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const newContent = doc.getElementById('spa-main');
+                const spaMain = document.getElementById('spa-main');
+
+                if (newContent) {
+                    spaMain.innerHTML = newContent.innerHTML;
+                    document.title = doc.title;
+
+                    highlightOnPage();
+
+                    // Check banner state post-navigation
+                    const banner = document.getElementById("donationBanner");
+                    if (banner && localStorage.getItem("hideDonationBanner") !== "true") {
+                        banner.style.display = "flex";
+                        banner.style.opacity = "1";
+                        banner.style.transform = "translateY(0)";
+                    }
+                } else {
+                    window.location.reload();
+                }
+            } catch (e) {
+                window.location.reload();
+            }
+        });
+
+        // Initialize highlighter on first load
+        window.addEventListener('DOMContentLoaded', highlightOnPage);
+    </script>
+    <svg style="position: fixed; width: 0; height: 0;" aria-hidden="true" focusable="false">
+        <filter id="water-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"
+                id="water-displacement" />
+        </filter>
+        <filter id="implode-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.15" numOctaves="5" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
 </body>
 
 </html>
