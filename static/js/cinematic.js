@@ -147,21 +147,33 @@ function initHorizontalScroll() {
         }
     }
 
-    // Dynamic fade-in/out scale depending on closest card to the LEFT of the screen
+    // Dynamic fade-in/out scale depending on closest card perfectly aligned with scroll tracking
     tl.eventCallback("onUpdate", () => {
-        // Our activation line is further right (35vw) so the next card unblurs 
-        // earlier as it enters the screen, rather than waiting until it reaches the left.
-        const activationLine = window.innerWidth * 0.35;
 
         let closestIndex = 0;
         let minDistance = Infinity;
 
+        // trackX represents raw horizontal movement distance backwards. e.g. 0 to -3000px
+        const currentScrollX = gsap.getProperty(track, "x") || 0;
+
         cards.forEach((card, i) => {
-            const rect = card.getBoundingClientRect();
-            // Measure distance based on the left edge of the card
-            const distance = Math.abs(rect.left - activationLine);
-            if (distance < minDistance) {
-                minDistance = distance;
+            // Evaluates mathematical perfect alignment of this card matching 5vw padding left
+            const perfectAlignScrollX = -(card.offsetLeft - (window.innerWidth * 0.05));
+
+            // Distance from where we are currently scrubbed vs where we need to be to center this card
+            let scrubDistance = currentScrollX - perfectAlignScrollX;
+            let absDistance = Math.abs(scrubDistance);
+
+            // The bias math: If the user hasn't physically reached the card yet (scrubDistance > 0),
+            // manually shrink its distance constraint early, allowing it to mathematically win focus much sooner 
+            // than halfway. (Do not delay unblur).
+            if (scrubDistance > 0) {
+                // Bias of 350px - the card wakes up extremely early!
+                absDistance = Math.max(0, absDistance - 350);
+            }
+
+            if (absDistance < minDistance) {
+                minDistance = absDistance;
                 closestIndex = i;
             }
         });
