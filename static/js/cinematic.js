@@ -101,7 +101,9 @@ function initHorizontalScroll() {
         scrollTrigger: {
             trigger: wrapper,
             start: "top top",
-            end: () => `+=${track.scrollWidth}`, // 1:1 scroll speed
+            // Add an extra 2 screens of scrolling distance to account for our huge deadzones,
+            // so panning between cards still feels 1:1 with track size
+            end: () => `+=${track.scrollWidth + (window.innerHeight * 2)}`,
             pin: true,
             scrub: 1.5,
             snap: {
@@ -115,8 +117,9 @@ function initHorizontalScroll() {
     });
 
     // Start label: deadzone before moving
+    // Huge pause (absorbs 1 full screen of scrolling)
     tl.addLabel("card0");
-    tl.to({}, { duration: 1.0 });
+    tl.to({}, { duration: 3.0 });
 
     for (let i = 1; i < cards.length; i++) {
         tl.to(track, {
@@ -133,11 +136,13 @@ function initHorizontalScroll() {
 
         // Exact left-aligned label
         tl.addLabel(`card${i}`);
+
         // Pause at label to hold focus over scroll
         if (i === cards.length - 1) {
-            // Extra long pause for the very last card
-            tl.to({}, { duration: 1.0 });
+            // Huge pause for the very last card (absorbs 1 full screen of scrolling)
+            tl.to({}, { duration: 3.0 });
         } else {
+            // Tiny pause to help snapping between middle cards
             tl.to({}, { duration: 0.35 });
         }
     }
