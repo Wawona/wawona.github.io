@@ -400,84 +400,152 @@
     }
 
     .lp-showcase-frame {
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
         border: 1px solid var(--border-color);
         background: var(--bg-0);
         will-change: transform;
-        transition: transform .3s ease-out;
+        transition: transform .3s ease-out, box-shadow .3s ease;
         max-width: 1600px;
-        /* Cap width on ultra-wide screens */
         margin: 0 auto;
+        position: relative;
+    }
+
+    /* Ambient top highlight edge */
+    .lp-showcase-frame::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        pointer-events: none;
+        z-index: 10;
     }
 
     :root.dark .lp-showcase-frame {
-        box-shadow: 0 24px 80px rgba(0, 0, 0, .6);
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     :root.light .lp-showcase-frame {
-        box-shadow: 0 16px 48px rgba(0, 0, 0, .1);
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .lp-showcase-bar {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 10px 14px;
-        background: var(--bg-1);
+        gap: 8px;
+        padding: 12px 16px;
+        background: rgba(var(--bg-1-rgb, 30, 30, 35), 0.65);
+        backdrop-filter: blur(24px) saturate(150%);
+        -webkit-backdrop-filter: blur(24px) saturate(150%);
         border-bottom: 1px solid var(--border-color);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 5;
+    }
+
+    /* Support fallback for browsers without backdrop-filter */
+    @supports not (backdrop-filter: blur(24px)) {
+        .lp-showcase-bar {
+            background: var(--bg-1);
+        }
     }
 
     .lp-dot-r,
     .lp-dot-y,
     .lp-dot-g {
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    /* Subtle symbols on hover for traffic lights */
+    .lp-dot-r::after,
+    .lp-dot-y::after,
+    .lp-dot-g::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transition: opacity 0.2s;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 6px;
+    }
+
+    .lp-showcase-bar:hover .lp-dot-r::after,
+    .lp-showcase-bar:hover .lp-dot-y::after,
+    .lp-showcase-bar:hover .lp-dot-g::after {
+        opacity: 0.6;
     }
 
     .lp-dot-r {
         background: #ff5f57;
+        border: 1px solid #e0443e;
     }
 
     .lp-dot-y {
         background: #febc2e;
+        border: 1px solid #d89e24;
     }
 
     .lp-dot-g {
         background: #28c840;
+        border: 1px solid #1fa732;
     }
 
     .lp-showcase-bar-title {
-        margin: 0 auto;
-        font-size: .75rem;
-        color: var(--text-2);
-        font-family: var(--mono-text-font);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: .8rem;
+        color: var(--text-0);
+        font-weight: 500;
+        font-family: var(--text-font);
+        letter-spacing: 0.02em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .lp-showcase-track {
         position: relative;
         min-height: 200px;
+        background: #000;
+        /* Deep backdrop for images */
     }
 
     .lp-showcase-slide {
         display: none;
+        width: 100%;
+        height: 100%;
     }
 
     .lp-showcase-slide.active {
         display: block;
-        animation: lpFade .6s cubic-bezier(.16, 1, .3, 1);
+        animation: lpFade .8s cubic-bezier(.16, 1, .3, 1);
     }
 
     @keyframes lpFade {
         from {
             opacity: 0;
-            transform: scale(.985)
+            transform: scale(.97);
+            filter: blur(4px);
         }
 
         to {
             opacity: 1;
-            transform: scale(1)
+            transform: scale(1);
+            filter: blur(0);
         }
     }
 
@@ -485,34 +553,50 @@
         width: 100%;
         max-height: 80vh;
         object-fit: contain;
-        /* Prevent infinite stretching vertically */
+        /* Maintain ratio without clipping */
         display: block;
         margin: 0 auto;
+        /* Image sits flush against bottom, bar overlays top */
     }
 
     .lp-showcase-nav {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
-        justify-content: center;
-        gap: 6px;
-        padding: 12px 0;
-        background: var(--bg-1);
-        border-top: 1px solid var(--border-color);
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 10;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .lp-showcase-dot {
         width: 8px;
         height: 8px;
-        border-radius: 50%;
-        border: 1.5px solid var(--text-2);
-        background: transparent;
+        border-radius: 4px;
+        /* Pill radius */
+        background: rgba(255, 255, 255, 0.4);
         cursor: pointer;
         padding: 0;
-        transition: all .2s ease;
+        border: none;
+        transition: all .3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .lp-showcase-dot:hover {
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .lp-showcase-dot.active {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
+        width: 24px;
+        /* Expand to pill shape */
+        background: #ffffff;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }
 
     /* ===== PILLARS (FOSS / AppStore / Extensible) ===== */
