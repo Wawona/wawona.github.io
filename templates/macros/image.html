@@ -14,14 +14,6 @@
 
     {# 4. The Picture Element #}
     <picture>
-        {# AVIF Generation #}
-        {% set avif_srcset = "" %}
-        {% for w in target_widths %}
-        {% set res = resize_image(path=path, width=w, op="fit_width", format="avif", quality=quality) %}
-        {% set avif_srcset = avif_srcset ~ res.url ~ " " ~ w ~ "w" %}
-        {% if not loop.last %}{% set avif_srcset = avif_srcset ~ ", " %}{% endif %}
-        {% endfor %}
-        <source type="image/avif" srcset="{{ avif_srcset }}" sizes="(max-width: 768px) 100vw, 50vw">
 
         {# WebP Generation #}
         {% set webp_srcset = "" %}
