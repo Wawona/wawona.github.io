@@ -12,11 +12,6 @@
 <div class="next-image-wrapper {{ class }}"
     style="aspect-ratio: {{ aspect_ratio }}; background-image: url('{{ lqip.url }}');">
 
-    {# 3. The Shimmer Layer #}
-    {% if not priority %}
-    <div class="next-image-shimmer"></div>
-    {% endif %}
-
     {# 4. The Picture Element #}
     <picture>
         {# AVIF Generation #}
@@ -40,11 +35,8 @@
         {# Fallback IMG + Load Handler #}
         {% set fallback = resize_image(path=path, width=target_widths | last, op="fit_width", quality=quality) %}
 
-        <img src="{{ fallback.url }}" alt="{{ alt }}"
-            class="next-image-target {% if not priority %}is-blur-up{% endif %}" {% if priority %} fetchpriority="high"
-            loading="eager" decoding="sync" {% else %} loading="lazy" decoding="async"
-            onload="this.classList.add('is-loaded'); this.previousElementSibling?.classList.add('is-hidden');" {% endif
-            %}>
+        <img src="{{ fallback.url }}" alt="{{ alt }}" class="next-image-target" {% if priority %} fetchpriority="high"
+            loading="eager" decoding="sync" {% else %} loading="lazy" decoding="async" {% endif %}>
     </picture>
 </div>
 {% endmacro optimized_image %}
