@@ -345,6 +345,39 @@ function initHeroWebGL() {
     }
 
     animate();
+
+    // --- Thematic Color Switching ---
+    const isDarkTheme = () => document.documentElement.classList.contains('dark');
+
+    // Define the light theme alternative color multiplier
+    // A dark ruby tone multiplies with the vertex colors for better contrast on light themes
+    const baseColorWhite = new THREE.Color(0xffffff); // Default
+    const lightColorTint = new THREE.Color(0x990011);
+
+    // Set initial colors based on current theme state
+    if (!isDarkTheme()) {
+        material.color.copy(lightColorTint);
+    }
+
+    // Watch for theme toggle changes
+    const themeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                const dark = isDarkTheme();
+
+                // Animate global material tint color
+                gsap.to(material.color, {
+                    r: dark ? baseColorWhite.r : lightColorTint.r,
+                    g: dark ? baseColorWhite.g : lightColorTint.g,
+                    b: dark ? baseColorWhite.b : lightColorTint.b,
+                    duration: 1.2,
+                    ease: "power2.inOut"
+                });
+            }
+        });
+    });
+
+    themeObserver.observe(document.documentElement, { attributes: true });
 }
 
 // --- GSAP Hero Entry Animations ---
