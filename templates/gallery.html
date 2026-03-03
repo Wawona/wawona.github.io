@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% import "macros/macros.html" as post_macros %}
+{% import "macros/image.html" as img %}
 
 {% block main_content %}
 
@@ -42,7 +43,10 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Target just transform to prevent overriding the macro's blur-up opacity/filter transitions */
+        transition-property: transform;
+        transition-duration: 0.8s;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .gallery-overlay {
@@ -435,9 +439,14 @@
     <div class="gallery-item" data-index="{{ loop.index0 }}" data-src="{{ get_url(path=page.extra.local_image) }}"
         data-title="{{ page.title }}" data-desc="{{ page.description | default(value='') }}">
         {% if page.extra.local_image %}
-        {% set path = page.extra.local_image %}
-        {% set image = resize_image(path=path, width=800, op="fit_width", format="webp") %}
-        <img src="{{ image.url }}" alt="{{ page.title }}" loading="lazy">
+        {{ img::optimized_image(
+        path=page.extra.local_image,
+        alt=page.title,
+        widths=[400, 800, 1200],
+        quality=80,
+        priority=loop.first,
+        aspect_ratio="16/10"
+        ) }}
         {% endif %}
         <div class="gallery-overlay">
             <div class="gallery-info">

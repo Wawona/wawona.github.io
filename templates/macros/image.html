@@ -1,0 +1,50 @@
+{% macro optimized_image(path, alt, widths="", quality=75, priority=false, aspect_ratio="16/9", class="") %}
+{# Tera doesn't allow array literals in macro signatures, so we handle the default here #}
+{% set target_widths = widths %}
+{% if target_widths == "" %}
+{% set target_widths = [400, 800, 1200] %}
+{% endif %}
+
+{# 1. Generate the microscopic LQIP placeholder #}
+{% set lqip = resize_image(path=path, width=20, op="fit_width", format="webp", quality=20) %}
+
+{# 2. Setup Container #}
+<div class="next-image-wrapper {{ class }}"
+    style="aspect-ratio: {{ aspect_ratio }}; background-image: url('{{ lqip.url }}');">
+
+    {# 3. The Shimmer Layer #}
+    {% if not priority %}
+    <div class="next-image-shimmer"></div>
+    {% endif %}
+
+    {# 4. The Picture Element #}
+    <picture>
+        {# AVIF Generation #}
+        {% set avif_srcset = "" %}
+        {% for w in target_widths %}
+        {% set res = resize_image(path=path, width=w, op="fit_width", format="avif", quality=quality) %}
+        {% set avif_srcset = avif_srcset ~ res.url ~ " " ~ w ~ "w" %}
+        {% if not loop.last %}{% set avif_srcset = avif_srcset ~ ", " %}{% endif %}
+        {% endfor %}
+        <source type="image/avif" srcset="{{ avif_srcset }}" sizes="(max-width: 768px) 100vw, 50vw">
+
+        {# WebP Generation #}
+        {% set webp_srcset = "" %}
+        {% for w in target_widths %}
+        {% set res = resize_image(path=path, width=w, op="fit_width", format="webp", quality=quality) %}
+        {% set webp_srcset = webp_srcset ~ res.url ~ " " ~ w ~ "w" %}
+        {% if not loop.last %}{% set webp_srcset = webp_srcset ~ ", " %}{% endif %}
+        {% endfor %}
+        <source type="image/webp" srcset="{{ webp_srcset }}" sizes="(max-width: 768px) 100vw, 50vw">
+
+        {# Fallback IMG + Load Handler #}
+        {% set fallback = resize_image(path=path, width=target_widths | last, op="fit_width", quality=quality) %}
+
+        <img src="{{ fallback.url }}" alt="{{ alt }}"
+            class="next-image-target {% if not priority %}is-blur-up{% endif %}" {% if priority %} fetchpriority="high"
+            loading="eager" decoding="sync" {% else %} loading="lazy" decoding="async"
+            onload="this.classList.add('is-loaded'); this.previousElementSibling?.classList.add('is-hidden');" {% endif
+            %}>
+    </picture>
+</div>
+{% endmacro optimized_image %}

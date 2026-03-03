@@ -86,6 +86,27 @@
 </script>
 
 <style>
+    /* ===== FULLWIDTH LAYOUT OVERRIDES ===== */
+    body {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100vw !important;
+        overflow-x: hidden;
+    }
+
+    body .content {
+        max-width: 100vw !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: hidden;
+    }
+
+    nav {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 1rem 1.5rem !important;
+    }
+
     /* ===== REVEAL SYSTEM ===== */
     .lp-reveal {
         opacity: 0;
@@ -123,43 +144,76 @@
         transform: translateY(0);
     }
 
-    /* ===== HERO ===== */
+    /* ===== HERO (CINEMATIC WEBGGL REDESIGN) ===== */
     .lp-hero {
         position: relative;
         text-align: center;
-        padding: 1.5rem 2rem 5rem;
+        /* Replaced padding with flexbox centering and full viewport height */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
+        background-color: #050505;
+        /* Force dark background for WebGL */
     }
 
-    .lp-hero-glow {
+    /* Force hero text/badges to contrast against the dark WebGL space */
+    .lp-hero .lp-hero-title,
+    .lp-hero .lp-hero-sub {
+        color: #ffffff !important;
+    }
+
+    .lp-hero .lp-badge {
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .lp-hero .lp-btn-ghost {
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .lp-hero .lp-btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    #hero-canvas-bg,
+    #hero-canvas-fg {
         position: absolute;
-        top: -40%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 900px;
-        height: 900px;
-        background: radial-gradient(circle, var(--primary-color) 0%, transparent 65%);
-        opacity: .07;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent !important;
         pointer-events: none;
-        will-change: transform;
-        transition: transform .3s ease-out;
+        /* Let clicks pass through to content */
     }
 
+    #hero-canvas-bg {
+        z-index: 0;
+        /* Behind content */
+    }
+
+    #hero-canvas-fg {
+        z-index: 20;
+        /* In front of content */
+    }
+
+    /* Hide the old static hero decorations since we have WebGL now */
+    .lp-hero-glow,
     .lp-hero-grid-bg {
-        position: absolute;
-        inset: 0;
-        background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-        background-size: 64px 64px;
-        opacity: .25;
-        mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 65%);
-        -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 65%);
-        pointer-events: none;
+        display: none !important;
     }
 
     .lp-hero-content {
         position: relative;
         max-width: 680px;
         margin: 0 auto;
+        z-index: 10;
+        /* Sandwiched between canvas-bg (z:0) and canvas-fg (z:20) */
+        pointer-events: auto;
     }
 
     .lp-badge {
@@ -266,9 +320,16 @@
 
     /* ===== SECTIONS ===== */
     .lp-section {
-        padding: 4.5rem 2rem;
-        max-width: 960px;
+        padding: 6rem 5vw;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .lp-section-inner {
+        max-width: 1400px;
         margin: 0 auto;
+        width: 100%;
     }
 
     .lp-section-header {
@@ -292,8 +353,9 @@
 
     /* ===== PLATFORMS ===== */
     .lp-platforms-strip {
-        padding: 2rem 2rem;
-        max-width: 640px;
+        padding: 3rem 5vw;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .lp-platforms {
@@ -332,7 +394,9 @@
 
     /* ===== SHOWCASE ===== */
     .lp-showcase-wrap {
-        max-width: 1000px;
+        padding: 4rem 5vw;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .lp-showcase-frame {
@@ -342,6 +406,9 @@
         background: var(--bg-0);
         will-change: transform;
         transition: transform .3s ease-out;
+        max-width: 1600px;
+        /* Cap width on ultra-wide screens */
+        margin: 0 auto;
     }
 
     :root.dark .lp-showcase-frame {
@@ -416,8 +483,11 @@
 
     .lp-showcase-slide img {
         width: 100%;
-        height: auto;
+        max-height: 80vh;
+        object-fit: contain;
+        /* Prevent infinite stretching vertically */
         display: block;
+        margin: 0 auto;
     }
 
     .lp-showcase-nav {
@@ -605,6 +675,121 @@
         margin-top: .25rem;
     }
 
+    /* ===== FEATURES (Horizontal Scrollytelling) ===== */
+    .lp-features-scroll-wrapper {
+        position: relative;
+        background: var(--bg-1);
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .lp-features-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .lp-features-header {
+        position: absolute;
+        top: 10%;
+        left: 5%;
+        z-index: 10;
+        text-align: left;
+    }
+
+    .lp-features-header h2 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .lp-features-track {
+        display: flex;
+        width: max-content;
+        height: 65vh;
+        padding-left: 5vw;
+        padding-right: 50vw;
+        /* Lots of dead space so the last card can align left fully */
+        align-items: center;
+        gap: 6vw;
+    }
+
+    .lp-feature-card {
+        width: 650px;
+        min-width: 650px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2.25rem;
+        opacity: 0.15;
+        background: rgba(20, 20, 22, 0.45);
+        backdrop-filter: blur(24px) saturate(120%);
+        -webkit-backdrop-filter: blur(24px) saturate(120%);
+        padding: 3.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-left: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow:
+            0 30px 60px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        /* GSAP will animate this */
+        transform: scale(0.9);
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Subtle neon accent glow inside the card */
+    .lp-feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary-color), #ff8e53);
+        opacity: 0.8;
+    }
+
+    /* Force visibility of text/visuals inside the GSAP scroll track */
+    .lp-feature-card .lp-feature-text,
+    .lp-feature-card .lp-feature-visual {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .lp-feature-card.is-active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .lp-feature-text h3 {
+        font-size: 2.1rem;
+        font-weight: 800;
+        font-family: var(--header-font);
+        margin: 0 0 1.2rem;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff, #a0a0a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .lp-feature-text p {
+        font-size: 1.15rem;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* Keep exact same visual styles for stats/code blocks as before */
+
     /* Architecture */
     .lp-arch-mini {
         display: flex;
@@ -612,7 +797,49 @@
         align-items: center;
     }
 
+    /* ===== CUSTOM MAGNETIC CURSOR ===== */
+    body {
+        /* Hide default cursor on desktop when our custom one is active */
+        cursor: none;
+    }
+
+    .custom-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 32px;
+        height: 32px;
+        border: 2px solid var(--primary-color);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 0.3s ease;
+        mix-blend-mode: difference;
+    }
+
+    .custom-cursor.is-hovering {
+        width: 64px;
+        height: 64px;
+        background-color: var(--primary-color);
+        mix-blend-mode: normal;
+        opacity: 0.5;
+    }
+
+    /* Keep exact same visual styles for stats/code blocks as before */
+
     @media (max-width: 768px) {
+        body {
+            cursor: auto;
+            /* Restore cursor on mobile/touch */
+        }
+
+        .custom-cursor {
+            display: none !important;
+        }
+
         .lp-pillars {
             grid-template-columns: 1fr;
         }

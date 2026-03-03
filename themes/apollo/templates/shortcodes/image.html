@@ -1,19 +1,26 @@
+{% import "macros/image.html" as img %}
+
 {% set image_meta = get_image_metadata(path=path) %}
+{% set target_width = width | default(value=image_meta.width) %}
+{% set target_height = height | default(value=image_meta.height) %}
+{% set aspect_ratio = target_width ~ "/" ~ target_height %}
 
-{% set width = width | default(value=image_meta.width) %}
-{% set height = width | default(value=image_meta.height) %}
-{% set op = op | default(value='fit_width') %}
-{% set format = format | default(value='avif') %}
+{% set alt = alt | default(value="") %}
 {% set quality = quality | default(value=80) %}
-{% set img = resize_image(path=path, width=width, height=height, op=op, format=format, quality=quality) %}
+{% set class = class | default(value="") %}
 
-{% set loading = loading | default(value='lazy') %}
-{% set decoding = decoding | default(value='async') %}
-{% set style = style | default(value='') %}
-<img aspect-ratio="{{ width }} / {{ height }}"
-     src="{{ img.url }}"
-     alt="{{ alt }}"
-     style="{{ style }}"
-     loading="{{ loading }}"
-     decoding="{{ decoding }}"
-     class="{{ class | default(value='') }}" />
+{# We translate `loading="eager"` from standard markdown configs into our `priority` boolean #}
+{% set is_priority = false %}
+{% if loading == "eager" %}
+{% set is_priority = true %}
+{% endif %}
+
+{{ img::optimized_image(
+path=path,
+alt=alt,
+widths=[400, 800, 1400],
+quality=quality,
+priority=is_priority,
+aspect_ratio=aspect_ratio,
+class=class
+) }}

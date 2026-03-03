@@ -1,22 +1,24 @@
 {% extends "base.html" %}
+{% import "macros/image.html" as img %}
 {% macro home_page(section) %}
 
-<!-- HERO -->
-<section class="lp-hero" data-parallax="0.3">
-    <div class="lp-hero-glow" data-mouse-track="20"></div>
-    <div class="lp-hero-grid-bg"></div>
-    <div class="lp-hero-content lp-reveal">
-        <span class="lp-badge">Free &amp; Open Source &middot; MIT License &middot; v0.2</span>
-        <h1 class="lp-hero-title">
+<!-- HERO (Cinematic WebGL) -->
+<section class="lp-hero" id="hero-section">
+    <!-- WebGL Canvas Background -->
+    <canvas id="hero-canvas-bg"></canvas>
+
+    <div class="lp-hero-content" id="hero-content">
+        <div class="lp-badge lp-hero-anim">Free &amp; Open Source &middot; MIT License &middot; v0.2</div>
+        <h1 class="lp-hero-title lp-hero-anim">
             The Wayland compositor<br>
             <span class="lp-gradient-text">for every platform.</span>
         </h1>
-        <p class="lp-hero-sub">
+        <p class="lp-hero-sub lp-hero-anim">
             Wawona is a native, high-performance Wayland compositor for macOS, iOS, and Android.
             Built on a shared Rust core with direct Metal and Vulkan rendering —
             zero-copy, bare-metal speed, no VMs.
         </p>
-        <div class="lp-hero-actions">
+        <div class="lp-hero-actions lp-hero-anim">
             <a href="/docs/getting-started/" class="lp-btn lp-btn-primary">Get Started <svg width="16" height="16"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <path d="M5 12h14" />
@@ -29,6 +31,8 @@
                 </svg> View Source</a>
         </div>
     </div>
+    <!-- WebGL Canvas Foreground -->
+    <canvas id="hero-canvas-fg"></canvas>
 </section>
 
 <!-- PLATFORMS -->
@@ -52,18 +56,22 @@
                 class="lp-dot-g"></span><span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma &mdash;
                 Nested in Wawona</span></div>
         <div class="lp-showcase-track" id="showcaseTrack">
-            <div class="lp-showcase-slide active" data-title="KDE Plasma &mdash; Nested in Wawona"><img
-                    src="/images/wawona-screenshots/wawona_nested_plasma.png" alt="KDE Plasma nested in Wawona"
-                    loading="lazy" /></div>
-            <div class="lp-showcase-slide" data-title="XFCE Desktop &mdash; Composited on macOS"><img
-                    src="/images/wawona-screenshots/wawona_nested_xfce.png" alt="XFCE nested in Wawona"
-                    loading="lazy" /></div>
-            <div class="lp-showcase-slide" data-title="COSMIC Desktop &mdash; Running in Wawona"><img
-                    src="/images/wawona-screenshots/wawona_nested_cosmic.png" alt="COSMIC nested in Wawona"
-                    loading="lazy" /></div>
-            <div class="lp-showcase-slide" data-title="Native Wayland Compositing on macOS"><img
-                    src="/images/wawona-screenshots/wawona-screenshot-1.png" alt="Wawona native compositing"
-                    loading="lazy" /></div>
+            <div class="lp-showcase-slide active" data-title="KDE Plasma &mdash; Nested in Wawona">
+                {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_plasma.png", alt="KDE Plasma
+                nested in Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+            </div>
+            <div class="lp-showcase-slide" data-title="XFCE Desktop &mdash; Composited on macOS">
+                {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_xfce.png", alt="XFCE nested in
+                Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+            </div>
+            <div class="lp-showcase-slide" data-title="COSMIC Desktop &mdash; Running in Wawona">
+                {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_cosmic.png", alt="COSMIC nested in
+                Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+            </div>
+            <div class="lp-showcase-slide" data-title="Native Wayland Compositing on macOS">
+                {{ img::optimized_image(path="images/wawona-screenshots/wawona-screenshot-1.png", alt="Wawona native
+                compositing", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+            </div>
         </div>
         <div class="lp-showcase-nav"><button class="lp-showcase-dot active" data-index="0"></button><button
                 class="lp-showcase-dot" data-index="1"></button><button class="lp-showcase-dot"
@@ -73,114 +81,136 @@
 
 <!-- VALUE PROPS — 3 pillars -->
 <section class="lp-section">
-    <div class="lp-section-header lp-reveal">
-        <h2>Built Different.</h2>
-        <p>Not a VM. Not a compatibility layer. A real compositor.</p>
-    </div>
-    <div class="lp-pillars lp-reveal">
-        <div class="lp-pillar" data-mouse-track="5">
-            <div class="lp-pillar-glow"></div>
-            <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg></div>
-            <h3>100% Free &amp; Open Source</h3>
-            <p>Wawona is and always will be <strong>free software</strong> under the MIT License. No paywalls, no
-                telemetry, no vendor lock-in. Audit the code, fork it, contribute — it belongs to the community.</p>
+    <div class="lp-section-inner">
+        <div class="lp-section-header lp-reveal">
+            <h2>Built Different.</h2>
+            <p>Not a VM. Not a compatibility layer. A real compositor.</p>
         </div>
-        <div class="lp-pillar" data-mouse-track="5">
-            <div class="lp-pillar-glow"></div>
-            <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5">
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="8" x2="16" y1="21" y2="21" />
-                    <line x1="12" x2="12" y1="17" y2="21" />
-                </svg></div>
-            <h3>App Store Compliant</h3>
-            <p>Designed from day one to meet Apple and Google app review guidelines. <strong>Available to
-                    everyone</strong> — download from the App Store or Play Store. No sideloading, no jailbreak
-                required.</p>
-        </div>
-        <div class="lp-pillar" data-mouse-track="5">
-            <div class="lp-pillar-glow"></div>
-            <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path
-                        d="M12 3v3m6.36-.64-2.12 2.12M21 12h-3M18.36 18.36l-2.12-2.12M12 21v-3M7.76 18.36l-2.12-2.12M6 12H3M7.76 5.64 5.64 7.76" />
-                </svg></div>
-            <h3>Extensible</h3>
-            <p>Port any Linux application to macOS and utilize Wayland directly on the same computer. Wawona will
-                support <strong>user plugins</strong> for extending functionality far beyond the barebones compositor.
-            </p>
+        <div class="lp-pillars lp-reveal">
+            <div class="lp-pillar" data-mouse-track="5">
+                <div class="lp-pillar-glow"></div>
+                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg></div>
+                <h3>100% Free &amp; Open Source</h3>
+                <p>Wawona is and always will be <strong>free software</strong> under the MIT License. No paywalls, no
+                    telemetry, no vendor lock-in. Audit the code, fork it, contribute — it belongs to the community.</p>
+            </div>
+            <div class="lp-pillar" data-mouse-track="5">
+                <div class="lp-pillar-glow"></div>
+                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" x2="16" y1="21" y2="21" />
+                        <line x1="12" x2="12" y1="17" y2="21" />
+                    </svg></div>
+                <h3>App Store Compliant</h3>
+                <p>Designed from day one to meet Apple and Google app review guidelines. <strong>Available to
+                        everyone</strong> — download from the App Store or Play Store. No sideloading, no jailbreak
+                    required.</p>
+            </div>
+            <div class="lp-pillar" data-mouse-track="5">
+                <div class="lp-pillar-glow"></div>
+                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path
+                            d="M12 3v3m6.36-.64-2.12 2.12M21 12h-3M18.36 18.36l-2.12-2.12M12 21v-3M7.76 18.36l-2.12-2.12M6 12H3M7.76 5.64 5.64 7.76" />
+                    </svg></div>
+                <h3>Extensible</h3>
+                <p>Port any Linux application to macOS and utilize Wayland directly on the same computer. Wawona will
+                    support <strong>user plugins</strong> for extending functionality far beyond the barebones
+                    compositor.
+                </p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- FEATURES — alternating rows -->
-<section class="lp-section">
-    <div class="lp-feature-row lp-reveal" data-parallax="0.05">
-        <div class="lp-feature-text">
-            <h3>Native Compositing</h3>
-            <p>Runs underneath the host OS's native window management — Quartz on macOS, UIKit on iOS, Android's
-                WindowManager on Android. Wayland surfaces become first-class native windows with full system
-                integration.</p>
+<!-- FEATURES (Horizontal Scrollytelling) -->
+<section class="lp-features-scroll-wrapper" id="features-scroll-wrapper">
+    <div class="lp-features-sticky">
+        <div class="lp-section-header lp-features-header">
+            <h2>The Architecture</h2>
+            <p>Deconstructing the next-generation compositor.</p>
         </div>
-        <div class="lp-feature-visual">
-            <div class="lp-code-block"><span class="lp-code-comment">// Wayland surface &rarr; native macOS
-                    window</span><br><span class="lp-code-kw">let</span> surface = compositor.<span
-                    class="lp-code-fn">create_surface</span>();<br><span class="lp-code-kw">let</span> window =
-                quartz.<span class="lp-code-fn">promote_to_nswindow</span>(surface);<br>window.<span
-                    class="lp-code-fn">make_key_and_order_front</span>();</div>
-        </div>
-    </div>
-    <div class="lp-feature-row lp-feature-row-reverse lp-reveal" data-parallax="0.05">
-        <div class="lp-feature-text">
-            <h3>Zero-Copy Rendering</h3>
-            <p>Direct Metal and Vulkan pipelines with zero-copy IOSurface integration. Client buffers map directly to
-                GPU textures — near-instant frame delivery at native refresh rates.</p>
-        </div>
-        <div class="lp-feature-visual">
-            <div class="lp-stat-grid">
-                <div class="lp-stat"><span class="lp-stat-num">0</span><span class="lp-stat-label">Buffer Copies</span>
+        <div class="lp-features-track" id="features-track">
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-text">
+                    <h3>Shared Rust Core</h3>
+                    <p>The heart of Wawona is a monolithic Wayland state machine. It manages socket connections,
+                        protocol globals, and event dispatching in pure Rust, providing identical logical behavior
+                        across all platforms.</p>
                 </div>
-                <div class="lp-stat"><span class="lp-stat-num">120</span><span class="lp-stat-label">FPS Target</span>
-                </div>
-                <div class="lp-stat"><span class="lp-stat-num">186+</span><span class="lp-stat-label">Rust Crates</span>
-                </div>
-                <div class="lp-stat"><span class="lp-stat-num">68</span><span class="lp-stat-label">Protocols</span>
+                <div class="lp-feature-visual">
+                    <div class="lp-arch-mini">
+                        <div class="lp-arch-mini-row"><span class="lp-arch-chip">macOS</span><span
+                                class="lp-arch-chip">iOS</span><span class="lp-arch-chip">Android</span></div>
+                        <div class="lp-arch-mini-connector">UniFFI &middot; C FFI</div>
+                        <div class="lp-arch-mini-row"><span class="lp-arch-chip lp-arch-chip-core">Rust Core</span>
+                        </div>
+                        <div class="lp-arch-mini-connector">wayland-server &middot; wayland-protocols</div>
+                        <div class="lp-arch-mini-row"><span class="lp-arch-chip lp-arch-chip-dep">Native
+                                Libraries</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="lp-feature-row lp-reveal" data-parallax="0.05">
-        <div class="lp-feature-text">
-            <h3>One Core, Three Platforms</h3>
-            <p>A shared Rust library manages all compositor state, protocol dispatch, and IPC. Platform frontends
-                connect via UniFFI and C FFI bindings — every platform runs the exact same compositor logic.</p>
-        </div>
-        <div class="lp-feature-visual">
-            <div class="lp-arch-mini">
-                <div class="lp-arch-mini-row"><span class="lp-arch-chip">macOS</span><span
-                        class="lp-arch-chip">iOS</span><span class="lp-arch-chip">Android</span></div>
-                <div class="lp-arch-mini-connector">UniFFI &middot; C FFI</div>
-                <div class="lp-arch-mini-row"><span class="lp-arch-chip lp-arch-chip-core">Rust Core</span></div>
-                <div class="lp-arch-mini-connector">wayland-server &middot; wayland-protocols</div>
-                <div class="lp-arch-mini-row"><span class="lp-arch-chip lp-arch-chip-dep">27 Native Libraries</span>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-text">
+                    <h3>Native Window Promotion</h3>
+                    <p>Instead of drawing desktops into a single monolithic window, Wayland surfaces are mapped directly
+                        to native OS window primitives. A platform layer translates Wawona logical windows into real
+                        NSWindow or Activity objects.</p>
+                </div>
+                <div class="lp-feature-visual">
+                    <div class="lp-code-block"><span class="lp-code-comment">// Wayland surface &rarr; native OS
+                            window</span><br><span class="lp-code-kw">let</span> surface = compositor.<span
+                            class="lp-code-fn">create_surface</span>();<br><span class="lp-code-kw">let</span> window =
+                        platform.<span class="lp-code-fn">promote_to_native</span>(surface);<br>window.<span
+                            class="lp-code-fn">activate_and_show</span>();</div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="lp-feature-row lp-feature-row-reverse lp-reveal" data-parallax="0.05">
-        <div class="lp-feature-text">
-            <h3>Waypipe + Remote Apps</h3>
-            <p>Run remote Linux GUI applications over SSH and display them natively. Built-in Waypipe and Dropbear SSH
-                on mobile — no separate SSH client needed.</p>
-        </div>
-        <div class="lp-feature-visual">
-            <div class="lp-code-block"><span class="lp-code-comment">// SSH into remote Linux host</span><br><span
-                    class="lp-code-kw">waypipe</span> ssh user@server<br>&nbsp;&nbsp;<span
-                    class="lp-code-fn">firefox</span> &amp; <span class="lp-code-comment">// appears natively</span>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-text">
+                    <h3>Zero-Copy Pipelines</h3>
+                    <p>Client buffers (like IOSurface or dmabufs) are mapped directly to GPU textures in our native
+                        Metal and Vulkan rendering backends. Frame delivery achieves near-instant presentation with zero
+                        intermediate copies.</p>
+                </div>
+                <div class="lp-feature-visual">
+                    <div class="lp-stat-grid">
+                        <div class="lp-stat"><span class="lp-stat-num">0</span><span class="lp-stat-label">Buffer
+                                Copies</span></div>
+                        <div class="lp-stat"><span class="lp-stat-num">Native</span><span class="lp-stat-label">Refresh
+                                Rates</span></div>
+                        <div class="lp-stat"><span class="lp-stat-num">Metal</span><span class="lp-stat-label">macOS /
+                                iOS</span></div>
+                        <div class="lp-stat"><span class="lp-stat-num">Vulkan</span><span
+                                class="lp-stat-label">Android</span></div>
+                    </div>
+                </div>
             </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-text">
+                    <h3>FFI &amp; Remote Bridging</h3>
+                    <p>The Rust core connects to platform-native languages (Swift, Kotlin) via UniFFI and C bindings.
+                        Additionally, native Waypipe integration allows remote Linux X11/Wayland applications to
+                        seamlessly render locally.</p>
+                </div>
+                <div class="lp-feature-visual">
+                    <div class="lp-code-block"><span class="lp-code-comment">// SSH into remote Linux
+                            host</span><br><span class="lp-code-kw">waypipe</span> ssh user@server<br>&nbsp;&nbsp;<span
+                            class="lp-code-fn">firefox</span> &amp; <span class="lp-code-comment">// appears
+                            natively</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -323,6 +353,26 @@
             href="https://github.com/aspauldingcode/Wawona/blob/main/LICENSE" target="_blank" rel="noopener">MIT
             License</a>.</p>
 </footer>
+
+<!-- CINEMATIC WAWONA REDESIGN SCRIPTS -->
+<!-- Lenis for smooth scroll -->
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<!-- GSAP & ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- Three.js (Module version for better performance) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<!-- WebGL HDR Post-Processing -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<!-- Vanta (Optional helper for particles/WebGL backgrounds if we want a quick abstract shader) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.halo.min.js"></script>
+<!-- Custom Cinematic Logic -->
+<script src="/js/cinematic.js"></script>
 
 {% include "partials/homepage_scripts.html" %}
 
