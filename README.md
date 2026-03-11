@@ -4,9 +4,26 @@ Uses [Zola](https://www.getzola.org/) to generate the static site.
 
 - [Zola](https://www.getzola.org/) (Follow the [official installation guide](https://www.getzola.org/documentation/getting-started/installation/) for your platform)
 
-### Build Instructions
+### Using Nix (Recommended)
 
-You can use the following commands to build and preview the site locally. For more details on Zola's capabilities, check the [official CLI documentation](https://www.getzola.org/documentation/getting-started/cli-usage/).
+If you have [Nix](https://nixos.org/) installed with flakes enabled, you don't need to manually install Zola. Nix will handle all dependencies and environment setup.
+
+**Start the development server:**
+```bash
+nix run
+```
+This command will:
+1. Automatically fetch and set up Zola.
+2. Start the development server at `http://127.0.0.1:1111`.
+3. Provide a network-accessible URL for testing on other devices on your local network.
+
+**Enter the development environment:**
+```bash
+nix develop
+```
+This drops you into a shell with Zola available, allowing you to run standard `zola` commands.
+
+### Build Instructions without Nix
 
 **Build the site:**
 ```bash
