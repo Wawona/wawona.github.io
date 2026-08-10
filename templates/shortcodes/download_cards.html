@@ -166,6 +166,84 @@
         cursor: not-allowed;
     }
 
+    .dl-hint {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-2);
+        margin-top: 0.6rem;
+        opacity: 0.85;
+    }
+
+    /* Split download button (main action + architecture dropdown) */
+    .dl-split {
+        display: inline-flex;
+        align-items: stretch;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .dl-split .dl-split-main {
+        margin: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .dl-split .dl-split-toggle {
+        margin: 0;
+        padding: 0.7rem 0.9rem;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        line-height: 1;
+    }
+
+    .dl-split-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        min-width: 220px;
+        background: var(--bg-0);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        padding: 0.4rem;
+        z-index: 20;
+        display: none;
+        text-align: left;
+    }
+
+    .dl-split-menu.open {
+        display: block;
+    }
+
+    .dl-split-menu a {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 10px;
+        color: var(--text-0) !important;
+        text-decoration: none !important;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: background 0.2s ease;
+    }
+
+    .dl-split-menu a:hover {
+        background: var(--bg-2);
+    }
+
+    .dl-split-menu a .dl-arch-sub {
+        color: var(--text-2);
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+
     .dl-badge {
         position: absolute;
         top: 0.75rem;
@@ -218,6 +296,18 @@
     .dl-card-premium:hover::before {
         opacity: 1;
     }
+
+    .dl-releases-link {
+        text-align: center;
+        margin-top: 2.5rem;
+        font-size: 0.9rem;
+        color: var(--text-2);
+    }
+
+    .dl-releases-link a {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
 </style>
 
 <div class="download-page">
@@ -241,7 +331,40 @@
                     <h3 class="dl-title">macOS</h3>
                     <p class="dl-description">Native Apple Silicon support. High-performance compositor for creative
                         professionals.</p>
-                    <a href="#" class="dl-btn stretched-link">Download .dmg</a>
+                    <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-arm64.dmg"
+                        class="dl-btn stretched-link">Download .dmg</a>
+                    <span class="dl-hint">Apple Silicon (arm64) &middot; macOS 13+</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Linux -->
+        <div id="dl-linux" class="dl-platform">
+            <div class="dl-card-premium" style="cursor: default;">
+                <div class="dl-icon-box">
+                    <svg class="svg-icon" viewBox="0 0 448 512">
+                        <path
+                            d="M220.8 123.3c1 .5 1.8 1.7 3 1.7 1.1 0 2.8-.4 2.9-1.5 .2-1.4-1.9-2.3-3.2-2.9-1.7-.7-3.9-1-5.5-.1-.4 .2-.8 .7-.6 1.1 .3 1.3 2 1.2 3.4 1.7zm-21.9 1.7c1.2 0 2-1.2 3-1.7 1.3-.6 3-.4 3.4-1.7 .2-.4-.2-.9-.6-1.1-1.6-.9-3.8-.6-5.5 .1-1.3 .6-3.4 1.5-3.2 2.9 .1 1 1.8 1.5 2.9 1.5zM420 403.8c-3.6-4-5.3-11.6-7.2-19.7-1.8-8.1-3.9-16.8-10.5-22.4-1.3-1.1-2.6-2.1-4-2.9-1.3-.8-2.7-1.5-4.1-2 9.2-27.3 5.6-54.5-3.7-79.1-11.4-30.1-31.3-56.4-46.5-74.4-17.1-21.5-33.7-41.9-33.4-72C311.1 85.4 315.7 .1 234.8 0 132.4-.2 158.8 103.4 156.9 135.2c-2.8 23.9-8.4 42.6-24.2 66.1-18.6 27.5-44.3 71.6-56.6 116.2-5.8 21.1-8.8 42.4-6.5 61.3-.9 .5-1.8 1.1-2.6 1.7-6.5 4.9-11.6 13.1-14.9 22.5-1.9 8.1-3.6 15.7-7.2 19.7-6.4 7.2-6.7 12.8-2.5 17.5 4.3 5.1 12.7 6.9 21.8 8.8 8 1.7 16.4 3.5 22.3 8.9 5.4 5.2 8.7 13.3 12.8 20.8 4.2 7.6 10.1 15.1 20.5 16.6 25.6 3.5 34.2-4.1 40.3-10.7 5.4-5.9 12.5-10.6 20.9-13.8 7.5-2.9 15.4-4.6 23.1-6 15.4-2.9 25.3-1.4 37.9 3.6 7.9 3.1 12.2 6.4 15.9 9.5 5.4 4.5 9.7 8.2 20.4 8.5 18.4 .5 30.2-11.7 34.1-23.6 3.1-9.4 5.4-16.9 12.4-22.6 6.8-5.6 15.7-8.6 24.3-11.8 9.4-3.5 18.4-6.9 24.1-13.7 7.4-8.7 9.9-19.3 8.2-27.9-1.9-9.7-8-16.5-14-22.5z" />
+                    </svg>
+                </div>
+                <div class="dl-content">
+                    <h3 class="dl-title">Linux</h3>
+                    <p class="dl-description">Portable AppImage &mdash; runs on any modern distribution. No install
+                        required.</p>
+                    <div class="dl-split">
+                        <a id="linux-dl-main"
+                            href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
+                            class="dl-btn dl-split-main">Download AppImage <span id="linux-arch-label">(x86_64)</span></a>
+                        <button type="button" class="dl-btn dl-split-toggle" id="linux-arch-toggle"
+                            aria-haspopup="true" aria-expanded="false" aria-label="Choose architecture">&#9662;</button>
+                        <div class="dl-split-menu" id="linux-arch-menu" role="menu">
+                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
+                                data-arch="x86_64" role="menuitem">x86_64 <span class="dl-arch-sub">(Intel / AMD)</span></a>
+                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-aarch64.AppImage"
+                                data-arch="aarch64" role="menuitem">aarch64 <span class="dl-arch-sub">(ARM64)</span></a>
+                        </div>
+                    </div>
+                    <span class="dl-hint" id="linux-arch-hint">Auto-detected: x86_64</span>
                 </div>
             </div>
         </div>
@@ -284,19 +407,111 @@
             </div>
         </div>
     </div>
+
+    <p class="dl-releases-link">
+        Downloads always track the
+        <a href="https://github.com/Wawona/Wawona/releases/latest" target="_blank" rel="noopener">latest GitHub
+            release</a> &mdash; you never get a stale build.
+    </p>
 </div>
 
 <script>
-    (function highlightRecommendedDownload() {
+    (function wawonaDownloads() {
+        // --- Linux CPU architecture detection -------------------------------
+        // Chromium (Chrome/Edge/Opera) exposes the real CPU arch via the
+        // User-Agent Client Hints high-entropy API. Firefox/Safari do not, so
+        // fall back to parsing the UA string (Firefox on Linux still reports
+        // "Linux x86_64" / "Linux aarch64"). Default to x86_64 when unknown.
+        function archFromUAString() {
+            var ua = (navigator.userAgent || "").toLowerCase();
+            if (/aarch64|arm64|armv8/.test(ua)) return "aarch64";
+            if (/x86_64|x86-64|amd64|wow64|win64|x64/.test(ua)) return "x86_64";
+            return null;
+        }
+
+        function applyLinuxArch(arch) {
+            if (arch !== "x86_64" && arch !== "aarch64") return;
+            var main = document.getElementById("linux-dl-main");
+            var label = document.getElementById("linux-arch-label");
+            var hint = document.getElementById("linux-arch-hint");
+            if (!main) return;
+            var url = "https://github.com/Wawona/Wawona/releases/latest/download/Wawona-" +
+                arch + ".AppImage";
+            main.setAttribute("href", url);
+            if (label) label.textContent = "(" + arch + ")";
+            if (hint) hint.textContent = "Auto-detected: " + arch;
+        }
+
+        function detectLinuxArch() {
+            // Best source: Client Hints (Chromium). Returns a Promise.
+            if (navigator.userAgentData &&
+                typeof navigator.userAgentData.getHighEntropyValues === "function") {
+                navigator.userAgentData.getHighEntropyValues(["architecture", "bitness"])
+                    .then(function (hints) {
+                        var a = (hints.architecture || "").toLowerCase();
+                        if (a === "arm" || a === "arm64" || a === "aarch64") {
+                            applyLinuxArch("aarch64");
+                        } else if (a === "x86" || a === "x86_64") {
+                            applyLinuxArch("x86_64");
+                        } else {
+                            var fb = archFromUAString();
+                            if (fb) applyLinuxArch(fb);
+                        }
+                    })
+                    .catch(function () {
+                        var fb = archFromUAString();
+                        if (fb) applyLinuxArch(fb);
+                    });
+            } else {
+                var fb = archFromUAString();
+                if (fb) applyLinuxArch(fb);
+            }
+        }
+
+        detectLinuxArch();
+
+        // --- Architecture dropdown -----------------------------------------
+        var toggle = document.getElementById("linux-arch-toggle");
+        var menu = document.getElementById("linux-arch-menu");
+        if (toggle && menu) {
+            toggle.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var open = menu.classList.toggle("open");
+                toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            });
+            menu.querySelectorAll("a[data-arch]").forEach(function (item) {
+                item.addEventListener("click", function () {
+                    // Reflect the explicit choice on the main button, then let the
+                    // link navigate to the download normally.
+                    applyLinuxArch(item.getAttribute("data-arch"));
+                    menu.classList.remove("open");
+                    toggle.setAttribute("aria-expanded", "false");
+                });
+            });
+            document.addEventListener("click", function (e) {
+                if (!menu.contains(e.target) && e.target !== toggle) {
+                    menu.classList.remove("open");
+                    toggle.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+
+        // --- Recommended platform hero -------------------------------------
         var ua = navigator.userAgent || navigator.vendor || window.opera;
+        var uaData = navigator.userAgentData;
+        var platform = (uaData && uaData.platform ? uaData.platform : "").toLowerCase();
         var highlightId = null;
 
-        if (/android/i.test(ua)) {
+        if (/android/i.test(ua) || platform === "android") {
             highlightId = "dl-android";
-        } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+        } else if ((/iPad|iPhone|iPod/.test(ua) && !window.MSStream)) {
             highlightId = "dl-ios";
-        } else if (/Macintosh|Mac OS X/.test(ua)) {
+        } else if (/Macintosh|Mac OS X/.test(ua) || platform === "macos") {
             highlightId = "dl-macos";
+        } else if (/Linux/i.test(ua) || platform === "linux") {
+            // Exclude Android (already handled above); real desktop Linux.
+            if (!/android/i.test(ua)) highlightId = "dl-linux";
         }
 
         if (highlightId) {
@@ -304,13 +519,9 @@
             var recContainer = document.getElementById("download-recommended");
 
             if (el && recContainer) {
-                // Move element
                 recContainer.appendChild(el);
-
-                // Add Hero styles to wrapper
                 el.classList.add("recommended-hero");
 
-                // Add "Recommended" badge
                 var card = el.querySelector(".dl-card-premium");
                 if (card) {
                     var badge = document.createElement("span");
@@ -319,7 +530,6 @@
                     card.appendChild(badge);
                 }
 
-                // Show container
                 recContainer.style.display = "block";
             }
         }
