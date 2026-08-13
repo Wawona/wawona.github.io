@@ -1,0 +1,1017 @@
+{% set stripe_checkout_api = get_env(name="STRIPE_CHECKOUT_API", default="") %}
+{% set kofi_url = config.extra.kofi_url | default(value="https://ko-fi.com/aspauldingcode") %}
+<style>
+    .donate-page {
+        --dn-r: 24px;
+        --dn-pad: 12px;
+        --dn-r-in: 12px;
+        padding: 0 0 2rem;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    body:has(.donate-page) .page-header {
+        margin: 1rem 0 0.65rem;
+        font-size: 2rem;
+    }
+
+    .dn-card {
+        background: var(--bg-1);
+        border: 1px solid var(--border-color);
+        border-radius: var(--dn-r);
+        padding: var(--dn-pad);
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: visible;
+    }
+
+    .dn-card[hidden] {
+        display: none;
+    }
+
+    .dn-back {
+        appearance: none;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0 0 0.75rem;
+        color: var(--text-1);
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .dn-back:hover {
+        color: var(--text-0);
+    }
+
+    .dn-choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--dn-pad);
+        margin-top: 1rem;
+    }
+
+    .dn-choice {
+        appearance: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 3.25rem;
+        margin: 0;
+        text-align: center;
+        cursor: pointer;
+        font: inherit;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text-0);
+        background: var(--bg-0);
+        border: 1px solid var(--border-color);
+        border-radius: var(--dn-r-in);
+        padding: 0.85rem 1rem;
+    }
+
+    .dn-choice:hover,
+    .dn-choice:focus-visible {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: #fff !important;
+    }
+
+    .dn-eyebrow {
+        position: relative;
+        color: var(--primary-color);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 0.45rem;
+    }
+
+    .dn-title {
+        position: relative;
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.03em;
+        color: var(--text-0);
+    }
+
+    .dn-copy,
+    .dn-note {
+        position: relative;
+        color: var(--text-1);
+        margin: 0 0 1rem;
+        line-height: 1.6;
+    }
+
+    .dn-note {
+        color: var(--text-2);
+        font-size: 0.85rem;
+        margin: 0.35rem 0 0.75rem;
+    }
+
+    .dn-field {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .dn-field label,
+    .dn-field legend {
+        color: var(--text-0);
+        font-size: 0.85rem;
+        font-weight: 800;
+    }
+
+    .dn-donation-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.35rem;
+    }
+
+    .dn-slider-wrap {
+        --knob: 18px;
+        --knob-x: 9px;
+        --heart: 0;
+        --knob-color: #ef5350;
+        --fill: 20%;
+        position: relative;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+    }
+
+    .dn-slider-wrap.is-dragging {
+        cursor: grabbing;
+    }
+
+    .dn-slider-wrap input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 40px;
+        margin: 0;
+        background: transparent;
+        position: relative;
+        z-index: 2;
+        pointer-events: none;
+        outline: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .dn-slider-wrap input[type="range"]:focus,
+    .dn-slider-wrap input[type="range"]:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .dn-slider-wrap input[type="range"]::-webkit-slider-runnable-track {
+        height: 6px;
+        border-radius: var(--r-pill);
+        background: linear-gradient(to right, var(--knob-color) var(--fill), var(--bg-2) var(--fill));
+    }
+
+    .dn-slider-wrap input[type="range"]::-moz-range-track {
+        height: 6px;
+        border-radius: var(--r-pill);
+        background: var(--bg-2);
+    }
+
+    .dn-slider-wrap input[type="range"]::-moz-range-progress {
+        height: 6px;
+        border-radius: var(--r-pill);
+        background: var(--knob-color);
+    }
+
+    .dn-slider-wrap input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 38px;
+        height: 38px;
+        margin-top: -16px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        box-shadow: none;
+        cursor: grab;
+    }
+
+    .dn-slider-wrap input[type="range"]::-moz-range-thumb {
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        box-shadow: none;
+        cursor: grab;
+    }
+
+    .dn-slider-knob {
+        position: absolute;
+        top: 50%;
+        left: var(--knob-x);
+        width: var(--knob);
+        height: var(--knob);
+        background: var(--knob-color);
+        border-radius: calc(50% - 36% * var(--heart, 0));
+        transform: translate(-50%, -50%) rotate(calc(-45deg * var(--heart, 0)));
+        transform-origin: center center;
+        pointer-events: none;
+        z-index: 3;
+        box-shadow: 0 0 4px color-mix(in srgb, var(--knob-color) 55%, transparent);
+        clip-path: none;
+        transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-radius 0.28s ease, transform 0.28s ease, box-shadow 0.2s ease;
+    }
+
+    .dn-slider-knob::before,
+    .dn-slider-knob::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: inherit;
+        pointer-events: none;
+        transition: transform 0.28s ease, top 0.28s ease, left 0.28s ease;
+    }
+
+    .dn-slider-knob::before {
+        top: calc(-50% * var(--heart, 0));
+        left: 0;
+        transform: scale(var(--heart, 0));
+    }
+
+    .dn-slider-knob::after {
+        top: 0;
+        left: calc(50% * var(--heart, 0));
+        transform: scale(var(--heart, 0));
+    }
+
+    .dn-slider-fx {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 80;
+        overflow: visible;
+    }
+
+    .dn-fx-bit {
+        --spin0: 0deg;
+        --spin1: 40deg;
+        position: absolute;
+        pointer-events: none;
+        will-change: transform, opacity;
+        animation: dn-fx-pop 1.05s cubic-bezier(0.16, 0.84, 0.32, 1) forwards;
+    }
+
+    .dn-fx-circle,
+    .dn-fx-heart {
+        display: block;
+        transform-origin: center center;
+    }
+
+    .dn-fx-circle {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--fx-color, #ef5350);
+    }
+
+    .dn-fx-heart {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        background: var(--fx-color, #ff1744);
+        border-radius: 15%;
+        transform: rotate(45deg);
+    }
+
+    .dn-fx-heart::before,
+    .dn-fx-heart::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: inherit;
+    }
+
+    .dn-fx-heart::before {
+        top: 0;
+        left: -50%;
+    }
+
+    .dn-fx-heart::after {
+        top: -50%;
+        left: 0;
+    }
+
+    @keyframes dn-fx-pop {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(0, 0) scale(0.45) rotate(var(--spin0));
+        }
+        16% {
+            opacity: 1;
+            transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.18), calc(var(--dy) * 0.18)) scale(1.18) rotate(var(--spin0));
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--ds, 0.7)) rotate(var(--spin1));
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .dn-slider-fx {
+            display: none;
+        }
+
+        .dn-slider-knob {
+            transition: none;
+        }
+    }
+
+    .dn-usd {
+        display: flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 0.45rem;
+        width: auto;
+        border: none;
+        background: transparent;
+    }
+
+    .dn-usd-prefix {
+        color: var(--text-2);
+        font-weight: 400;
+        user-select: none;
+        flex: 0 0 auto;
+    }
+
+    .dn-email {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        border-radius: var(--dn-r-in);
+        background: var(--bg-0);
+        color: var(--text-0);
+        padding: 0.85rem 1rem;
+        font: inherit;
+    }
+
+    .dn-usd input {
+        width: 5.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--dn-r-in);
+        background: var(--bg-0);
+        color: var(--text-0);
+        padding: 0.55rem 0.75rem;
+        font: inherit;
+        min-width: 0;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    .dn-usd input::-webkit-inner-spin-button,
+    .dn-usd input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .dn-field label.dn-one-time,
+    .dn-one-time {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin: 0.75rem 0 0.35rem;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 400;
+        font-size: 0.85rem;
+        color: var(--text-1);
+    }
+
+    .dn-one-time input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+    }
+
+    .dn-switch {
+        width: 34px;
+        height: 18px;
+        border-radius: 999px;
+        background: var(--bg-2);
+        border: 1px solid var(--border-color);
+        position: relative;
+        flex-shrink: 0;
+        overflow: hidden;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .dn-switch::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--text-0);
+        transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .dn-one-time input:checked + .dn-switch {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .dn-one-time input:checked + .dn-switch::after {
+        transform: translateX(16px);
+        background: #fff;
+    }
+
+    .dn-one-time input:focus-visible + .dn-switch {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    .dn-kofi-under {
+        position: relative;
+        margin: 0.55rem 0 0;
+        font-size: 0.85rem;
+        font-weight: 400;
+        color: var(--text-1);
+    }
+
+    .dn-kofi-under a {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .dn-actions {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        gap: 0.55rem;
+        margin-top: 1.25rem;
+    }
+
+    .dn-btn {
+        background: var(--primary-color);
+        color: #fff !important;
+        padding: 0.6rem 1.25rem;
+        border-radius: var(--dn-r-in);
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: filter 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
+        border: none;
+        cursor: pointer;
+        box-shadow: none;
+        text-align: center;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+
+    .dn-btn:hover {
+        filter: brightness(1.08);
+        box-shadow: none;
+    }
+
+    .dn-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        filter: none;
+    }
+
+    .dn-btn-secondary {
+        background: var(--bg-2);
+        color: var(--text-1) !important;
+        box-shadow: none;
+    }
+
+    .dn-btn-secondary:hover {
+        color: var(--text-0) !important;
+    }
+
+    .dn-error {
+        position: relative;
+        color: var(--primary-color);
+        font-size: 0.85rem;
+        margin: 0.5rem 0 0;
+    }
+
+    .dn-thanks {
+        display: none;
+        position: relative;
+        margin-bottom: 1.25rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        border-radius: var(--dn-r-in);
+        background: rgba(34, 197, 94, 0.08);
+        color: var(--text-1);
+    }
+
+    .dn-thanks.is-visible {
+        display: block;
+    }
+
+    .dn-thanks a,
+    .dn-copy a,
+    .dn-note a {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    @media (max-width: 520px) {
+        .dn-choices {
+            grid-template-columns: 1fr;
+        }
+
+        .dn-btn {
+            white-space: normal;
+        }
+    }
+</style>
+
+<div class="donate-page" id="donate-page" data-checkout-api="{{ stripe_checkout_api }}" data-view="choose">
+    <section class="dn-card" data-view-panel="choose">
+        <h2 class="dn-title">Are you already giving?</h2>
+        <div class="dn-choices">
+            <button type="button" class="dn-choice" data-show-view="support">Support</button>
+            <button type="button" class="dn-choice" data-show-view="manage">Already giving</button>
+        </div>
+    </section>
+
+    <form class="dn-card" id="donate-form" data-view-panel="support" hidden novalidate>
+        <button type="button" class="dn-back" data-show-view="choose">Back</button>
+        <p class="dn-eyebrow">Support</p>
+        <h2 class="dn-title">Donate to Alex Spaulding</h2>
+        <p class="dn-copy">Keeps Wawona in development.</p>
+
+        <div class="dn-field">
+            <label for="dn-donation-value">Amount</label>
+            <p class="dn-note" data-interval-hint>Billed every month until you cancel. $0 skips Stripe.</p>
+            <div class="dn-donation-row">
+                <div class="dn-slider-wrap" id="dn-slider-wrap" data-shape="circle">
+                    <input id="dn-donation" data-amount-range type="range" min="0" max="100" value="20" step="1"
+                        aria-label="Amount slider">
+                    <span class="dn-slider-knob" aria-hidden="true"></span>
+                </div>
+                <div class="dn-usd">
+                    <span class="dn-usd-prefix" aria-hidden="true">$</span>
+                    <input id="dn-donation-value" name="amount_usd" type="number" min="0" max="10000" value="20"
+                        step="1" inputmode="numeric" aria-label="Amount in US dollars">
+                </div>
+            </div>
+            <label class="dn-one-time">
+                <input type="checkbox" name="one_time" data-one-time-toggle role="switch" aria-checked="false">
+                <span class="dn-switch" aria-hidden="true"></span>
+                Make one-time payment
+            </label>
+            <p class="dn-kofi-under">Prefer Ko-fi? <a data-kofi-amount href="{{ kofi_url }}" target="_blank" rel="noopener noreferrer">Ko-fi</a>.</p>
+        </div>
+
+        <div class="dn-actions">
+            <button class="dn-btn" type="button" data-checkout-submit>Stripe Checkout: $20/mo</button>
+        </div>
+        <p class="dn-error" data-checkout-error hidden></p>
+    </form>
+
+    <section class="dn-card" id="manage" data-view-panel="manage" hidden>
+        <button type="button" class="dn-back" data-show-view="choose">Back</button>
+        <p class="dn-thanks" id="donate-thanks" hidden>Thanks. Stripe confirmed your payment.</p>
+        <p class="dn-eyebrow">Already giving</p>
+        <h2 class="dn-title">Manage or cancel</h2>
+        <p class="dn-copy">Change the amount, update the card, or cancel.</p>
+        <div class="dn-field">
+            <label for="dn-email">Receipt email</label>
+            <input class="dn-email" id="dn-email" name="email" type="email" autocomplete="email"
+                placeholder="The email you used at Checkout">
+        </div>
+        <div class="dn-actions">
+            <button class="dn-btn" type="button" data-portal-submit>Manage Stripe donation</button>
+        </div>
+        <p class="dn-note">Ko-fi gifts are managed on <a href="https://ko-fi.com/home/coffees" target="_blank" rel="noopener noreferrer">Ko-fi</a>.</p>
+        <p class="dn-error" data-portal-error hidden></p>
+    </section>
+</div>
+
+<script>
+    (function initDonateForm() {
+        var page = document.getElementById("donate-page");
+        var form = document.getElementById("donate-form");
+        if (!page || !form) return;
+
+        var range = form.querySelector("[data-amount-range]");
+        var amount = form.querySelector("[name=amount_usd]");
+        var oneTime = form.querySelector("[data-one-time-toggle]");
+        var hint = form.querySelector("[data-interval-hint]");
+        var stripeBtn = form.querySelector("[data-checkout-submit]");
+        var checkoutErr = form.querySelector("[data-checkout-error]");
+        var kofiLink = form.querySelector("[data-kofi-amount]");
+        var sliderWrap = document.getElementById("dn-slider-wrap");
+        var sliderKnob = sliderWrap && sliderWrap.querySelector(".dn-slider-knob");
+        var thanks = document.getElementById("donate-thanks");
+        var email = document.getElementById("dn-email");
+        var portalBtn = page.querySelector("[data-portal-submit]");
+        var portalErr = page.querySelector("[data-portal-error]");
+        var lastThanksUsd = NaN;
+        var lastThanksAt = 0;
+        var fxLayer = null;
+        var knobDragging = false;
+
+        function showView(name, syncHash) {
+            if (name !== "support" && name !== "manage") name = "choose";
+            page.setAttribute("data-view", name);
+            page.querySelectorAll("[data-view-panel]").forEach(function (el) {
+                el.hidden = el.getAttribute("data-view-panel") !== name;
+            });
+            if (syncHash === false) return;
+            var next = window.location.pathname + (window.location.search || "");
+            if (name === "manage" || name === "support") next += "#" + name;
+            if (history.replaceState) history.replaceState(null, "", next);
+        }
+
+        function viewFromLocation() {
+            var hash = (window.location.hash || "").replace(/^#/, "");
+            if (hash === "manage" || hash === "support") return hash;
+            return "choose";
+        }
+
+        page.querySelectorAll("[data-show-view]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                showView(btn.getAttribute("data-show-view"), true);
+            });
+        });
+        window.addEventListener("hashchange", function () {
+            showView(viewFromLocation(), false);
+        });
+
+        function checkoutApi() {
+            var raw = (page.getAttribute("data-checkout-api") || "").trim().replace(/\/$/, "");
+            if (raw) return raw;
+            var origin = window.location.origin || "";
+            if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
+                return "http://127.0.0.1:4242";
+            }
+            return "";
+        }
+
+        function interval() {
+            return (oneTime && oneTime.checked) ? "one_time" : "month";
+        }
+
+        function donationUsd() {
+            var usd = parseInt(amount && amount.value, 10);
+            if (Number.isNaN(usd) || usd < 0) return 0;
+            return usd;
+        }
+
+        function mixChannel(a, b, t) {
+            return Math.round(a + (b - a) * t);
+        }
+
+        function knobColor(t) {
+            return "rgb(" + mixChannel(239, 255, t) + "," + mixChannel(83, 23, t) + "," + mixChannel(80, 68, t) + ")";
+        }
+
+        function heartAmount(usd) {
+            var cap = Math.min(Math.max(usd, 0), 100);
+            if (cap <= 28) return 0;
+            if (cap >= 50) return 1;
+            return (cap - 28) / 22;
+        }
+
+        function ensureFxLayer() {
+            if (fxLayer && fxLayer.isConnected) return fxLayer;
+            fxLayer = document.createElement("div");
+            fxLayer.className = "dn-slider-fx";
+            fxLayer.setAttribute("aria-hidden", "true");
+            document.body.appendChild(fxLayer);
+            return fxLayer;
+        }
+
+        function sliderBounds() {
+            var max = parseInt((range && range.max) || "100", 10);
+            var min = parseInt((range && range.min) || "0", 10);
+            return { min: min, max: max };
+        }
+
+        function usdFromClientX(clientX) {
+            var bounds = sliderBounds();
+            var rect = range.getBoundingClientRect();
+            var pct = (clientX - rect.left) / (rect.width || 1);
+            pct = Math.min(1, Math.max(0, pct));
+            return Math.round(bounds.min + pct * (bounds.max - bounds.min));
+        }
+
+        function applySliderUsd(usd, fromPointer) {
+            if (!range || !amount) return;
+            var bounds = sliderBounds();
+            usd = Math.min(bounds.max, Math.max(bounds.min, usd));
+            range.value = String(usd);
+            amount.value = String(usd);
+            sync(true);
+        }
+
+        function updateSliderKnob() {
+            if (!sliderWrap || !range) return;
+            var usd = donationUsd();
+            var cap = Math.min(usd, 100);
+            var sizeT = cap / 100;
+            var heart = heartAmount(cap);
+            var knobPx = 18 + 26 * sizeT;
+            sliderWrap.setAttribute("data-shape", heart >= 1 ? "heart" : "circle");
+            sliderWrap.style.setProperty("--heart", heart.toFixed(3));
+            sliderWrap.style.setProperty("--knob", knobPx + "px");
+            sliderWrap.style.setProperty("--knob-color", knobColor(sizeT));
+            var bounds = sliderBounds();
+            var pct = (parseInt(range.value, 10) - bounds.min) / (bounds.max - bounds.min || 1);
+            sliderWrap.style.setProperty("--fill", (pct * 100).toFixed(2) + "%");
+            var wrapRect = sliderWrap.getBoundingClientRect();
+            var rangeRect = range.getBoundingClientRect();
+            var travel = Math.max(0, rangeRect.width - knobPx);
+            var x = (rangeRect.left - wrapRect.left) + pct * travel + knobPx / 2;
+            sliderWrap.style.setProperty("--knob-x", x + "px");
+        }
+
+        function spawnThanks(fromUsd, toUsd) {
+            if (toUsd <= fromUsd) return;
+            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            if (!sliderKnob) return;
+            var now = Date.now();
+            if (now - lastThanksAt < 70) return;
+            lastThanksAt = now;
+            var layer = ensureFxLayer();
+            var box = sliderKnob.getBoundingClientRect();
+            var x = box.left + box.width / 2;
+            var y = box.top + box.height / 2;
+            var delta = toUsd - fromUsd;
+            var kind = toUsd >= 50 ? "heart" : "circle";
+            var count = kind === "heart"
+                ? Math.min(5, 2 + Math.floor(delta * 0.35))
+                : Math.min(2, 1 + Math.floor(delta * 0.15));
+            var color = sliderWrap && sliderWrap.style.getPropertyValue("--knob-color") || "#ef5350";
+            for (var i = 0; i < count; i += 1) {
+                var bit = document.createElement("span");
+                bit.className = "dn-fx-bit";
+                var angle = (-98 + ((i + 0.5) / count) * 36 + (Math.random() - 0.5) * 14) * Math.PI / 180;
+                var lift = 4 + box.width * 0.08;
+                bit.style.left = (x + Math.cos(angle) * lift) + "px";
+                bit.style.top = (y + Math.sin(angle) * lift) + "px";
+                var dist = 22 + i * 4 + Math.random() * 12;
+                var turn = Math.random() < 0.5 ? -1 : 1;
+                bit.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+                bit.style.setProperty("--dy", (Math.sin(angle) * dist - 18) + "px");
+                bit.style.setProperty("--ds", (0.55 + Math.random() * 0.2).toFixed(2));
+                bit.style.setProperty("--spin0", "0deg");
+                bit.style.setProperty("--spin1", (turn * 12).toFixed(1) + "deg");
+                bit.style.setProperty("--fx-color", color);
+                bit.style.animationDuration = (0.7 + Math.random() * 0.2) + "s";
+                var inner = document.createElement("span");
+                inner.className = "dn-fx-" + kind;
+                bit.appendChild(inner);
+                layer.appendChild(bit);
+                bit.addEventListener("animationend", function (event) {
+                    var node = event.currentTarget;
+                    if (node && node.parentNode) node.parentNode.removeChild(node);
+                });
+            }
+        }
+
+        function showError(node, message) {
+            if (!node) return;
+            node.hidden = !message;
+            node.textContent = message || "";
+        }
+
+        function storedCustomer() {
+            try {
+                return (localStorage.getItem("wawonaStripeCustomer") || "").trim();
+            } catch (ignore) {
+                return "";
+            }
+        }
+
+        function storeCustomer(id) {
+            if (!id) return;
+            try {
+                localStorage.setItem("wawonaStripeCustomer", id);
+            } catch (ignore) { /* ignore */ }
+        }
+
+        function rememberSession(sessionId) {
+            var api = checkoutApi();
+            if (!api || !sessionId) return;
+            fetch(api + "/checkout-session?session_id=" + encodeURIComponent(sessionId))
+                .then(function (response) { return response.json(); })
+                .then(function (body) {
+                    if (body && body.customer) storeCustomer(body.customer);
+                })
+                .catch(function () { /* ignore */ });
+        }
+
+        function syncLabel() {
+            var usd = donationUsd();
+            var monthly = interval() === "month";
+            if (oneTime) oneTime.setAttribute("aria-checked", oneTime.checked ? "true" : "false");
+            if (hint) {
+                hint.textContent = usd === 0
+                    ? "No charge. Move the slider to $1 or more for Stripe."
+                    : (monthly
+                        ? "Billed every month until you cancel."
+                        : "One-time payment: you will not be billed again.");
+            }
+            if (stripeBtn) {
+                stripeBtn.disabled = usd < 1;
+                stripeBtn.textContent = usd < 1
+                    ? "Stripe Checkout (enter $1+)"
+                    : (monthly
+                        ? ("Stripe Checkout: $" + usd + "/mo")
+                        : ("Stripe Checkout: $" + usd));
+            }
+            if (kofiLink) {
+                kofiLink.textContent = usd > 0 ? ("Ko-fi: $" + usd) : "Ko-fi";
+            }
+        }
+
+        function sync(fromRange) {
+            if (!range || !amount) return;
+            var prev = lastThanksUsd;
+            if (fromRange) {
+                amount.value = range.value;
+            } else {
+                var value = parseInt(amount.value, 10);
+                if (Number.isNaN(value)) return;
+                var max = parseInt(range.max || "100", 10);
+                range.value = String(Math.min(Math.max(value, 0), max));
+            }
+            syncLabel();
+            updateSliderKnob();
+            var next = donationUsd();
+            if (!Number.isNaN(prev)) spawnThanks(prev, next);
+            lastThanksUsd = next;
+        }
+
+        var donated = false;
+        try {
+            donated = /(?:^|[?&])donated=1(?:&|$)/.test(window.location.search || "");
+        } catch (ignore) { /* ignore */ }
+        if (donated) {
+            if (thanks) {
+                thanks.hidden = false;
+                thanks.classList.add("is-visible");
+            }
+            var sessionMatch = /(?:^|[?&])session_id=([^&]+)/.exec(window.location.search || "");
+            if (sessionMatch) rememberSession(decodeURIComponent(sessionMatch[1]));
+            showView("manage", true);
+        } else {
+            showView(viewFromLocation(), false);
+        }
+
+        if (range) range.addEventListener("input", function () { sync(true); });
+        if (amount) amount.addEventListener("input", function () { sync(false); });
+        if (oneTime) oneTime.addEventListener("change", syncLabel);
+        lastThanksUsd = donationUsd();
+        syncLabel();
+        updateSliderKnob();
+        window.addEventListener("resize", updateSliderKnob);
+
+        if (sliderWrap && range) {
+            var dragging = false;
+            sliderWrap.addEventListener("pointerdown", function (event) {
+                if (event.button !== 0 && event.pointerType === "mouse") return;
+                dragging = true;
+                knobDragging = true;
+                sliderWrap.classList.add("is-dragging");
+                sliderWrap.setPointerCapture(event.pointerId);
+                applySliderUsd(usdFromClientX(event.clientX), true);
+                event.preventDefault();
+            });
+            sliderWrap.addEventListener("pointermove", function (event) {
+                if (!dragging) return;
+                applySliderUsd(usdFromClientX(event.clientX), false);
+            });
+            function endDrag(event) {
+                if (!dragging) return;
+                dragging = false;
+                knobDragging = false;
+                sliderWrap.classList.remove("is-dragging");
+                if (event && sliderWrap.hasPointerCapture(event.pointerId)) {
+                    sliderWrap.releasePointerCapture(event.pointerId);
+                }
+                updateSliderKnob();
+            }
+            sliderWrap.addEventListener("pointerup", endDrag);
+            sliderWrap.addEventListener("pointercancel", endDrag);
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (stripeBtn) stripeBtn.click();
+        });
+
+        if (stripeBtn) {
+            stripeBtn.addEventListener("click", function () {
+                showError(checkoutErr, "");
+                var api = checkoutApi();
+                var usd = donationUsd();
+                if (usd < 1) {
+                    showError(checkoutErr, "Enter at least $1 to use Stripe Checkout, or use Ko-fi.");
+                    return;
+                }
+                if (!api) {
+                    showError(checkoutErr, "Stripe Checkout is not configured. Use Ko-fi, or set STRIPE_CHECKOUT_API.");
+                    return;
+                }
+                stripeBtn.disabled = true;
+                fetch(api + "/create-checkout-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount_usd: usd,
+                        interval: interval(),
+                        site_url: window.location.origin,
+                        source: "donate",
+                        success_url: window.location.origin + "/donate/thanks/?from=donate&session_id={CHECKOUT_SESSION_ID}",
+                        cancel_url: window.location.origin + "/donate/?donated=0"
+                    })
+                }).then(function (response) {
+                    return response.json().then(function (body) {
+                        return { ok: response.ok, body: body };
+                    });
+                }).then(function (result) {
+                    if (result.body && result.body.url) {
+                        window.location.href = result.body.url;
+                        return;
+                    }
+                    showError(checkoutErr, (result.body && (result.body.detail || result.body.error)) ||
+                        "Checkout is unavailable. Use Ko-fi, or start the local Stripe API.");
+                }).catch(function () {
+                    showError(checkoutErr, "Could not reach the Stripe Checkout API at " + api +
+                        ". Run the local Stripe API, or use Ko-fi.");
+                }).finally(function () {
+                    syncLabel();
+                });
+            });
+        }
+
+        if (portalBtn) {
+            portalBtn.addEventListener("click", function () {
+                showError(portalErr, "");
+                var api = checkoutApi();
+                if (!api) {
+                    showError(portalErr, "Stripe is not configured. Manage Ko-fi at aspauldingcode, or set STRIPE_CHECKOUT_API.");
+                    return;
+                }
+                var payload = {
+                    site_url: window.location.origin,
+                    customer: storedCustomer() || undefined,
+                    email: (email && email.value || "").trim() || undefined
+                };
+                if (!payload.customer && !payload.email) {
+                    showError(portalErr, "Enter the email from your Stripe receipt, or donate first so we can open the portal.");
+                    return;
+                }
+                portalBtn.disabled = true;
+                fetch(api + "/create-portal-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(function (response) {
+                    return response.json().then(function (body) {
+                        return { ok: response.ok, body: body };
+                    });
+                }).then(function (result) {
+                    if (result.body && result.body.customer) storeCustomer(result.body.customer);
+                    if (result.body && result.body.url) {
+                        window.location.href = result.body.url;
+                        return;
+                    }
+                    showError(portalErr, (result.body && (result.body.detail || result.body.error)) ||
+                        "Could not open the Stripe portal. Check the email, or use Ko-fi.");
+                }).catch(function () {
+                    showError(portalErr, "Could not reach the Stripe API at " + api + ".");
+                }).finally(function () {
+                    portalBtn.disabled = false;
+                });
+            });
+        }
+    })();
+</script>

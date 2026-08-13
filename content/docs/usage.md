@@ -1,130 +1,42 @@
 +++
-title = "Usage Guide"
-date = 2026-02-22
+title = "Usage"
+description = "Nested Weston and Niri, bundled clients, Multi-Touch."
 weight = 3
+date = 2026-08-13
+
+[extra]
+section = "user"
 +++
 
-# Usage Guide
+Use [Machines](/docs/machines/) to start a session. CLI toggles are not the product path.
 
-How to run Wayland apps with Wawona — locally and remotely.
+## Nested compositors
 
----
+Weston and Niri both ship on every product target (macOS, iOS family, Android). They are real compositors, not stubs.
 
-## Native Weston on macOS
+Pick **Display Backend** `auto` / `wayland` / `drm` in Settings or on the machine.
 
-Wawona includes a **native port of Weston** for macOS. No Linux, no VM — Weston runs as a nested compositor client inside Wawona.
+## Bundled clients
 
-### Weston (Full Compositor)
+Typical catalog: Weston terminal, foot, cubes, zsh. A ported client must match the same upstream client streamed over waypipe. See [Porting](/docs/porting/).
 
-```bash
-nix run .#weston
-```
+## Multi-Touch
 
-Launches the full Weston compositor as a nested client inside Wawona's Wayland session.
+Wayland clients (Weston panel, nested compositors, terminals) need **direct touch**.
 
-### Weston Terminal
+- iOS / iPadOS / visionOS: Settings → Touch Input Type = Multi-Touch (not Touchpad).
+- Android: Touchpad Mode Off.
 
-```bash
-nix run .#weston-terminal
-```
+`click` with a virtual pointer often no-ops even when the tool reports success.
 
-Launches Weston Terminal — a native Wayland terminal client connected to Wawona's display.
-
-### Other Weston Clients
+## Linux host
 
 ```bash
-nix run .#weston-debug         # Weston debug client
-nix run .#weston-simple-shm    # Simple SHM test client
+nix run .#wawona-linux
 ```
 
-### Enable Bundled Clients From Settings
+GTK UI. The compositor is the same Rust core.
 
-You can also enable Weston and other bundled clients to **auto-launch** when Wawona starts — no terminal needed:
+## Local Wayland socket (macOS)
 
-1. Open **Wawona** → **Settings** → **Advanced**
-2. Toggle on any combination:
-   - **Enable Native Weston** — starts the full Weston nested compositor
-   - **Enable Weston Terminal** — starts a weston-terminal client
-   - **Enable Weston Simple SHM** — starts the simple SHM test client
-
-This works on **macOS, iOS, and Android** — useful when you don't have terminal access (mobile) or want clients to start automatically.
-
----
-
-## Connecting Wayland Clients Locally
-
-When Wawona is running, any Wayland client can connect via the Wayland socket.
-
-### Set Up Your Shell
-
-```bash
-export XDG_RUNTIME_DIR="/tmp/wawona-$(id -u)"
-export WAYLAND_DISPLAY="wayland-0"
-```
-
-You can also find these values in **Settings → Connection** inside the Wawona app.
-
-### Run a Client
-
-```bash
-# With the exports above, run any Wayland client:
-nix run .#weston-terminal
-nix run .#foot
-```
-
----
-
-## Waypipe: Remote Wayland Apps
-
-Waypipe forwards Wayland applications over SSH. Run apps on a remote machine and display them on your device.
-
-### Quick Start (macOS)
-
-1. Make sure Wawona is running
-2. Set up your shell (see above)
-3. Run waypipe:
-
-```bash
-nix run .#waypipe -- ssh user@remote-host weston-terminal
-```
-
-### Quick Start (iOS / Android)
-
-1. Open **Wawona** → **Settings** → **Waypipe**
-2. Set **SSH Host**, **SSH User**, **SSH Password**
-3. Set **Remote Command** (e.g., `nix run ~/Wawona#weston-terminal`)
-4. Tap **Start Waypipe**
-
-### Remote Command Examples
-
-| Command | Description |
-|---------|-------------|
-| `nix run ~/Wawona#weston-terminal` | Weston Terminal (if Wawona repo on remote) |
-| `weston-terminal` | Weston Terminal (if installed on remote) |
-| `foot` | Foot terminal |
-| `nix run ~/Wawona#weston` | Full Weston compositor |
-| `gnome-calculator` | GNOME Calculator |
-
-### Prepare a Remote Mac
-
-If your remote host is a Mac:
-
-```bash
-bash scripts/prepare_mac_remote.sh
-```
-
-This verifies Remote Login (SSH) is enabled, Waypipe is available, and Weston Terminal is buildable.
-
-For detailed waypipe configuration, see [Waypipe Guide](/docs/waypipe/).
-
----
-
-## Platform Notes
-
-| Platform | Local Weston | Waypipe Transport |
-|----------|-------------|-------------------|
-| **macOS** | `nix run .#weston`, `.#weston-terminal` | OpenSSH (process spawn) |
-| **iOS** | Via Settings → Advanced toggles | libssh2 (in-process) |
-| **Android** | Via Settings → Advanced toggles | Dropbear SSH (fork/exec) |
-
-On iOS and Android, enable **Native Weston** and **Weston Terminal** in **Settings → Advanced** to auto-launch on app start.
+Settings → Connection shows `XDG_RUNTIME_DIR` and `WAYLAND_DISPLAY`. Point a local client at that socket while Wawona is running.

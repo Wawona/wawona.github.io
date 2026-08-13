@@ -1,0 +1,39 @@
++++
+title = "Platforms"
+description = "Four gate states: available, planned, blocked, forbidden."
+weight = 5
+date = 2026-08-13
+
+[extra]
+section = "user"
++++
+
+Never say "unsupported". Each cell is one of four states.
+
+| Mark | State | Meaning |
+|------|--------|---------|
+| available | Shipping | Keep it green |
+| planned | Platform allows it; our work is unfinished | Finish it |
+| blocked | We want it; no public API | Re-check SDKs; no private API |
+| forbidden | Product or store policy | Never enable |
+
+## Capability matrix
+
+| Capability | macOS | Android | iPadOS | visionOS | iOS | tvOS | watchOS |
+|---|---|---|---|---|---|---|---|
+| Native machines | available | available | available | available | available | available | available |
+| Remote (SSH/waypipe) | available | available | available | available | available | available | available |
+| VM / containers | available | available | available | available | available | forbidden | forbidden |
+| Multi-window | available | if OS allows | required | required | single primary | forbidden | forbidden |
+| Nested Weston + Niri | available | available | available | available | available | available (non-GL fallback) | available (non-GL fallback) |
+| Vulkan / GLES | available | available | available | available | available | planned | blocked |
+| Desktop + LockScreen | available | available | forbidden | forbidden | forbidden | forbidden | forbidden |
+
+## Notes
+
+- **watchOS GPU** is blocked: no `Metal.framework`, `CAMetalLayer` unavailable. SHM/CPU present path.
+- **tvOS GPU** is planned: the SDK has Metal and OpenGLES. Work is unfinished (`WWN_TVOS_GPU`).
+- **visionOS** matches macOS product parity for bundled clients, VMs, and Machines UX.
+- **macOS** is never limited by App Store feature rules.
+
+More: [macOS](/docs/macos/), [Android](/docs/android/).

@@ -2,33 +2,40 @@
 {% import "macros/image.html" as img %}
 {% macro home_page(section) %}
 
-<!-- HERO (Cinematic WebGL) -->
+<!-- HERO -->
 <section class="lp-hero" id="hero-section">
-    <div class="lp-hero-content" id="hero-content">
-        <div class="lp-badge lp-hero-anim">Free &amp; Open Source &middot; MIT License &middot; v0.2</div>
+    <div class="lp-hero-inner">
+        <p class="lp-hero-kicker lp-hero-anim">
+            {# Keep in sync with Wawona/VERSION until this reads GitHub latest-release. #}
+            <a id="lpHeroVersion" href="https://github.com/Wawona/Wawona/releases/latest" target="_blank" rel="noopener">v26.8.12</a>
+            <span>Open source</span>
+            <span>MIT License</span>
+        </p>
         <h1 class="lp-hero-title lp-hero-anim">
-            The Wayland compositor<br>
-            <span class="lp-gradient-text">for every platform.</span>
+            Run any desktop software,<br>
+            <span class="lp-hero-accent">on any platform.</span>
         </h1>
         <p class="lp-hero-sub lp-hero-anim">
-            Wawona is a native, high-performance Wayland compositor for macOS, iOS, and Android.
-            Built on a shared Rust core with direct Metal and Vulkan rendering —
-            zero-copy, bare-metal speed, no VMs.
+            A native Wayland compositor for macOS, Android, and the iOS family.
         </p>
         <div class="lp-hero-actions lp-hero-anim">
-            <a href="/docs/getting-started/" class="lp-btn lp-btn-primary">Get Started <svg width="16" height="16"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                </svg></a>
-            <a href="https://github.com/Wawona/Wawona" target="_blank" rel="noopener"
-                class="lp-btn lp-btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg> View Source</a>
+            <a href="/docs/getting-started/" class="lp-btn lp-btn-primary">Get started</a>
+            <a href="/download/" class="lp-btn lp-btn-ghost">Download</a>
         </div>
+        <p class="lp-hero-links lp-hero-anim">
+            <a href="https://github.com/Wawona/Wawona" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.gg/wHVSV52uw5" target="_blank" rel="noopener">Discord</a>
+        </p>
+        <ul class="lp-hero-platforms" aria-label="Supported platforms">
+            <li>macOS</li>
+            <li>Android</li>
+            <li>iOS</li>
+            <li>iPadOS</li>
+            <li>watchOS</li>
+            <li>tvOS</li>
+            <li>visionOS</li>
+        </ul>
     </div>
-    <!-- Subtle bouncing scroll hint — fades on first scroll via JS -->
     <div class="lp-scroll-hint" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -41,65 +48,42 @@
 <section class="lp-section lp-platforms-strip lp-reveal">
     <div class="lp-platforms-label">
         <blockquote class="lp-platforms-quote">
-            <span class="lp-quote-mark lp-quote-open">“</span><span class="lp-quote-body">Build Bridges &mdash; Not
+            <span class="lp-quote-mark lp-quote-open">“</span><span class="lp-quote-body">Build Bridges, Not
                 Walls.</span><span class="lp-quote-mark lp-quote-close">”</span>
         </blockquote>
-        <p class="lp-quote-credit">&mdash; Alex Spaulding, 2025</p>
-    </div>
-    <div class="lp-platforms">
-        <div class="lp-platform" data-mouse-track="8">
-            <span class="lp-platform-name">macOS</span>
-            <div class="lp-platform-techs">
-                <span>Metal</span><span>AppKit</span><span>ObjC</span>
-            </div>
-        </div>
-        <div class="lp-platform-divider"></div>
-        <div class="lp-platform" data-mouse-track="8">
-            <span class="lp-platform-name">iOS</span>
-            <div class="lp-platform-techs">
-                <span>Metal</span><span>UIKit</span><span>ObjC</span>
-            </div>
-        </div>
-        <div class="lp-platform-divider"></div>
-        <div class="lp-platform" data-mouse-track="8">
-            <span class="lp-platform-name">Android</span>
-            <div class="lp-platform-techs">
-                <span>Vulkan</span><span>JNI</span><span>Kotlin</span>
-            </div>
-        </div>
+        <p class="lp-quote-credit">Alex Spaulding, 2025</p>
     </div>
 </section>
 
 <!-- SHOWCASE -->
 <section class="lp-section lp-showcase-wrap lp-reveal" data-parallax="0.1">
     <div class="container">
-        <div class="lp-showcase-frame" data-mouse-track="6">
+        <div class="lp-showcase-frame">
             <div class="lp-showcase-bar"><span class="lp-dot-r"></span><span class="lp-dot-y"></span><span
-                    class="lp-dot-g"></span><span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma &mdash;
-                    Nested in Wawona</span></div>
+                    class="lp-dot-g"></span><span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma nested in Wawona</span></div>
             <div class="lp-showcase-track" id="showcaseTrack">
-                <div class="lp-showcase-slide active" data-title="KDE Plasma &mdash; Nested in Wawona">
+                <div class="lp-showcase-slide active" data-title="KDE Plasma nested in Wawona">
                     <div class="lp-showcase-img-container">
                         {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_plasma.png", alt="KDE
                         Plasma
                         nested in Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="XFCE Desktop &mdash; Composited on macOS">
+                <div class="lp-showcase-slide" data-title="XFCE desktop on macOS">
                     <div class="lp-showcase-img-container">
                         {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_xfce.png", alt="XFCE
                         nested in
                         Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="COSMIC Desktop &mdash; Running in Wawona">
+                <div class="lp-showcase-slide" data-title="COSMIC desktop in Wawona">
                     <div class="lp-showcase-img-container">
                         {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_cosmic.png", alt="COSMIC
                         nested in
                         Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="Native Wayland Compositing on macOS">
+                <div class="lp-showcase-slide" data-title="Wayland compositing on macOS">
                     <div class="lp-showcase-img-container">
                         {{ img::optimized_image(path="images/wawona-screenshots/wawona-screenshot-1.png", alt="Wawona
                         native
@@ -117,8 +101,8 @@
     </div>
 </section>
 
-<!-- VALUE PROPS — 3 pillars -->
-<section class="lp-section">
+<!-- VALUE PROPS -->
+<section class="lp-section lp-points-section">
     <div class="lp-section-inner">
         <div class="lp-section-header lp-reveal">
             <div class="lp-bd-logo-wrap">
@@ -127,222 +111,85 @@
                 <img src="/images/logo/Wawona-iOS-Dark-1024x1024@1x.png" alt="Wawona"
                     class="lp-bd-logo lp-bd-logo-dark" />
             </div>
-            <h2 class="lp-bd-title">Built Different.</h2>
-            <p>Not a VM. Not a compatibility layer. A real compositor.</p>
+            <h2 class="lp-bd-title">A real compositor.</h2>
+            <p>Bundled ports are native. A VM, a container, or SSH plus waypipe is there when you want another machine.</p>
         </div>
-        <div class="lp-pillars lp-reveal">
-            <div class="lp-pillar" data-mouse-track="5">
-                <div class="lp-pillar-glow"></div>
-                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg></div>
-                <h3>100% Free &amp; Open Source</h3>
-                <p>Wawona is and always will be <strong>free software</strong> under the MIT License. No paywalls, no
-                    telemetry, no vendor lock-in. Audit the code, fork it, contribute — it belongs to the community.</p>
-            </div>
-            <div class="lp-pillar" data-mouse-track="5">
-                <div class="lp-pillar-glow"></div>
-                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5">
-                        <rect x="2" y="3" width="20" height="14" rx="2" />
-                        <line x1="8" x2="16" y1="21" y2="21" />
-                        <line x1="12" x2="12" y1="17" y2="21" />
-                    </svg></div>
-                <h3>App Store Compliant</h3>
-                <p>Designed from day one to meet Apple and Google app review guidelines. <strong>Available to
-                        everyone</strong> — download from the App Store or Play Store. No sideloading, no jailbreak
-                    required.</p>
-            </div>
-            <div class="lp-pillar" data-mouse-track="5">
-                <div class="lp-pillar-glow"></div>
-                <div class="lp-pillar-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 3v3" />
-                        <path d="m18.36 5.64-2.12 2.12" />
-                        <path d="M21 12h-3" />
-                        <path d="m18.36 18.36-2.12-2.12" />
-                        <path d="M12 21v-3" />
-                        <path d="m5.64 18.36 2.12-2.12" />
-                        <path d="M3 12h3" />
-                        <path d="m5.64 5.64 2.12 2.12" />
-                    </svg></div>
-                <h3>Extensible</h3>
-                <p>Port any Linux application to macOS and utilize Wayland directly on the same computer. Wawona will
-                    support <strong>user plugins</strong> for extending functionality far beyond the barebones
-                    compositor.
-                </p>
-            </div>
+        <div class="lp-points lp-reveal">
+            <p><strong>Free and open source.</strong> MIT-licensed. No paywall, no telemetry. Read the code, fork it, send a patch.</p>
+            <p><strong>Store or sideload.</strong> Apple mobile and Play builds are meant to pass review. They do not require a jailbreak. Sideload the IPA, APK, or dmg if you want. Desktop and Lock Screen replacement is macOS and Android only. macOS Mode B needs SIP off or partial. Android uses anowaW (rootless or Shizuku). Never on iOS, iPadOS, tvOS, watchOS, or visionOS.</p>
+            <p><strong>Native, guest, or remote.</strong> Weston, Niri, and the catalog run as native ports. You can also start a VM, a container, or a remote Linux box over SSH and waypipe. The compositor draws the clients either way.</p>
         </div>
     </div>
 </section>
 
-<!-- FEATURES (Horizontal Scrollytelling) -->
-<section class="lp-features-scroll-wrapper" id="features-scroll-wrapper">
-    <div class="lp-features-sticky">
-        <div class="lp-section-header lp-features-header">
-            <div class="lp-arch-tag">CORE SYSTEMS</div>
-            <h2 class="lp-arch-title">The <span class="lp-gradient-text">Architecture</span></h2>
-            <div class="lp-arch-subtitle">
-                <div class="lp-arch-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid">
-                        <rect width="18" height="18" x="3" y="3" rx="2" />
-                        <path d="M3 9h18" />
-                        <path d="M3 15h18" />
-                        <path d="M9 9v6" />
-                        <path d="M15 3v6" />
-                        <path d="M15 15v6" />
-                    </svg>
-                </div>
-                <p>Deconstructing the next-generation compositor.</p>
-            </div>
+<!-- INSIDE: how the compositor is put together (vertical, no sideways scroll) -->
+<section class="lp-inside" id="inside">
+    <div class="lp-inside-inner">
+        <header class="lp-inside-header">
+            <div class="lp-arch-tag">Inside Wawona</div>
+            <h2 class="lp-arch-title">How it <span class="lp-gradient-text">works</span></h2>
+            <p class="lp-inside-lead">How the compositor is put together.</p>
+        </header>
+
+        <ol class="lp-stack" aria-label="Wawona stack">
+            <li class="lp-stack-layer">
+                <span class="lp-stack-kicker">Host UI</span>
+                <strong>AppKit, UIKit, WatchKit, Compose, GTK</strong>
+                <span class="lp-stack-note">Native chrome. One window or scene per client where the OS allows it.</span>
+            </li>
+            <li class="lp-stack-layer">
+                <span class="lp-stack-kicker">Rust core</span>
+                <strong>Wayland compositor</strong>
+                <span class="lp-stack-note">Seats, surfaces, protocols. Swift, ObjC, JNI, and GTK call the same core.</span>
+            </li>
+            <li class="lp-stack-layer">
+                <span class="lp-stack-kicker"><a class="lp-iland-link" href="https://github.com/Wawona/wwn-iland" target="_blank" rel="noopener">wwn-iland</a></span>
+                <strong>Userspace DRM / KMS / GBM</strong>
+                <span class="lp-stack-note">IOSurface + Metal on Apple. AHardwareBuffer on Android. No kernel DRM.</span>
+            </li>
+            <li class="lp-stack-layer">
+                <span class="lp-stack-kicker">Clients</span>
+                <strong>Weston, Niri, ports, waypipe</strong>
+                <span class="lp-stack-note">Native, container, or remote. Same protocols as Linux.</span>
+            </li>
+        </ol>
+
+        <div class="lp-inside-grid">
+            <article class="lp-inside-card">
+                <h3>One Rust core</h3>
+                <p>The compositor lives in Rust. Hosts do not get a second compositor. Swift, Objective-C, Kotlin/JNI, and GTK call the same core. UniFFI still exists in <code>src/ffi</code>. It is not the only bridge.</p>
+            </article>
+            <article class="lp-inside-card">
+                <h3>Real host windows</h3>
+                <p>Each Wayland client is a host window or scene, not a fake desktop in one framebuffer. macOS keeps AppKit chrome. iPadOS and visionOS open one scene per client. Phone, tvOS, and Android fill the primary surface. watchOS runs one client.</p>
+            </article>
+            <article class="lp-inside-card">
+                <h3>Userspace KMS</h3>
+                <p><a class="lp-iland-link" href="https://github.com/Wawona/wwn-iland" target="_blank" rel="noopener"><code>wwn-iland</code></a> emulates DRM, KMS, and GBM in userspace. Mode A is the store path: static, in-window. Mode B is macOS desktop replacement only, and only when SIP allows it. Drivers stay userland: MoltenVK, KosmicKrisp, ANGLE, SwiftShader.</p>
+            </article>
+            <article class="lp-inside-card">
+                <h3>Three ways to run it</h3>
+                <p>Native port, container, or a VM / remote over waypipe. Weston and Niri ship on every target. Machines picks the display backend: auto, Wayland, or DRM. No environment variables.</p>
+            </article>
         </div>
-        <div class="lp-features-track" id="features-track">
-
-            <div class="lp-feature-card">
-                <div class="lp-feature-text">
-                    <h3>Shared Rust Core</h3>
-                    <p>Wawona relies on a unified, high-performance compositor core written in 100% safe, concurrent
-                        Rust. This monolithic library securely orchestrates input seat management and surface rendering
-                        identically across all host environments.</p>
-                </div>
-                <div class="lp-feature-visual lp-mermaid-visual">
-                    <pre><code data-lang="mermaid">flowchart LR
-    macOS["macOS\nAppKit + Metal"] -->|UniFFI| core
-    iOS["iOS\nUIKit + Metal"] -->|UniFFI| core
-    Android["Android\nVulkan + JNI"] -->|FFI/JNI| core
-    core(["Wawona Core\nRust"])
-    core -->|Wayland| linux["Linux\nWayland Clients"]</code></pre>
-                </div>
-            </div>
-
-            <div class="lp-feature-card">
-                <div class="lp-feature-text">
-                    <h3>Native Window Promotion</h3>
-                    <p>Instead of drawing desktops into a single monolithic window, Wayland surfaces are mapped directly
-                        to native OS window primitives. A platform layer translates Wawona logical windows into real
-                        NSWindow or Activity objects.</p>
-                </div>
-                <div class="lp-feature-visual">
-                    <div class="lp-code-block"><span class="lp-code-comment">// Wayland surface &rarr; native OS
-                            window</span><br><span class="lp-code-kw">let</span> surface = compositor.<span
-                            class="lp-code-fn">create_surface</span>();<br><span class="lp-code-kw">let</span> window =
-                        platform.<span class="lp-code-fn">promote_to_native</span>(surface);<br>window.<span
-                            class="lp-code-fn">activate_and_show</span>();</div>
-                </div>
-            </div>
-
-            <div class="lp-feature-card">
-                <div class="lp-feature-text">
-                    <h3>Zero-Copy Pipelines</h3>
-                    <p>Client buffers (like IOSurface or dmabufs) are mapped directly to GPU textures in our native
-                        Metal and Vulkan rendering backends. Frame delivery achieves near-instant presentation with zero
-                        intermediate copies. We also include userland drivers such as kosmickrisp, moltenvk, angle, and
-                        the like for creating accelerated rendering.</p>
-                </div>
-                <div class="lp-feature-visual">
-                    <div class="lp-drivers-visual">
-                        <div class="lp-drivers-label">USERLAND STACK</div>
-                        <div class="lp-drivers-grid">
-                            <div class="lp-driver-card">KosmicKrisp</div>
-                            <div class="lp-driver-card">MoltenVK</div>
-                            <div class="lp-driver-card">ANGLE</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lp-feature-card">
-                <div class="lp-feature-text">
-                    <h3>FFI &amp; Remote Bridging</h3>
-                    <p>The Rust core connects to platform-native languages (Swift, Kotlin) via UniFFI and C bindings.
-                        Additionally, native Waypipe integration allows remote Linux X11/Wayland applications to
-                        seamlessly render locally.</p>
-                </div>
-                <div class="lp-feature-visual">
-                    <div class="lp-code-block"><span class="lp-code-comment">// SSH into remote Linux
-                            host</span><br><span class="lp-code-kw">waypipe</span> ssh user@server<br>&nbsp;&nbsp;<span
-                            class="lp-code-fn">firefox</span> &amp; <span class="lp-code-comment">// appears
-                            natively</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Scrollyboard Timeline Progress Indicator -->
-        <div class="lp-sb-timeline" id="sb-timeline" aria-hidden="true">
-            <div class="lp-sb-tl-row">
-                <div class="lp-sb-tl-fill" id="sb-tl-fill"></div>
-                <div class="lp-sb-tl-step active" data-index="0">
-                    <div class="lp-sb-tl-dot"></div>
-                    <span class="lp-sb-tl-label">Rust Core</span>
-                </div>
-                <div class="lp-sb-tl-step" data-index="1">
-                    <div class="lp-sb-tl-dot"></div>
-                    <span class="lp-sb-tl-label">Native Windows</span>
-                </div>
-                <div class="lp-sb-tl-step" data-index="2">
-                    <div class="lp-sb-tl-dot"></div>
-                    <span class="lp-sb-tl-label">Zero-Copy</span>
-                </div>
-                <div class="lp-sb-tl-step" data-index="3">
-                    <div class="lp-sb-tl-dot"></div>
-                    <span class="lp-sb-tl-label">FFI Bridge</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 </section>
 
-<!-- EXPLORE -->
-<section class="lp-section">
-    <div class="lp-section-header lp-reveal">
-        <h2>Explore</h2>
-    </div>
-    <div class="lp-explore lp-reveal">
-        <a href="/docs/" class="lp-explore-card" data-mouse-track="4"><svg width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-            </svg>
-            <h3>Documentation</h3>
-            <p>Build guides, architecture, and configuration references.</p><span class="lp-explore-arrow">&rarr;</span>
-        </a>
-        <a href="/faq/" class="lp-explore-card" data-mouse-track="4"><svg width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3V14" />
-                <path d="M12 17h.01" />
-            </svg>
-            <h3>FAQ</h3>
-            <p>Build times, storage, Nix setup, and porting.</p><span class="lp-explore-arrow">&rarr;</span>
-        </a>
-        <a href="/gallery/" class="lp-explore-card" data-mouse-track="4"><svg width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect width="18" height="18" x="3" y="3" rx="2" />
-                <circle cx="9" cy="9" r="2" />
-                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-            </svg>
-            <h3>Gallery</h3>
-            <p>Screenshots of Linux desktops running in Wawona.</p><span class="lp-explore-arrow">&rarr;</span>
-        </a>
-        <a href="/download/" class="lp-explore-card" data-mouse-track="4"><svg width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" x2="12" y1="15" y2="3" />
-            </svg>
-            <h3>Download</h3>
-            <p>Get Wawona for your device.</p><span class="lp-explore-arrow">&rarr;</span>
-        </a>
-    </div>
-</section>
-
-<!-- POSTS + RELEASES -->
-<section class="lp-section lp-reveal">
+<!-- EXPLORE + CONTRIBUTE -->
+<section class="lp-section lp-feed-section lp-reveal">
+    <div class="lp-section-inner">
+        <div class="lp-section-header">
+            <h2>Explore</h2>
+            <p>Wawona is built by <a href="https://aspauldingcode.com" target="_blank" rel="noopener">Alex Spaulding</a> and anyone who wants to jump in. Chat, send a patch, or chip in if you can.</p>
+        </div>
+    <nav class="lp-explore" aria-label="Explore">
+        <a href="/docs/">Docs</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/gallery/">Gallery</a>
+        <a href="/download/">Download</a>
+    </nav>
     <div class="lp-two-col">
+        <div class="lp-col-stack">
         <div class="lp-col-card">
             <div class="lp-col-header"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -354,90 +201,53 @@
             </div>
             {% set posts_section = get_section(path="posts/_index.md") %}
             {% for page in posts_section.pages | slice(end=3) %}
-            <a href="{{ page.permalink | safe }}" class="lp-col-item"><time>{{ page.date | date(format="%b %d, %Y")
-                    }}</time><span>{{ page.title }}</span></a>
+            <a href="{{ page.path }}" class="lp-col-item"><span>{{ page.title }}</span><time>{{ page.date | date(format="%b %d, %Y") }}</time></a>
             {% endfor %}
-            <a href="{{ get_url(path='posts') }}" class="lp-col-footer">View all posts &rarr;</a>
+            <a href="/posts/" class="lp-col-footer">View all posts &rarr;</a>
         </div>
         <div class="lp-col-card">
-            <div class="lp-col-header"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <path d="m7.5 4.27 9 5.15" />
+            <div class="lp-col-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="discord" aria-hidden="true">
                     <path
-                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                    <path d="m3.3 7 8.7 5 8.7-5" />
-                    <path d="M12 22V12" />
+                        d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" />
                 </svg>
-                <h3>Latest Releases</h3>
+                <h3>Discord</h3>
+            </div>
+            <a href="https://discord.gg/wHVSV52uw5" target="_blank" rel="noopener" class="lp-col-footer">Join Wawona Discord &rarr;</a>
+        </div>
+        <div class="lp-col-card">
+            <div class="lp-col-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                <h3>Support</h3>
+            </div>
+            <a href="/donate/#manage" class="lp-col-item"><span>Manage donations</span></a>
+            <a href="/donate/" class="lp-col-footer">Donate &rarr;</a>
+        </div>
+        </div>
+        <div class="lp-col-stack">
+        <div class="lp-col-card">
+            <div class="lp-col-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                <h3>GitHub</h3>
             </div>
             <div id="releases-list">
                 <div class="lp-loading">
                     <div class="lp-spinner"></div><span>Loading releases...</span>
                 </div>
             </div>
-            <a href="https://github.com/Wawona/Wawona/releases" target="_blank" rel="noopener"
-                class="lp-col-footer">View all releases &rarr;</a>
+            <a href="https://github.com/Wawona/Wawona/pulls" target="_blank" rel="noopener" class="lp-col-item"><span>Pull requests</span></a>
+            <a href="https://github.com/Wawona/Wawona" target="_blank" rel="noopener" class="lp-col-footer">View source &rarr;</a>
+        </div>
+        </div>
         </div>
     </div>
 </section>
 
-<!-- COMMUNITY CTA -->
-<section class="lp-section lp-cta lp-reveal">
-    <div class="lp-cta-glow" data-mouse-track="30"></div>
-    <div class="lp-cta-inner">
-        <h2>The Frontier of Wayland.</h2>
-        <p><strong>Engineered by <a href="https://aspauldingcode.com" target="_blank" rel="noopener">Alex
-                    Spaulding</a>.</strong> Powered by the community. Join the evolution of the modular
-            desktop. Your support is the catalyst for the next generation of native, high-performance compositing on
-            every platform.</p>
-        <div class="lp-community-grid">
-            <a href="https://discord.gg/wHVSV52uw5" target="_blank" rel="noopener" class="lp-community-block"
-                data-mouse-track="10">
-                <div class="lp-community-icon discord"><svg width="24" height="24" viewBox="0 0 24 24"
-                        fill="currentColor">
-                        <path
-                            d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" />
-                    </svg></div>
-                <div class="lp-community-content">
-                    <h3>Enter the Discussion</h3>
-                    <p>Join the architects of the nested future on Discord.</p>
-                </div>
-            </a>
-            <a href="https://ko-fi.com/aspauldingcode" target="_blank" rel="noopener" class="lp-community-block"
-                data-mouse-track="10">
-                <div class="lp-community-icon kofi"><img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi"
-                        style="height:20px;"></div>
-                <div class="lp-community-content">
-                    <h3>Fuel the Vision</h3>
-                    <p>Support independent, student-led open source development.</p>
-                </div>
-            </a>
-            <a href="https://github.com/Wawona/Wawona" target="_blank" rel="noopener" class="lp-community-block"
-                data-mouse-track="10">
-                <div class="lp-community-icon github"><svg width="24" height="24" viewBox="0 0 24 24"
-                        fill="currentColor">
-                        <path
-                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg></div>
-                <div class="lp-community-content">
-                    <h3>Forge the Source</h3>
-                    <p>Star the mission, report issues, and explore the code.</p>
-                </div>
-            </a>
-        </div>
-    </div>
-</section>
-
-
-<!-- Mermaid re-initialisation for homepage scrollyboard (library loaded globally in base.html) -->
-<script>
-    // Re-run Mermaid after GSAP has laid out the cards so it finds the code block.
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { if (window.initMermaid) window.initMermaid(); });
-    } else {
-        if (window.initMermaid) window.initMermaid();
-    }
-</script>
 
 {% include "partials/homepage_scripts.html" %}
 

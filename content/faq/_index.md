@@ -9,7 +9,7 @@ template = "faq_section.html"
 .faq-content details {
     margin-bottom: 0.75rem;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: var(--r-card);
     background: var(--bg-1);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
@@ -37,7 +37,7 @@ template = "faq_section.html"
     -webkit-tap-highlight-color: transparent;
     transition: background-color 0.2s ease;
     background: none;
-    border-radius: 10px;
+    border-radius: var(--r-card);
 }
 
 .faq-content details summary:hover {
@@ -66,7 +66,7 @@ template = "faq_section.html"
     margin-left: auto;
     background: var(--bg-2);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--r-control);
     padding: 4px 8px;
     font-size: 0.75rem;
     color: var(--text-2);
@@ -91,7 +91,7 @@ template = "faq_section.html"
 .faq-content .faq-share:hover {
     background: var(--bg-1);
     border-color: var(--primary-color);
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 .faq-content .faq-share svg {
@@ -149,9 +149,98 @@ template = "faq_section.html"
 }
 </style>
 
-<p class="faq-intro">Common questions about building, running, and developing with Wawona.</p>
+<p class="faq-intro">Common questions about running and building Wawona.</p>
 
-<h3 class="faq-category"> Building & Installation</h3>
+<h3 class="faq-category">Using Wawona</h3>
+
+<details id="what-is-a-machine">
+<summary>
+    What is a Machine?
+    <button class="faq-share" onclick="copyFaqLink(event, 'what-is-a-machine')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypipe`, `ssh_terminal`, `virtual_machine`, `container`. Start launches it. Focus shows the compositor again. See [Machines](/docs/machines/).
+
+</div>
+</details>
+<details id="platforms-gates">
+<summary>
+    Which platforms, and what is forbidden vs planned vs blocked?
+    <button class="faq-share" onclick="copyFaqLink(event, 'platforms-gates')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
+
+Desktop and LockScreen are macOS and Android only (forbidden on the iOS family). VM and container machines are forbidden on tvOS and watchOS. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
+
+</div>
+</details>
+<details id="weston-and-niri">
+<summary>
+    Do Weston and Niri both ship?
+    <button class="faq-share" onclick="copyFaqLink(event, 'weston-and-niri')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+Yes. Both are mandatory native bundles on every product target. Display backend is a setting (`auto` / `wayland` / `drm`), not a hardcoded nested-only path.
+
+</div>
+</details>
+<details id="local-shell">
+<summary>
+    Is there a local shell on iPhone?
+    <button class="faq-share" onclick="copyFaqLink(event, 'local-shell')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. This is not Debian and not `wwn-apt` (that repo is not a Wawona flake input yet). See [On-device shell](/docs/shell/).
+
+</div>
+</details>
+<details id="desktop-replacement">
+<summary>
+    How does Desktop Replacement work?
+    <button class="faq-share" onclick="copyFaqLink(event, 'desktop-replacement')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+macOS: Mode A in-window by default. Mode B (`libwayland-mac.dylib`) only on `wawona-macos-desktop-host` when SIP allows it. Android: anowaW (rootless MediaProjection or Shizuku/root). Never on iOS, iPadOS, tvOS, watchOS, or visionOS. See [Desktop Replacement](/docs/desktop/).
+
+</div>
+</details>
+<details id="pre-built-binaries">
+<summary>
+    Are there pre-built binaries? How do I get a build without Nix?
+    <button class="faq-share" onclick="copyFaqLink(event, 'pre-built-binaries')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub assets on `v*` tags. Ship: beta (stores) on `master` is TestFlight and Play internal. Discord is the usual TestFlight invite. macOS is not an App Store feature target.
+
+</div>
+</details>
+
+<h3 class="faq-category">Building</h3>
 
 <details id="nix-build-time">
 <summary>
@@ -163,52 +252,13 @@ template = "faq_section.html"
 </summary>
 <div class="faq-answer">
 
-The first build is slow because Nix compiles **everything from source** — there are no pre-built binaries. Here's what it builds:
-
-**Native C/C++ Libraries (27 packages):**
-
-| Library | Purpose | Approx. Build Size |
-|---------|---------|-------------------|
-| FFmpeg | Video codec support (waypipe) | ~150 MB |
-| OpenSSL | TLS/crypto | ~60 MB |
-| KosmicKrisp / MoltenVK | Vulkan-over-Metal | ~200 MB |
-| ANGLE | OpenGL-over-Metal | ~180 MB |
-| libwayland | Wayland protocol library | ~8 MB |
-| xkbcommon | Keyboard layout handling | ~12 MB |
-| Weston | Nested compositor + clients | ~40 MB |
-| pixman | Pixel manipulation | ~5 MB |
-| zstd + lz4 | Compression (waypipe) | ~8 MB |
-| freetype + fontconfig | Font rendering | ~25 MB |
-| Other (15 libs) | libffi, expat, libxml2, etc. | ~50 MB |
-
-**Rust Backend (186 crates):**
-
-| Component | Crates | Approx. Build Size |
-|-----------|--------|-------------------|
-| Wayland protocol crates | ~15 | ~30 MB |
-| FFI / UniFFI | ~10 | ~15 MB |
-| Crypto / networking | ~20 | ~25 MB |
-| Serialization / parsing | ~30 | ~20 MB |
-| Core utilities | ~111 | ~40 MB |
-
-**Platform Tooling:**
-
-| Tool | Purpose | Approx. Size |
-|------|---------|-------------|
-| Rust toolchain | Compiler + std for 4 targets | ~800 MB |
-| Xcode CLI tools | iOS SDK, simulator runtimes | ~5–15 GB |
-| Android NDK + SDK | Cross-compilation, emulator | ~3–8 GB |
-
-**Total first build:** ~30–60 minutes depending on your Mac's CPU and SSD speed.
-
-**Good news:** Subsequent builds are fast (~10–30 seconds) because Nix caches every derivation. Only changed crates rebuild.
+Cold builds compile C/C++ substrate in `wwn-toolchain` and graphics in `wwn-iland`, plus the Rust compositor, Weston, and Niri. Package and crate counts in older posts are stale. After `determinate-nixd login`, the org FlakeHub cache hits many store paths. See [Nix](/docs/nix-build-system/).
 
 </div>
 </details>
-
 <details id="storage-space">
 <summary>
-    Why does Wawona require so much storage space?
+    How much disk space does a build need?
     <button class="faq-share" onclick="copyFaqLink(event, 'storage-space')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
@@ -216,36 +266,13 @@ The first build is slow because Nix compiles **everything from source** — ther
 </summary>
 <div class="faq-answer">
 
-Wawona's Nix store footprint is large because it builds an entire graphics stack, compositor, and cross-compilation toolchains from source. Here's the breakdown:
-
-**Per-Platform Storage Estimate:**
-
-| Component | macOS | iOS | Android |
-|-----------|-------|-----|---------|
-| Rust toolchain (4 targets) | 800 MB | 800 MB | 800 MB |
-| Native C/C++ libraries | 750 MB | 900 MB | 700 MB |
-| Rust backend (186 crates) | 130 MB | 130 MB | 130 MB |
-| App bundle | 60 MB | 80 MB | 120 MB |
-| Graphics drivers (CTS, Mesa) | 400 MB | 400 MB | 200 MB |
-| Platform SDK (Xcode / NDK) | — | 5–15 GB | 3–8 GB |
-| **Subtotal** | **~2.1 GB** | **~7–17 GB** | **~5–10 GB** |
-
-**Why so big?**
-
-1. **No shared system libraries** — Nix builds everything hermetically. Even `zlib` and `libffi` are compiled from source rather than using system copies
-2. **Multiple target triples** — iOS needs `aarch64-apple-ios` + `aarch64-apple-ios-sim`; Android needs `aarch64-linux-android`; macOS needs native. Each target has its own compiled copy of every library
-3. **Graphics stacks** — MoltenVK, KosmicKrisp, ANGLE, SwiftShader are complete GPU driver implementations
-4. **Weston** — a full reference compositor compiled for macOS, with all its dependencies
-5. **FFmpeg** — full multimedia framework for waypipe video compression
-
-**Mitigation:** Run `nix store gc` periodically to clean up old build artifacts. Only the current generation is kept.
+Plan tens of gigabytes for a full Apple-family plus Android tree (Xcode SDKs dominate). Linux-only is smaller. ANGLE and SwiftShader are owned by `wwn-iland` (L1), not the compositor repo. tvOS, watchOS, visionOS, and Linux are first-class targets alongside macOS, iOS, and Android.
 
 </div>
 </details>
-
 <details id="why-nix">
 <summary>
-    Why do I have to install Nix as a Developer?
+    Why Nix? Do users need it?
     <button class="faq-share" onclick="copyFaqLink(event, 'why-nix')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
@@ -253,115 +280,40 @@ Wawona's Nix store footprint is large because it builds an entire graphics stack
 </summary>
 <div class="faq-answer">
 
-**Good news! If you're not a developer, you don't need Nix!**
-
-Nix is the **only dependency** you need to install — it replaces every other tool:
-
-| Without Nix | With Nix |
-|-------------|----------|
-| Install Rust via rustup | Nix provides the exact Rust version |
-| Install Xcode CLI tools | Nix wraps xcodebuild |
-| Install Android SDK + NDK | Nix provides NDK, SDK, emulator |
-| Install CMake, Meson, pkg-config | Nix provides all build tools |
-| Install 27 C libraries manually | Nix builds them from source |
-| Hope versions are compatible | Nix guarantees reproducibility |
-
-**Why not Cargo alone?** Wawona depends on 27 native C/C++ libraries (libwayland, xkbcommon, FFmpeg, OpenSSL, etc.) that don't exist on macOS. Cargo can compile Rust crates, but it can't build C libraries, cross-compile for iOS/Android, or manage platform SDKs.
-
-**Why not Homebrew?** Homebrew installs pre-built macOS binaries, but Wawona needs iOS and Android cross-compiled variants of every library. Homebrew can't cross-compile.
-
-**Nix gives you:**
-- **Reproducible builds** — same result on every Mac
-- **Hermetic isolation** — doesn't pollute your system
-- **Cross-compilation** — one command for macOS, iOS, and Android
-- **Incremental caching** — only rebuild what changed
-
-We recommend [**Determinate Nix**](https://determinate.systems/nix-installer/) because it enables flakes out of the box.
+Users do not need Nix to run a downloaded binary. Nix is how we cross-compile hermetically. Libraries live in flake inputs (`wwn-toolchain`, `wwn-iland`, …), not as 27 C libraries in this repo. Determinate Nix plus FlakeHub is the documented path.
 
 </div>
 </details>
-
-<details id="pre-built-binaries">
+<details id="intel-macs">
 <summary>
-    Why can't I just download a pre-built DMG, IPA, or APK?
-    <button class="faq-share" onclick="copyFaqLink(event, 'pre-built-binaries')" title="Copy link to this question">
+    Does Wawona support Intel Macs?
+    <button class="faq-share" onclick="copyFaqLink(event, 'intel-macs')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
     </button>
 </summary>
 <div class="faq-answer">
 
-We're working on it! Pre-built binaries are planned but not available yet. Here's the status:
-
-| Platform | Format | Status |
-|----------|--------|--------|
-| macOS | `.dmg` | Planned — needs code signing + notarization |
-| iOS | TestFlight `.ipa` | **v0.2.4** — Fastlane + `release-beta` workflow (requires secrets + match) |
-| Android | `.aab` / `.apk` | **v0.2.4** — Fastlane Play internal track via `wawona-android-aab` |
-
-**Status (v0.2.4):**
-
-1. **Fastlane** — Lanes in `fastlane/`, CI workflow `.github/workflows/release-beta.yml`, GitHub Environment `release-beta`
-2. **Apple signing** — Private `aspauldingcode/apple-signing` repo via fastlane match; bootstrap with `./scripts/bootstrap-apple-signing.sh`
-3. **Secrets** — `./scripts/sync-github-secrets.sh` pushes to `Wawona/Wawona` via `gh` CLI
-
-**For developers:** `nix run` remains the fastest local path. After secrets are configured, beta testers can install via TestFlight (Apple platforms except macOS) or Play internal track (Android).
-
-**Previously (pre-0.2.4):**
-
-1. **Code signing** — Apple Developer Program enrollment required for distribution
-2. **Rapid development** — Wawona is still in active development (v0.2.4). Building from source ensures latest protocol improvements
+The flake dropped `x86_64-darwin` (nixpkgs 26.11 throws). Apple Silicon only for Darwin hosts.
 
 </div>
 </details>
-
-<h3 class="faq-category"> Using Wawona</h3>
-
-<details id="port-linux-software">
+<details id="ios-signing">
 <summary>
-    How do I port Linux software to macOS with Wawona?
-    <button class="faq-share" onclick="copyFaqLink(event, 'port-linux-software')" title="Copy link to this question">
+    How do I sign Apple-family builds?
+    <button class="faq-share" onclick="copyFaqLink(event, 'ios-signing')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
     </button>
 </summary>
 <div class="faq-answer">
 
-Wawona doesn't "port" Linux apps — it **runs them as-is** by implementing the Wayland protocol natively on macOS. Here's how it works:
-
-**What Wawona does:**
-
-1. Creates a Wayland compositor socket (`wayland-0`) on macOS
-2. Any Wayland client that connects to this socket can display its windows
-3. Wawona translates Wayland protocol messages into native macOS rendering (Metal) and input (NSEvent)
-
-**How to run a Linux Wayland app on your Mac:**
-
-| Method | How | Best For |
-|--------|-----|----------|
-| **Build locally** | Cross-compile the app for macOS using Nix | Apps with few dependencies |
-| **Waypipe (remote)** | Run on a Linux server, display on Mac via SSH | Complex apps, no porting needed |
-| **Weston (nested)** | Run inside Weston, which runs inside Wawona | Testing, development |
-
-**Example — Running a remote Linux app:**
-
-```bash
-# On your Mac, with Wawona running:
-nix run .#waypipe -- ssh user@linux-server foot
-```
-
-This runs `foot` (a Wayland terminal) on the Linux server and displays it on your Mac through Wawona. No porting required.
-
-**Example — Building a Wayland app locally:**
-
-If the app supports Wayland and compiles on macOS (or can be cross-compiled with Nix), you can add it as a Nix package in `dependencies/libs/` following the same pattern as Weston. The key requirements are:
-
-1. The app must use the Wayland protocol (not X11)
-2. It must link against `libwayland-client` (which Wawona builds for macOS)
-3. Any Linux-specific APIs (epoll, signalfd, etc.) need shims — Wawona includes `epoll-shim` for this
+Set `TEAM_ID` in `.envrc`. Schemes exist for iOS, iPadOS, tvOS, watchOS, and visionOS, not iOS-only. See [Compilation](/docs/compilation/).
 
 </div>
 </details>
+
+<h3 class="faq-category">Protocols and ports</h3>
 
 <details id="protocol-support">
 <summary>
@@ -373,59 +325,24 @@ If the app supports Wayland and compiles on macOS (or can be cross-compiled with
 </summary>
 <div class="faq-answer">
 
-Wawona registers **68 Wayland protocol globals**, but not all are fully implemented yet:
-
-| Status | Count | Meaning |
-|--------|-------|---------|
-| ✓ Functional | ~10 | Full request handling, state management, events |
-| ~ Partial | ~8 | Some requests work, others are incomplete |
-| – Stub | ~49 | Registered but handlers only log — no state changes |
-
-**Fully functional protocols** include: `wl_compositor`, `wl_shm`, `wl_output`, `xdg_wm_base`, and `zxdg_decoration_manager_v1`.
-
-For the complete list, see [Protocol Support](/docs/protocols/).
+See the generated matrix: [Protocol Support](/docs/protocols/). The live registry count changes with `ProtocolProfile` (store-safe vs desktop-host). Plasma globals are advertised on desktop-host. Status (Functional / Partial / Stub) is a catalog field, not inferred by CI.
 
 </div>
 </details>
-
-<details id="intel-macs">
+<details id="port-linux-software">
 <summary>
-    Does Wawona work on Intel Macs?
-    <button class="faq-share" onclick="copyFaqLink(event, 'intel-macs')" title="Copy link to this question">
+    How do I port Linux software?
+    <button class="faq-share" onclick="copyFaqLink(event, 'port-linux-software')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
     </button>
 </summary>
 <div class="faq-answer">
 
-Currently, Wawona targets **Apple Silicon (M1, M2, M3, M4)** only. Intel Mac support is not actively tested or maintained. The Nix build system and Rust backend could theoretically compile for `x86_64-darwin`, but the Metal rendering pipeline and native libraries are only validated on ARM64.
+Three delivery paths: native port, container, or VM/remote over waypipe. A native port must match the Linux client streamed over waypipe (same protocols, same windowing path). Recipes live in `wwn-*` repos, not `Wawona/dependencies/libs/`. X11 is remote or nested XWayland only. No local X server. See [Porting](/docs/porting/).
 
 </div>
 </details>
-
-<h3 class="faq-category"> Development</h3>
-
-<details id="ios-signing">
-<summary>
-    How do I set up iOS device signing?
-    <button class="faq-share" onclick="copyFaqLink(event, 'ios-signing')" title="Copy link to this question">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
-    </button>
-</summary>
-<div class="faq-answer">
-
-See the full walkthrough in the [Getting Started — Team ID](/docs/getting-started/) guide. The short version:
-
-1. Run `nix run .#xcodegen` to generate the Xcode project
-2. Open in Xcode → Signing & Capabilities → sign in and select your team
-3. Copy the Team ID from the `.pbxproj` file
-4. Save it: `echo 'export TEAM_ID="YOUR_ID"' > .envrc`
-5. From now on: `nix develop` → `nix run .#xcodegen` auto-fills your signing identity
-
-</div>
-</details>
-
 <details id="contribute-protocols">
 <summary>
     How do I contribute protocol implementations?
@@ -436,162 +353,7 @@ See the full walkthrough in the [Getting Started — Team ID](/docs/getting-star
 </summary>
 <div class="faq-answer">
 
-Protocol modules live in `src/core/wayland/` and follow a consistent pattern:
-
-1. **Pick a stub protocol** from the [Protocol Support](/docs/protocols/) page (– status)
-2. **Study the spec** at [wayland.app](https://wayland.app/) for the protocol's expected behavior
-3. **Implement handlers** — turn the `tracing::debug!()` stubs into real state mutations and response events
-4. **Test** with a known client that uses that protocol (e.g., `foot` for `zwp_text_input_manager_v3`)
-
-See [Architecture](/docs/architecture/) for how the source is organized.
+Start from the live registry and `PROTOCOL_CATALOG` in `src/core/wayland/catalog.rs`. CI fails if an advertised global has no catalog row. Status stays human-reviewed. Spec links go to [wayland.app](https://wayland.app/). Regenerate with `scripts/gen-protocol-status.sh`.
 
 </div>
 </details>
-
-<script>
-function copyFaqLink(event, id) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const base = window.location.href.split('#')[0];
-    const link = base + '#' + id;
-    
-    const btn = event.currentTarget;
-    const originalContent = btn.innerHTML;
-    
-    function showSuccess() {
-        btn.classList.add('copied');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
-        
-        setTimeout(() => {
-            btn.classList.remove('copied');
-            btn.innerHTML = originalContent;
-        }, 2000);
-    }
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(link).then(showSuccess);
-    } else {
-        // Fallback for non-secure contexts or older browsers
-        const textArea = document.createElement("textarea");
-        textArea.value = link;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-9999px";
-        textArea.style.top = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            showSuccess();
-        } catch (err) {
-            console.error('Fallback copy failed', err);
-        }
-        document.body.removeChild(textArea);
-    }
-}
-
-// ── Unified summary click handler (desktop + mobile) ─────────────────────────
-// We take full control of ALL <summary> clicks so the .faq-share button
-// (which lives inside <summary>) can never accidentally fire the native
-// <details> toggle — stopPropagation() alone isn't enough because the browser's
-// built-in toggle action isn't a bubbled event in all implementations.
-document.addEventListener('click', (e) => {
-    const summary = e.target.closest('details summary');
-    if (!summary) return;
-
-    // Suppress the native toggle unconditionally — we manage it ourselves.
-    e.preventDefault();
-
-    // If the click was on the share button, do nothing further here;
-    // its own onclick="copyFaqLink(...)" will still fire.
-    if (e.target.closest('.faq-share')) return;
-
-    const details = summary.closest('details');
-    if (details) {
-        details.open = !details.open; // fires the toggle event → URL + scroll
-    }
-}, false);
-
-// ── Mobile touch fix ──────────────────────────────────────────────────────────
-// On iOS/Android a <summary> tap causes a text-selection flash before toggling.
-// Intercept touchend to toggle on the first tap, and prevent the ghost click
-// that would double-fire the click handler above.
-// FIX: We now track touch movement to ensure we don't toggle during a scroll.
-let touchStartY = 0;
-let touchStartX = 0;
-
-document.addEventListener('touchstart', (e) => {
-    const summary = e.target.closest('details summary');
-    if (!summary) return;
-    
-    touchStartY = e.touches[0].clientY;
-    touchStartX = e.touches[0].clientX;
-}, { passive: true });
-
-document.addEventListener('touchend', (e) => {
-    const summary = e.target.closest('details summary');
-    if (!summary) return;
-
-    // Share button is safe-zoned — let its own onclick run.
-    if (e.target.closest('.faq-share')) return;
-
-    const touchEndY = e.changedTouches[0].clientY;
-    const touchEndX = e.changedTouches[0].clientX;
-    
-    // If the touch moved more than 10px, assume it's a scroll/swipe, not a tap.
-    const deltaY = Math.abs(touchEndY - touchStartY);
-    const deltaX = Math.abs(touchEndX - touchStartX);
-    
-    if (deltaY > 10 || deltaX > 10) return;
-
-    e.preventDefault(); // prevents highlight + ghost mouse click
-    const details = summary.closest('details');
-    if (details) {
-        details.open = !details.open;
-    }
-}, { passive: false });
-
-// ── Update URL hash & auto-scroll when a question is expanded ────────────────
-document.addEventListener('toggle', (e) => {
-    const details = e.target;
-    if (details.tagName !== 'DETAILS' || !details.id) return;
-
-    if (details.open) {
-        // Push the anchor into the URL without triggering a page reload
-        history.replaceState(null, '', '#' + details.id);
-        // Smooth-scroll the question into view
-        details.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-        // If closing the currently-anchored item, clear the hash
-        if (window.location.hash === '#' + details.id) {
-            history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-    }
-}, true); // use capture so it fires before any other handlers
-
-// ── Auto-expand and scroll to FAQ if hash is present on load ─────────────────
-window.addEventListener('load', () => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const el = document.getElementById(hash);
-        if (el && el.tagName === 'DETAILS') {
-            el.open = true;
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
-});
-
-// ── Handle hash changes (e.g. clicking a copied link while on the same page) ──
-window.addEventListener('hashchange', () => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const el = document.getElementById(hash);
-        if (el && el.tagName === 'DETAILS') {
-            el.open = true;
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
-});
-</script>
-

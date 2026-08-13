@@ -1,39 +1,36 @@
 +++
-title = "Introducing Wawona: A Nested Wayland Compositor for macOS"
+title = "Introducing Wawona: a nested Wayland compositor for macOS"
 date = 2026-02-22
 [extra]
 author = "The Wawona Team"
 +++
 
-Wawona isn’t just another display server—it is a native Wayland substrate designed from the ground up for the Apple and Android ecosystems. We are bringing high-performance, bare-metal Wayland execution to the hardware where it was previously impossible.
+**Correction (2026-08-13).** This post is the Feb 2026 intro. Product facts now: CalVer (not older 0.x tags). The full Apple family plus Android and Linux. VMs and containers are Machine types (forbidden on tvOS/watchOS). Desktop Replacement is macOS and Android only. Graphics libs live in `wwn-*` flake inputs. See [docs](/docs/) and [FAQ](/faq/).
 
-## Why Wawona?
+Wawona is a native Wayland compositor for Mac, iPhone, iPad, Apple Watch, Apple TV, visionOS, Android, and Linux. The compositor talks Wayland. The pixels go out through Metal, Vulkan, or a CPU/SHM fallback.
 
-For years, running Wayland applications on a Mac meant living in a Virtual Machine or a slow emulation layer. Wawona changes that. By implementing a native Wayland compositor in Rust and targeting platform-native graphics APIs, we provide a bridge between the Linux ecosystem and Apple/Android hardware without the overhead of a guest OS.
+## Why
 
-## High-Performance Architecture
+On a Mac, the usual way to run Wayland apps was a virtual machine or a slow emulator. Wawona implements the compositor in Rust and draws with the platform GPU APIs, so a Linux Wayland client can show up as a native window. You can still start a VM or container Machine when you want a guest OS.
 
-Wawona is built on three core pillars that ensure it feels like a first-class citizen on every platform it touches:
+## How it is built
 
-### 1. The Rust Core
-The heart of Wawona is a shared Rust backend managing the complex state of a Wayland compositor. With over **186 Rust crates** integrated into our core, we handle everything from protocol registration to internal surface management with memory safety and high concurrency.
+### Rust core
 
-### 2. Native Graphics Frontends
-We don't rely on generic abstraction layers.
-- **Liquid Glass (macOS & iOS)**: A bespoke Metal-based rendering engine that leverages **zero-copy IOSurface integration** for near-instant frame delivery.
-- **Android Vulkan**: A specialized Vulkan frontend designed for the mobile GPU pipeline.
+One backend owns protocol state, surfaces, and input. Host UI is SwiftUI/ObjC, JNI/Compose, or GTK. UniFFI exists in `src/ffi`. It is not the only bridge.
 
-### 3. The Nix Build System
-Developing across Three platforms (macOS, iOS, Android) usually requires a nightmare of SDK management. Wawona uses **Nix** to provide a hermetic, reproducible environment. We cross-compile **27 native C/C++ libraries** (like FFmpeg, OpenSSL, and Weston) for every target automatically.
+### Native graphics
 
-## Beyond macOS
+Userspace DRM/KMS/GBM is `wwn-iland`. Apple GPU targets use Metal (IOSurface). Android uses AHardwareBuffer. watchOS has no public Metal (GPU blocked). tvOS GPU is planned.
 
-While Wawona started as a macOS project, our vision is multi-platform. 
-- **iOS**: A native iPadOS/iOS app that turns your mobile device into a portable Wayland workstation.
-- **Android**: A Kotlin/JNI frontend that bundles its own Dropbear SSH and Vulkan rendering stack.
+### Nix
 
-## Getting Started
+macOS, the iOS family, Android, and Linux each want their own SDK. Nix builds the Rust core and C libraries from sibling `wwn-*` inputs (`wwn-toolchain` substrate, `wwn-iland` graphics, Weston, Niri, waypipe).
 
-Wawona is currently in active development (v0.2.x). Whether you are looking to run remote apps via **Waypipe** or test native Wayland clients locally, we are building the fastest way to bridge your Linux-style workflows into the hardware you love.
+## Other platforms
 
-[Read our Documentation](/docs/getting-started/) to start building, or check the [FAQ](/faq/) for deep-dives into our architecture.
+The same core ships across the Apple family and Android. Nested Weston and Niri are mandatory bundles on every product target.
+
+## Try it
+
+CalVer builds: [Download](/download/), TestFlight via Discord, or GitHub `v*` assets. Start with the [docs](/docs/getting-started/) or the [FAQ](/faq/).

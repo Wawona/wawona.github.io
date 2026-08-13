@@ -2,8 +2,46 @@
     box-sizing: border-box;
 }
 
+/* Orange highlight. Selected text is always white, including primary-colored links. */
+::selection,
+*::selection {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+    text-shadow: none;
+}
+
+::-moz-selection,
+*::-moz-selection {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+    text-shadow: none;
+}
+
+/* Solid orange hover fill: text is white. Local hovers that keep a
+   transparent or tinted background set their own color. */
+a:hover,
+a:hover > code {
+    color: #fff !important;
+}
+
+/* Optional radius aliases. Prefer the existing pixel values on the page. */
+:root {
+    --r-min: 6px;
+    --r-control: 6px;
+    --r-well: 8px;
+    --r-inset: 12px;
+    --r-frame: 20px;
+    --r-card: 24px;
+    --r-pill: 999px;
+    --r-round: 50%;
+}
+
 html, body {
-    overflow-x: hidden;
+    overflow-x: clip;
+}
+
+body > .content {
+    min-width: 0;
 }
 
 /* ===== THEME-AWARE NAVIGATION LOGO ===== */
@@ -85,4 +123,274 @@ nav .logo:hover .nav-logo {
 .right-nav a.nav-active {
     color: var(--primary-color) !important;
     font-weight: 700;
+}
+
+/* ===== NAV ICON MOTION (unique per control) ===== */
+nav .nav-feed-icon,
+nav .nav-search-icon {
+    overflow: visible !important;
+}
+
+nav .nav-feed .feed-bar,
+nav .nav-feed .feed-pulse {
+    transform-box: view-box;
+    transform-origin: 6px 18px;
+}
+
+nav .nav-feed .feed-pulse {
+    opacity: 0;
+}
+
+nav .nav-github .nav-gh-hit {
+    position: relative;
+    display: block;
+    width: 16px;
+    height: 16px;
+    overflow: visible;
+}
+
+nav .nav-github .nav-gh {
+    position: relative;
+    z-index: 1;
+    display: block;
+}
+
+nav .nav-github .nav-gh-hit::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    clip-path: circle(11px at 50% 50%);
+    background: conic-gradient(from 0deg,
+            #d98986,
+            #d4a574,
+            #cfc07a,
+            #86b891,
+            #7aa3c9,
+            #8b89b8,
+            #b08bb0,
+            #d98986);
+}
+
+nav .nav-search .nav-search-glass {
+    transform-box: view-box;
+    transform-origin: 11px 11px;
+}
+
+@media (hover: hover) {
+    nav .nav-feed:hover .feed-bar-1 {
+        animation: nav-feed-bar 0.82s ease-out;
+    }
+
+    nav .nav-feed:hover .feed-bar-2 {
+        animation: nav-feed-bar 0.82s ease-out 0.1s;
+    }
+
+    nav .nav-feed:hover .feed-bar-3 {
+        animation: nav-feed-bar 0.82s ease-out 0.2s;
+    }
+
+    nav .nav-feed:hover .feed-pulse-1 {
+        animation: nav-feed-wave 0.88s ease-out;
+    }
+
+    nav .nav-feed:hover .feed-pulse-2 {
+        animation: nav-feed-wave 0.88s ease-out 0.1s;
+    }
+
+    nav .nav-feed:hover .feed-pulse-3 {
+        animation: nav-feed-wave 0.88s ease-out 0.2s;
+    }
+
+    nav .nav-github:hover .nav-gh-hit::before {
+        opacity: 0.32;
+        animation: nav-gh-glow 2.4s linear infinite;
+    }
+
+    nav .nav-search:hover .nav-search-glass {
+        animation: nav-search-scan 1.55s ease-in-out;
+    }
+
+    nav .nav-donate:hover svg {
+        animation: nav-heart-thump 1.15s ease-in-out;
+    }
+}
+
+@keyframes nav-feed-bar {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    38% {
+        transform: scale(1.28);
+    }
+}
+
+@keyframes nav-feed-wave {
+    0% {
+        transform: scale(0.72);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1.85);
+        opacity: 0;
+    }
+}
+
+@keyframes nav-gh-glow {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes nav-heart-thump {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    16% {
+        transform: scale(1.08);
+    }
+
+    28% {
+        transform: scale(1);
+    }
+
+    44% {
+        transform: scale(1.08);
+    }
+
+    56% {
+        transform: scale(1);
+    }
+}
+
+@keyframes nav-search-scan {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    18%,
+    26% {
+        transform: translate(3.4px, -2.8px) rotate(14deg);
+    }
+
+    42%,
+    50% {
+        transform: translate(-3.2px, -2.2px) rotate(0deg);
+    }
+
+    66%,
+    74% {
+        transform: translate(1.6px, 3.4px) rotate(-8deg);
+    }
+
+    90% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+.page-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-1);
+    margin: -0.25rem 0 1.5rem;
+    line-height: 1.55;
+}
+
+.docs-sidebar {
+    padding: 1rem 0 2rem 1rem;
+    position: sticky;
+    top: 72px;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+}
+
+.docs-sidebar-heading {
+    margin: 1.25rem 0 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-2);
+}
+
+.docs-sidebar-heading:first-child {
+    margin-top: 0;
+}
+
+.docs-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.docs-sidebar li {
+    margin: 0;
+}
+
+.docs-sidebar a {
+    display: block;
+    padding: 0.35rem 0.65rem;
+    border-radius: 10px;
+    color: var(--text-1);
+    text-decoration: none;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+
+.docs-sidebar a:hover {
+    background: var(--primary-color);
+    color: #fff !important;
+}
+
+.docs-sidebar li.current a {
+    color: var(--text-0);
+    font-weight: 700;
+    background: var(--bg-1);
+}
+
+.docs-prevnext {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.docs-prevnext a {
+    border-radius: 10px;
+    padding: 0.35rem 0.5rem;
+}
+
+@media (max-width: 991px) {
+    .docs-sidebar {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    nav .nav-feed:hover .feed-bar,
+    nav .nav-feed:hover .feed-pulse,
+    nav .nav-github:hover .nav-gh-hit::before,
+    nav .nav-search:hover .nav-search-glass,
+    nav .nav-donate:hover svg {
+        animation: none;
+    }
 }

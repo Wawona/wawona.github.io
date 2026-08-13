@@ -1,0 +1,137 @@
+{% set stripe_checkout_api = get_env(name="STRIPE_CHECKOUT_API", default="") %}
+<style>
+    .dn-thanks-page {
+        --dn-r: 24px;
+        --dn-pad: 12px;
+        --dn-r-in: 12px;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 0 2rem;
+    }
+
+    body:has(.dn-thanks-page) .page-header {
+        display: none;
+    }
+
+    .dn-thanks-card {
+        background: var(--bg-1);
+        border: 1px solid var(--border-color);
+        border-radius: var(--dn-r);
+        padding: var(--dn-pad);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dn-thanks-title {
+        position: relative;
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.03em;
+        color: var(--text-0);
+    }
+
+    .dn-thanks-copy {
+        position: relative;
+        color: var(--text-1);
+        margin: 0 0 1rem;
+        line-height: 1.6;
+    }
+
+    .dn-thanks-actions {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.55rem;
+        margin-top: 1.25rem;
+    }
+
+    .dn-thanks-actions a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1.25rem;
+        border-radius: var(--dn-r-in);
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-align: center;
+        text-decoration: none !important;
+        box-sizing: border-box;
+    }
+
+    .dn-thanks-go {
+        background: var(--primary-color);
+        color: #fff !important;
+    }
+
+    .dn-thanks-next {
+        background: var(--bg-2);
+        color: var(--text-0) !important;
+    }
+</style>
+
+<div class="dn-thanks-page" id="donate-thanks-page" data-checkout-api="{{ stripe_checkout_api }}">
+    <div class="dn-thanks-card">
+        <h1 class="dn-thanks-title">Thanks.</h1>
+        <p class="dn-thanks-copy" data-thanks-copy>Stripe confirmed your payment. That keeps Wawona in development.</p>
+        <div class="dn-thanks-actions">
+            <a class="dn-thanks-go" data-thanks-primary href="/donate/#manage">Manage or cancel</a>
+            <a class="dn-thanks-next" data-thanks-secondary href="/donate/">Back to donate</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function initDonateThanks() {
+        var page = document.getElementById("donate-thanks-page");
+        if (!page) return;
+
+        var params = new URLSearchParams(window.location.search || "");
+        var fromDownload = params.get("from") === "download";
+        var sessionId = params.get("session_id") || "";
+        var primary = page.querySelector("[data-thanks-primary]");
+        var copy = page.querySelector("[data-thanks-copy]");
+
+        var secondary = page.querySelector("[data-thanks-secondary]");
+        if (fromDownload) {
+            if (primary) {
+                primary.href = "/download/";
+                primary.textContent = "Continue to downloads";
+            }
+            if (secondary) {
+                secondary.href = "/donate/#manage";
+                secondary.textContent = "Manage or cancel";
+            }
+        }
+
+        try {
+            localStorage.setItem("wawonaStripeDonated", "1");
+            if (fromDownload) localStorage.setItem("wawonaDownloadSurveyComplete", "true");
+        } catch (ignore) { /* ignore */ }
+
+        function checkoutApi() {
+            var raw = (page.getAttribute("data-checkout-api") || "").trim().replace(/\/$/, "");
+            if (raw) return raw;
+            var origin = window.location.origin || "";
+            if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
+                return "http://127.0.0.1:4242";
+            }
+            return "";
+        }
+
+        var api = checkoutApi();
+        if (!api || !sessionId) return;
+
+        fetch(api + "/checkout-session?session_id=" + encodeURIComponent(sessionId))
+            .then(function (response) { return response.json(); })
+            .then(function (body) {
+                if (body && body.customer) {
+                    try { localStorage.setItem("wawonaStripeCustomer", body.customer); } catch (ignore) { /* ignore */ }
+                }
+                var paid = body && (body.payment_status === "paid" || body.status === "complete");
+                if (copy && paid) {
+                    copy.textContent = "Stripe confirmed your payment. That keeps Wawona in development.";
+                }
+            })
+            .catch(function () { /* keep the default thanks copy */ });
+    })();
+</script>

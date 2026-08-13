@@ -1,0 +1,21 @@
++++
+title = "Porting"
+description = "Substitute the platform under the client. Waypipe equivalence."
+weight = 27
+date = 2026-08-13
+
+[extra]
+section = "dev"
++++
+
+A ported client must be indistinguishable from the same upstream client built on Linux and streamed to Wawona over waypipe. Same globals, same request order, same windowing path.
+
+## May substitute
+
+libc/POSIX shims, EGL→ANGLE, Vulkan→MoltenVK/KosmicKrisp/SwiftShader, DRM/KMS/GBM→iland, static archives and `main` → `<pkg>_main` on Apple mobile.
+
+## Must not change
+
+Protocols, renderer, geometry, feature set. Do not re-host a Wayland client onto KMS because Wayland-EGL is unfinished.
+
+Convention: [2026-wwn-porting-convention.md](https://github.com/Wawona/Wawona/blob/development/docs/2026-wwn-porting-convention.md). Planned DE repos (`wwn-gnome` and friends) are not flake inputs yet.
