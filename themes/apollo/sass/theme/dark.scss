@@ -24,7 +24,7 @@ $text-2: lighten($bg-0, 40%);
 
   --icon-filter: invert(1);
 
-  .social > img, .search-button > img {
+  .social > img {
     filter: invert(1);
   }
 }

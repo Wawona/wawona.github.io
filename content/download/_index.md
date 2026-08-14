@@ -1,10 +1,8 @@
 +++
 title = "Download"
-description = "Download Wawona for macOS, Linux, iOS, and Android"
+description = "Download Wawona for macOS, Linux, Android, and the iOS family"
 +++
 
-Choose your platform to start using Wawona today.
-
-<br>
+Wawona for macOS, Linux, Android, and the iOS family.
 
 {{ download_cards() }}

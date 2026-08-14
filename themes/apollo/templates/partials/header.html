@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="base" content="{{ config.base_url }}" />
+    <meta name="base" content="/" />
 
     {% if config.extra.fediverse %}
     <meta name="fediverse:creator" content="{{ config.extra.fediverse_creator }}" />
     {% endif %}
     
     <!-- Adds RSS feed auto-discovery -->
-    <link rel="alternate" type="application/atom+xml" title="Wawona Blog Feed" href="{{ get_url(path='atom.xml') }}">
+    <link rel="alternate" type="application/atom+xml" title="Wawona Blog Feed" href="/atom.xml">
 
     {% if page.extra.meta %}
     <!-- the meta data config goes here  -->
@@ -169,10 +169,10 @@
     {% for feed_filenames in config.feed_filenames %}
     {% if feed_filenames == "atom.xml" %}
     <link rel="alternate" type="application/atom+xml" title="{{ post_macros::site_title() }}"
-        href="{{ get_url(path='atom.xml', trailing_slash=false) }}" />
+        href="/atom.xml" />
     {% elif feed_filenames == "rss.xml" %}
     <link rel="alternate" type="application/rss+xml" title="{{ post_macros::site_title() }}"
-        href="{{ get_url(path='rss.xml', trailing_slash=false) }}" />
+        href="/rss.xml" />
     {% endif %}
     {% endfor %}
     {% endif %}
@@ -212,6 +212,31 @@
     {% endif %}
     {% endif %}
 
+    {# Hide the donate bar before first paint. Zola sets html.on-donate on
+       /donate* pages. Dismiss lives in localStorage; this must run after
+       themetoggle.js so it does not wipe those classes. #}
+    <script>
+        (function () {
+            var KEY = "wawonaDonateBanner";
+            var OLD = "hideDonationBanner";
+            var MONTH = 30 * 24 * 60 * 60 * 1000;
+            var hide = document.documentElement.classList.contains("on-donate");
+            try {
+                var raw = localStorage.getItem(KEY);
+                if (!raw && localStorage.getItem(OLD) === "true") {
+                    raw = JSON.stringify({ dismissedAt: Date.now(), lastSeen: Date.now() });
+                    localStorage.setItem(KEY, raw);
+                    localStorage.removeItem(OLD);
+                }
+                if (raw) {
+                    var parsed = JSON.parse(raw);
+                    var dismissed = Number(parsed && parsed.dismissedAt) || 0;
+                    if (dismissed && (Date.now() - dismissed) < MONTH) hide = true;
+                }
+            } catch (ignore) { /* ignore */ }
+            document.documentElement.classList.toggle("donate-banner-off", hide);
+        })();
+    </script>
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ get_url(path='main.css') }}" />
 
@@ -220,6 +245,132 @@
     <link rel="stylesheet" href="{{ get_url(path=stylesheet) }}" />
     {% endfor %}
     {% endif %}
+
+    <style>
+        body {
+            flex-wrap: wrap;
+            padding-top: 0;
+        }
+
+        .left-content:not(:has(*)),
+        .right-content:not(:has(*)) {
+            display: none;
+        }
+
+        .site-top {
+            --chrome-gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-sizing: border-box;
+            flex: 1 0 100%;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: calc(var(--chrome-gap) + env(safe-area-inset-top)) 0 0;
+            background-color: var(--bg-0, #121212);
+            isolation: isolate;
+        }
+
+        .site-top::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: -4rem;
+            background-color: inherit;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .site-top nav,
+        .donate-banner {
+            width: 100%;
+            max-width: var(--page-width, 920px);
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+        }
+
+        .site-top nav {
+            position: relative;
+            top: auto;
+            z-index: auto;
+            margin-top: 0;
+            padding: 0 0 var(--chrome-gap);
+        }
+
+        .donate-banner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.6rem 0.8rem;
+            margin: 0 auto var(--chrome-gap);
+            padding: 0.55rem 0.55rem 0.55rem 1.1rem;
+            background: var(--bg-1, #1e1e23);
+            border: 1px solid var(--border-color, #333);
+            border-radius: 16px;
+            color: var(--text-0, #eee);
+        }
+
+        html.donate-banner-off .donate-banner,
+        html.on-donate .donate-banner {
+            display: none !important;
+        }
+
+        .donate-banner-copy {
+            flex: 1 1 12rem;
+            min-width: 0;
+            margin: 0;
+            font-size: 0.92rem;
+            line-height: 1.35;
+        }
+
+        .donate-banner-actions {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .donate-banner-go,
+        .donate-banner-dismiss {
+            appearance: none;
+            -webkit-appearance: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0.4rem 0.9rem;
+            border-radius: 10px;
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.2;
+            text-decoration: none !important;
+            border-bottom: none !important;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .donate-banner-go {
+            background: var(--primary-color, #ef5350);
+            color: #fff !important;
+            border: 1px solid var(--primary-color, #ef5350);
+        }
+
+        .donate-banner-dismiss {
+            background: var(--bg-0, #121212);
+            color: var(--text-1, #aaa);
+            border: 1px solid var(--border-color, #333);
+        }
+
+        .donate-banner a:hover,
+        .donate-banner a:focus {
+            color: #fff !important;
+            background: var(--primary-color, #ef5350);
+        }
+    </style>
 
     {# Search #}
     {%- if config.build_search_index -%}
@@ -242,7 +393,7 @@
     <script defer src="{{ get_url(path='js/searchFZF.js', cachebust=true) | safe }}"></script>
     {%- endif -%}
 
-    {# Mermaid.js diagram rendering — loaded globally for docs/blog pages #}
+    {# Mermaid.js diagram rendering: loaded globally for docs/blog pages #}
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 

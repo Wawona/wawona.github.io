@@ -66,7 +66,7 @@
                 {% if page.extra.link_to %}
                 <a href={{ page.extra.link_to }} class="stretched-link">{{ page.title }}</a>
                 {% elif page.content %}
-                <a href={{ page.permalink | safe }} class="stretched-link">{{ page.title }}</a>
+                <a href="{{ page.path }}" class="stretched-link">{{ page.title }}</a>
                 {% else %}
                 {{ page.title }}
                 {% endif %}
@@ -137,14 +137,14 @@
 <ul class="pagination">
     {% if paginator.previous %}
     <span class="page-item page-prev">
-        <a href={{ paginator.previous }} class="page-link" aria-label="Previous"><span aria-hidden="true">←
+        <a href="{{ paginator.previous | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}" class="page-link" aria-label="Previous"><span aria-hidden="true">←
                 Prev</span></a>
     </span>
     {% endif %}
 
     {% if paginator.next %}
     <span class="page-item page-next">
-        <a href={{ paginator.next }} class="page-link" aria-label="Next"><span aria-hidden="true">Next →</span></a>
+        <a href="{{ paginator.next | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}" class="page-link" aria-label="Next"><span aria-hidden="true">Next →</span></a>
     </span>
     {% endif %}
 </ul>

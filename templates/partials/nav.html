@@ -1,6 +1,6 @@
 <nav>
     <div class="left-nav">
-        <a href={{ config.base_url }} class="logo" data-hint="Home">
+        <a href="/" class="logo" data-hint="Home">
             {% if config.extra.logo %}
             <img alt="{{ config.title }}" src="/images/logo/Wawona-iOS-Default-1024x1024@1x.png"
                 class="nav-logo nav-logo-light" />
@@ -11,6 +11,23 @@
         </a>
 
         <div style="display: flex; gap: 1rem; align-items: center;">
+            {% if config.generate_feeds %}
+            <button id="feed-button" class="search-button nav-feed" data-hint="Feed" aria-label="Open feed options">
+                <svg class="search-icon nav-feed-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+                    overflow="visible" aria-hidden="true">
+                    <circle class="feed-bar feed-bar-1" cx="6" cy="18" r="2" />
+                    <path class="feed-bar feed-bar-2"
+                        d="M4 10.25a.75.75 0 0 1 .75-.75 9.5 9.5 0 0 1 9.5 9.5.75.75 0 0 1-1.5 0A8 8 0 0 0 4.75 11 .75.75 0 0 1 4 10.25Z" />
+                    <path class="feed-bar feed-bar-3"
+                        d="M4 4.5a.75.75 0 0 1 .75-.75c8.837 0 16 7.163 16 16a.75.75 0 0 1-1.5 0c0-8.008-6.492-14.5-14.5-14.5A.75.75 0 0 1 4 4.5Z" />
+                    <g class="feed-pulses" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round">
+                        <path class="feed-pulse feed-pulse-1" d="M9.4 18A3.4 3.4 0 0 0 6 14.6" />
+                        <path class="feed-pulse feed-pulse-2" d="M13.8 18A7.8 7.8 0 0 0 6 10.2" />
+                        <path class="feed-pulse feed-pulse-3" d="M18.4 18A12.4 12.4 0 0 0 6 5.6" />
+                    </g>
+                </svg>
+            </button>
+            {% endif %}
             <div class="socials">
                 {% if config.markdown.external_links_target_blank %}
                 {% set link_attrs = "rel='me noopener' target='_blank'" %}
@@ -18,21 +35,40 @@
                 {% set link_attrs = "rel='me'" %}
                 {% endif %}
                 {% for social in config.extra.socials %}
-                <a {{ link_attrs | safe }} href="{{ social.url }}" class="social" {% if social.name=="github"
+                <a {{ link_attrs | safe }} href="{{ social.url }}" class="social{% if social.name == "github" %} nav-github{% endif %}" {% if social.name=="github"
                     %}data-hint="View Source" {% endif %}>
+                    {% if social.name == "github" %}
+                    <span class="nav-gh-hit">
+                        <svg class="search-icon nav-gh" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                            aria-hidden="true">
+                            <path
+                                d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+                        </svg>
+                    </span>
+                    {% else %}
                     <img alt="{{ social.name }}" src="{{ get_url(path='icons/social/' ~ social.icon ~ '.svg') }}" />
+                    {% endif %}
                 </a>
                 {% endfor %}
             </div>
-
+            <a href="/donate/" class="search-button nav-donate" data-hint="Donate" aria-label="Donate">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" overflow="visible"
+                    aria-hidden="true">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+            </a>
             {% if config.build_search_index %}
-            <button id="search-button" class="search-button" data-hint="Search">
-                <img src="{{ get_url(path='icons/search.svg') }}" alt="Search" class="search-icon" />
-            </button>
-            {% endif %}
-            {% if config.generate_feeds %}
-            <button id="feed-button" class="search-button" data-hint="Feed" aria-label="Open feed options">
-                <img src="{{ get_url(path='icons/feed.svg') }}" alt="Feed" class="search-icon" />
+            <button id="search-button" class="search-button nav-search" data-hint="Search">
+                <svg class="search-icon nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    overflow="visible" aria-hidden="true">
+                    <g class="nav-search-glass">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </g>
+                </svg>
             </button>
             {% endif %}
 
@@ -62,7 +98,7 @@
 
     <div class="right-nav">
         {% for menu in config.extra.menu %}
-        <a href={{ get_url(path=menu.url) }}>{{ menu.name }}</a>
+        <a href="/{{ menu.url }}/">{{ menu.name }}</a>
         {% endfor %}
     </div>
 
@@ -98,23 +134,22 @@
     {% endif %}
     {% if config.generate_feeds %}
     <div id="feedModal" class="search-modal js" role="dialog" aria-labelledby="feedModalTitle" aria-modal="true">
-        {% set base_url = config.base_url | trim_end_matches(pat="/") %}
         <div class="feed-modal-content">
             <h1 id="feedModalTitle" class="page-header">Subscribe to Wawona Feed</h1>
             <p>
                 Follow the latest posts from
-                <a id="feed-posts-link" href="{{ base_url }}/posts/">{{ base_url }}/posts/</a>.
+                <a id="feed-posts-link" href="/posts/">/posts/</a>.
             </p>
             <div class="feed-url-row">
                 <label for="rss-feed-url">RSS</label>
                 <input id="rss-feed-url" type="text" readonly
-                    value="{{ base_url }}/posts/rss.xml" />
+                    value="/posts/rss.xml" />
                 <button type="button" class="copy-feed-button" data-copy-target="rss-feed-url">Copy</button>
             </div>
             <div class="feed-url-row">
                 <label for="atom-feed-url">Atom</label>
                 <input id="atom-feed-url" type="text" readonly
-                    value="{{ base_url }}/posts/atom.xml" />
+                    value="/posts/atom.xml" />
                 <button type="button" class="copy-feed-button" data-copy-target="atom-feed-url">Copy</button>
             </div>
             <button type="button" id="close-feed-modal" class="feed-close-button">Close</button>
@@ -122,6 +157,58 @@
     </div>
     {% endif %}
     <script>
+        (function () {
+            const GAP = 24;
+            const HYSTERESIS = 20;
+            let leftW = 0;
+            let rightW = 0;
+
+            function navRoot() {
+                return document.querySelector('.site-top nav') || document.querySelector('nav');
+            }
+
+            function measureNavGroups() {
+                const nav = navRoot();
+                if (!nav) return;
+                const left = nav.querySelector('.left-nav');
+                const right = nav.querySelector('.right-nav');
+                if (!left || !right) return;
+                nav.classList.add('nav-measuring');
+                leftW = left.scrollWidth;
+                rightW = right.scrollWidth;
+                nav.classList.remove('nav-measuring');
+            }
+
+            function syncNavCollapse() {
+                const nav = navRoot();
+                if (!nav) return;
+                if (!leftW || !rightW) measureNavGroups();
+                const needed = leftW + rightW + GAP;
+                const available = nav.clientWidth;
+                const collapsed = nav.classList.contains('nav-collapsed');
+                if (collapsed) {
+                    if (needed + HYSTERESIS <= available) {
+                        nav.classList.remove('nav-collapsed');
+                        const links = nav.querySelector('.right-nav');
+                        if (links) links.classList.remove('active');
+                    }
+                } else if (needed > available) {
+                    nav.classList.add('nav-collapsed');
+                }
+            }
+
+            window.syncNavCollapse = syncNavCollapse;
+            measureNavGroups();
+            syncNavCollapse();
+            window.addEventListener('resize', syncNavCollapse);
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(function () {
+                    measureNavGroups();
+                    syncNavCollapse();
+                });
+            }
+        })();
+
         document.addEventListener('DOMContentLoaded', () => {
             const logoBtn = document.querySelector('nav .logo');
             if (logoBtn) {

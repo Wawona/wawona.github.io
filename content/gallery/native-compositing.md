@@ -1,12 +1,12 @@
 +++
-title = "Native Compositing"
+title = "Nested COSMIC"
 date = 2026-02-25
-description = "Wawona compositing Wayland clients natively on macOS using Quartz."
+description = "System76 COSMIC nested in Wawona. A full desktop as a Wayland client."
 
 [extra]
-local_image = "/images/wawona-screenshots/wawona-screenshot-1.png"
+local_image = "/images/wawona-screenshots/wawona_nested_cosmic.png"
 +++
 
-This screenshot demonstrates Wawona's ability to render Wayland clients directly into the macOS windowing system with full transparency and hardware acceleration.
+COSMIC runs unmodified inside Wawona. Nested compositors use the same userspace DRM/KMS/GBM path as any other Wayland client.
 
-{{ screenshot(src="/images/wawona-screenshots/wawona-screenshot-1.png", caption="Wawona rendering Wayland clients directly into the macOS windowing system.") }}
+{{ screenshot(src="/images/wawona-screenshots/wawona_nested_cosmic.png", caption="System76 COSMIC nested in Wawona on macOS.") }}

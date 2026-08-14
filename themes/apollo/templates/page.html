@@ -48,7 +48,7 @@
                             <span class="authors-label">::</span>
                             <span class="authors">
                                 {%- for author in page.taxonomies.authors %}
-                                    <a href="{{ get_taxonomy_url(kind='authors', name=author, lang=page.lang) }}"
+                                    <a href="{{ get_taxonomy_url(kind='authors', name=author, lang=page.lang) | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}"
                                        class="post-authors">{{ author }}</a>
                                 {% endfor %}
                             </span>
@@ -59,7 +59,7 @@
                             <span class="tags-label">::</span>
                             <span class="tags">
                                 {%- for tag in page.taxonomies.tags %}
-                                    <a href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) }}"
+                                    <a href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}"
                                        class="post-tag">{{ tag }}</a>
                                 {% endfor %}
                             </span>

@@ -17,11 +17,65 @@
     text-shadow: none;
 }
 
-/* Solid orange hover fill: text is white. Local hovers that keep a
-   transparent or tinted background set their own color. */
-a:hover,
-a:hover > code {
+/* Text links stay orange. Hover underlines. No fill.
+   Orange fill + white text is for ::selection only.
+   Do not set a:hover { background: transparent } globally: that
+   wipes <a class="dl-btn"> and other filled button links. */
+
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next),
+.dn-copy a,
+.dn-note a,
+.dn-kofi-under a,
+.dn-thanks a,
+.dl-sideload-link,
+.dl-releases-link a,
+.lp-footer a,
+.site-footer a,
+.lp-explore a,
+.lp-iland-link,
+.page-subtitle a,
+.posts-intro a,
+.docs-intro a,
+.faq-content a {
+    color: var(--primary-color);
+}
+
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):hover,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):focus-visible,
+.dn-copy a:hover,
+.dn-note a:hover,
+.dn-kofi-under a:hover,
+.dn-thanks a:hover,
+.dl-sideload-link:hover,
+.dl-releases-link a:hover,
+.lp-footer a:hover,
+.site-footer a:hover,
+.lp-explore a:hover,
+.lp-iland-link:hover,
+.lp-iland-link:focus,
+.page-subtitle a:hover,
+.posts-intro a:hover,
+.docs-intro a:hover,
+.faq-content a:hover {
+    color: var(--primary-color) !important;
+    background: none !important;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
+.lp-iland-link:hover code,
+.lp-iland-link:focus code {
+    color: var(--primary-color) !important;
+    background: transparent;
+}
+
+a.dl-btn:hover,
+a.dn-btn:hover,
+a.dn-thanks-go:hover,
+a.donate-banner-go:hover {
+    background: var(--primary-color);
     color: #fff !important;
+    text-decoration: none;
 }
 
 /* Optional radius aliases. Prefer the existing pixel values on the page. */
@@ -141,34 +195,37 @@ nav .nav-feed .feed-pulse {
     opacity: 0;
 }
 
-nav .nav-github .nav-gh-hit {
-    position: relative;
-    display: block;
-    width: 16px;
-    height: 16px;
-    overflow: visible;
+nav .socials {
+    align-items: center;
 }
 
-nav .nav-github .nav-gh {
-    position: relative;
-    z-index: 1;
-    display: block;
+@property --nav-gh-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
 }
 
-nav .nav-github .nav-gh-hit::before {
+nav .nav-github {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav .nav-github[data-hint]::after {
+    font-size: 0.75rem;
+    line-height: 1.25;
+}
+
+nav .nav-github::before {
     content: "";
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
+    inset: 0;
+    border-radius: inherit;
     pointer-events: none;
     z-index: 0;
     opacity: 0;
-    transform: translate(-50%, -50%);
-    clip-path: circle(11px at 50% 50%);
-    background: conic-gradient(from 0deg,
+    background: conic-gradient(from var(--nav-gh-angle),
             #d98986,
             #d4a574,
             #cfc07a,
@@ -177,6 +234,26 @@ nav .nav-github .nav-gh-hit::before {
             #8b89b8,
             #b08bb0,
             #d98986);
+}
+
+nav .nav-github .nav-gh-hit {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 0;
+    line-height: 0;
+}
+
+nav .nav-github .nav-gh {
+    display: block;
+    width: 16px;
+    height: 16px;
+    /* Flex box is the center; keep the mark slightly high of the last nudge. */
+    transform: translateY(-0.5px);
 }
 
 nav .nav-search .nav-search-glass {
@@ -209,13 +286,19 @@ nav .nav-search .nav-search-glass {
         animation: nav-feed-wave 0.88s ease-out 0.2s;
     }
 
-    nav .nav-github:hover .nav-gh-hit::before {
+    nav .nav-github:hover::before {
         opacity: 0.32;
         animation: nav-gh-glow 2.4s linear infinite;
     }
 
     nav .nav-search:hover .nav-search-glass {
         animation: nav-search-scan 1.55s ease-in-out;
+    }
+
+    nav .nav-donate svg {
+        overflow: visible;
+        transform-box: view-box;
+        transform-origin: 50% 54%;
     }
 
     nav .nav-donate:hover svg {
@@ -248,11 +331,11 @@ nav .nav-search .nav-search-glass {
 
 @keyframes nav-gh-glow {
     from {
-        transform: translate(-50%, -50%) rotate(0deg);
+        --nav-gh-angle: 0deg;
     }
 
     to {
-        transform: translate(-50%, -50%) rotate(360deg);
+        --nav-gh-angle: 360deg;
     }
 }
 
@@ -354,8 +437,10 @@ nav .nav-search .nav-search-glass {
 }
 
 .docs-sidebar a:hover {
-    background: var(--primary-color);
-    color: #fff !important;
+    background: transparent;
+    color: var(--primary-color) !important;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
 }
 
 .docs-sidebar li.current a {
@@ -388,7 +473,7 @@ nav .nav-search .nav-search-glass {
 @media (prefers-reduced-motion: reduce) {
     nav .nav-feed:hover .feed-bar,
     nav .nav-feed:hover .feed-pulse,
-    nav .nav-github:hover .nav-gh-hit::before,
+    nav .nav-github:hover::before,
     nav .nav-search:hover .nav-search-glass,
     nav .nav-donate:hover svg {
         animation: none;

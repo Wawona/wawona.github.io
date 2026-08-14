@@ -1,18 +1,38 @@
 <script>
     // === GitHub Releases ===
+    function isCalVerTag(tag) {
+        return /^v\d{2}\.\d{1,2}\.\d{1,2}$/.test(tag || '');
+    }
+
+    function setHeroVersion(release) {
+        const el = document.getElementById('lpHeroVersion');
+        if (!el || !release) return;
+        const tag = release.tag_name || '';
+        if (!tag) return;
+        el.textContent = tag.charAt(0) === 'v' ? tag : 'v' + tag;
+        if (release.html_url) el.setAttribute('href', release.html_url);
+    }
+
     async function fetchReleases() {
         const c = document.getElementById('releases-list');
-        if (!c) return;
         try {
-            const r = await fetch('https://api.github.com/repos/Wawona/Wawona/releases?per_page=3');
+            const r = await fetch('https://api.github.com/repos/Wawona/Wawona/releases?per_page=10', {
+                headers: { Accept: 'application/vnd.github+json' }
+            });
             if (!r.ok) throw 0;
             const d = await r.json();
-            if (!d.length) { c.innerHTML = '<p class="lp-empty">No releases yet.</p>'; return; }
-            c.innerHTML = d.map(x => {
+            const published = d.filter(x => x && !x.draft && !x.prerelease);
+            const latest = published.find(x => isCalVerTag(x.tag_name)) || published[0];
+            setHeroVersion(latest);
+            if (!c) return;
+            if (!published.length) { c.innerHTML = '<p class="lp-empty">No releases yet.</p>'; return; }
+            c.innerHTML = published.slice(0, 3).map(x => {
                 const n = x.name || x.tag_name, t = new Date(x.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-                return `<a href="${x.html_url}" target="_blank" rel="noopener" class="lp-col-item"><time>${t}</time><span>${n} <code>${x.tag_name}</code></span></a>`;
+                return `<a href="${x.html_url}" target="_blank" rel="noopener" class="lp-col-item"><span>${n} <code>${x.tag_name}</code></span><time>${t}</time></a>`;
             }).join('');
-        } catch (e) { c.innerHTML = '<div class="lp-empty"><p>Could not load releases.</p><a href="https://github.com/Wawona/Wawona/releases" target="_blank">View on GitHub &rarr;</a></div>'; }
+        } catch (e) {
+            if (c) c.innerHTML = '<div class="lp-empty"><p>Could not load releases.</p><a href="https://github.com/Wawona/Wawona/releases" target="_blank">View on GitHub &rarr;</a></div>';
+        }
     }
 
     // === Screenshot Carousel ===
@@ -52,7 +72,6 @@
             e.preventDefault(); // Prevent native image drag
             startPosX = e.clientX;
             isDragging = true;
-            if (window.setCustomCursorSwiping) window.setCustomCursorSwiping(true);
         });
 
         window.addEventListener('mousemove', e => {
@@ -72,7 +91,6 @@
             }
 
             isDragging = false;
-            if (window.setCustomCursorSwiping) window.setCustomCursorSwiping(false);
         });
 
         // Mobile Swipe Support
@@ -98,7 +116,7 @@
         const ob = new IntersectionObserver(entries => {
             entries.forEach(e => {
                 if (!e.isIntersecting) return;
-                const ch = e.target.querySelectorAll('.lp-feature-text,.lp-feature-visual,.lp-explore-card,.lp-col-card,.lp-platform,.lp-arch-chip,.lp-stat,.lp-pillar');
+                const ch = e.target.querySelectorAll('.lp-feature-text,.lp-feature-visual,.lp-col-card,.lp-platform,.lp-arch-chip,.lp-stat,.lp-points p');
                 ch.forEach((c, j) => {
                     c.style.transitionDelay = `${j * 0.09}s`;
                     c.classList.add('lp-revealed');
@@ -169,21 +187,24 @@
 
 <style>
     /* ===== FULLWIDTH LAYOUT OVERRIDES ===== */
+    /* Keep body side padding so chrome matches inner pages. Only the
+       page body full-bleeds; .site-top stays in the padded column. */
     body {
-        padding: 0 !important;
-        margin: 0 !important;
+        padding-top: 0 !important;
+        margin-bottom: 0 !important;
         max-width: 100vw !important;
         overflow-x: hidden;
     }
 
     body .content {
-        max-width: 100vw !important;
+        max-width: none !important;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: 0;
         padding: 0 !important;
-        margin: 0 !important;
         overflow-x: hidden;
     }
 
-    nav,
     .container {
         max-width: var(--page-width, 920px);
         margin: 0 auto;
@@ -206,12 +227,11 @@
 
     .lp-feature-text,
     .lp-feature-visual,
-    .lp-explore-card,
     .lp-col-card,
     .lp-platform,
     .lp-arch-chip,
     .lp-stat,
-    .lp-pillar {
+    .lp-points p {
         opacity: 0;
         transform: translateY(14px);
         transition: opacity .5s cubic-bezier(.16, 1, .3, 1), transform .5s cubic-bezier(.16, 1, .3, 1);
@@ -219,41 +239,26 @@
 
     .lp-revealed .lp-feature-text,
     .lp-revealed .lp-feature-visual,
-    .lp-revealed .lp-explore-card,
     .lp-revealed .lp-col-card,
     .lp-revealed .lp-platform,
     .lp-revealed .lp-arch-chip,
     .lp-revealed .lp-stat,
-    .lp-revealed .lp-pillar {
+    .lp-revealed .lp-points p {
         opacity: 1;
         transform: translateY(0);
     }
 
-    /* ===== HERO (CINEMATIC WEBGGL REDESIGN) ===== */
+    /* ===== HERO ===== */
     .lp-hero {
         position: relative;
-        text-align: center;
-        /* Capped height: always leaves room for the quote below the fold */
-        height: calc(100vh - 220px);
-        min-height: 42vh;
-        max-height: 80vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        overflow: hidden;
-        border-top: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
+        padding: 4.5rem 0.9rem 4.25rem;
         box-sizing: border-box;
-    }
-
-    /* On very small phones restore a reasonable floor */
-    @media (max-width: 480px) {
-        .lp-hero {
-            height: auto;
-            min-height: 60svh;
-            max-height: none;
-        }
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-0);
+        isolation: isolate;
     }
 
     /* ===== SCROLL HINT CHEVRON ===== */
@@ -287,71 +292,95 @@
         }
     }
 
-    /* Removed forced dark background text overrides because particles now adapt to theme natively */
-
-    #hero-canvas-bg,
-    #hero-canvas-fg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: transparent !important;
-        pointer-events: none;
-        /* Let clicks pass through to content */
-    }
-
-    #hero-canvas-bg {
-        z-index: 0;
-        /* Behind content */
-    }
-
-    #hero-canvas-fg {
-        z-index: 20;
-        /* In front of content */
-    }
-
-    /* Hide the old static hero decorations since we have WebGL now */
-    .lp-hero-glow,
-    .lp-hero-grid-bg {
-        display: none !important;
-    }
-
-    .lp-hero-content {
+    .lp-hero-inner {
         position: relative;
-        max-width: 680px;
+        width: 100%;
+        max-width: var(--page-width, 920px);
         margin: 0 auto;
-        z-index: 10;
-        /* Sandwiched between canvas-bg (z:0) and canvas-fg (z:20) */
-        pointer-events: auto;
+        padding-left: 1.15rem;
+        box-sizing: border-box;
+        text-align: left;
+        z-index: 2;
     }
 
-    .lp-badge {
-        display: inline-block;
-        font-size: .7rem;
-        font-weight: 600;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-        padding: .35rem 1rem;
-        border: 1px solid var(--border-color);
-        border-radius: 100px;
-        color: var(--text-2);
-        margin-bottom: 0.75rem;
+    .lp-hero-inner::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.2rem;
+        bottom: 0.2rem;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--primary-color);
+    }
+
+    .lp-hero-anim {
+        animation: lpHeroIn 0.7s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    .lp-hero-anim:nth-child(1) { animation-delay: 0.02s; }
+    .lp-hero-anim:nth-child(2) { animation-delay: 0.08s; }
+    .lp-hero-anim:nth-child(3) { animation-delay: 0.14s; }
+    .lp-hero-anim:nth-child(4) { animation-delay: 0.2s; }
+    .lp-hero-anim:nth-child(5) { animation-delay: 0.26s; }
+
+    @keyframes lpHeroIn {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 12px, 0);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .lp-hero-kicker {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem 0.85rem;
+        margin: 0 0 1.35rem;
         font-family: var(--mono-text-font);
-        /* frosted glass so badge stays legible over particles */
-        background: rgba(var(--bg-1-rgb), 0.65);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-2);
+    }
+
+    .lp-hero-kicker a,
+    .lp-hero-kicker span {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: none !important;
+    }
+
+    .lp-hero-kicker a:hover,
+    .lp-hero-kicker a:focus {
+        color: var(--primary-color) !important;
+        background: transparent !important;
+    }
+
+    .lp-hero-kicker span::before {
+        content: "·";
+        margin-right: 0.85rem;
+        color: var(--border-color);
     }
 
     .lp-hero-title {
-        font-size: 3.6rem;
-        font-weight: 800;
+        margin: 0 0 1.15rem;
         font-family: var(--header-font);
-        line-height: 1.08;
-        letter-spacing: -.035em;
-        margin: 0 0 1.25rem;
+        font-size: 3.5rem;
+        font-weight: 620;
+        line-height: 1.04;
+        letter-spacing: -0.042em;
         color: var(--text-0);
+    }
+
+    .lp-hero-accent {
+        color: var(--primary-color);
     }
 
     .lp-gradient-text {
@@ -376,25 +405,62 @@
     }
 
     .lp-hero-sub {
-        font-size: 1.05rem;
-        line-height: 1.65;
+        max-width: 34rem;
+        margin: 0 0 2rem;
+        font-size: 1.08rem;
+        line-height: 1.55;
         color: var(--text-2);
-        max-width: 520px;
-        margin: 0 auto 2.25rem;
-        /* frosted glass so text stays legible over particles */
-        background: rgba(var(--bg-1-rgb), 0.55);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 12px;
-        padding: 0.75rem 1.25rem;
-        border: 1px solid var(--border-color);
     }
 
     .lp-hero-actions {
         display: flex;
-        gap: .75rem;
-        justify-content: center;
         flex-wrap: wrap;
+        gap: 0.7rem;
+        margin-bottom: 1.15rem;
+    }
+
+    .lp-hero-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.15rem;
+        margin: 0 0 2.4rem;
+        font-size: 0.88rem;
+        font-weight: 550;
+    }
+
+    .lp-hero-links a {
+        color: var(--text-1) !important;
+        text-decoration: none;
+        border-bottom: none !important;
+    }
+
+    .lp-hero-links a:hover,
+    .lp-hero-links a:focus {
+        color: var(--primary-color) !important;
+        background: transparent !important;
+    }
+
+    .lp-hero-platforms {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--mono-text-font);
+        font-size: 0.72rem;
+        letter-spacing: 0.04em;
+        color: var(--text-2);
+    }
+
+    .lp-hero-platforms li {
+        white-space: nowrap;
+    }
+
+    .lp-hero-platforms li + li::before {
+        content: "·";
+        margin: 0 0.7rem;
+        color: var(--border-color);
     }
 
     /* ===== BUTTONS ===== */
@@ -422,7 +488,6 @@
         .lp-btn-primary:hover {
             transform: translateY(-2px);
             filter: brightness(1.1);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
             background: var(--primary-color) !important;
             color: var(--hover-color) !important;
         }
@@ -440,37 +505,6 @@
             color: var(--primary-color) !important;
             transform: translateY(-2px);
             background: transparent !important;
-        }
-    }
-
-    /* Vibrancy effect scoped to the hero "View Source" ghost button only */
-    .lp-hero-actions .lp-btn-ghost {
-        position: relative;
-        background: rgba(var(--bg-1-rgb), 0.80) !important;
-        backdrop-filter: blur(28px) saturate(1.8);
-        -webkit-backdrop-filter: blur(28px) saturate(1.8);
-    }
-
-    .lp-hero-actions .lp-btn-ghost::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 140%;
-        height: 140%;
-        background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-        transform: translate(-50%, -50%);
-        opacity: 0.15;
-        z-index: -1;
-        pointer-events: none;
-        filter: blur(20px);
-    }
-
-    @media (hover: hover) {
-        .lp-hero-actions .lp-btn-ghost:hover {
-            background: rgba(var(--bg-1-rgb), 0.92) !important;
-            border-color: var(--primary-color);
-            color: var(--primary-color) !important;
         }
     }
 
@@ -493,12 +527,15 @@
         margin-bottom: 3rem;
     }
 
-    .lp-section-header h2 {
+    .lp-section-header h2,
+    .lp-bd-title,
+    .lp-cta-inner h2 {
         font-size: 2.5rem;
         font-weight: 800;
         font-family: var(--header-font);
-        letter-spacing: -.03em;
-        margin: 0 0 .5rem;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 0 0 0.5rem;
     }
 
     .lp-section-header p {
@@ -507,7 +544,7 @@
         margin: 0;
     }
 
-    /* ===== BUILT DIFFERENT — Logo + Flashy Underline ===== */
+    /* ===== BUILT DIFFERENT: Logo + Flashy Underline ===== */
     .lp-bd-logo-wrap {
         display: flex;
         justify-content: center;
@@ -515,7 +552,7 @@
         position: relative;
     }
 
-    /* Flashy shimmer underline — sits beneath the logo */
+    /* Flashy shimmer underline: sits beneath the logo */
     .lp-bd-logo-wrap::after {
         content: '';
         position: absolute;
@@ -549,9 +586,8 @@
         animation: lpLogoFloat 4s ease-in-out infinite;
     }
 
-    /* Dark logo: float + glow pulse */
     .lp-bd-logo-dark {
-        animation: lpLogoPulse 4s ease-in-out infinite;
+        animation: lpLogoFloat 4s ease-in-out infinite;
     }
 
 
@@ -570,12 +606,10 @@
 
     :root.dark .lp-bd-logo-dark {
         display: block;
-        filter: drop-shadow(0 0 8px rgba(239, 83, 80, 0.35)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.40));
     }
 
     :root.light .lp-bd-logo-light {
         display: block;
-        filter: drop-shadow(0 0 6px rgba(239, 83, 80, 0.22)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.10));
     }
 
     :root.light .lp-bd-logo-dark {
@@ -590,20 +624,6 @@
         }
 
         50% {
-            transform: translateY(-3px);
-        }
-    }
-
-    @keyframes lpLogoPulse {
-
-        0%,
-        100% {
-            filter: drop-shadow(0 0 8px rgba(239, 83, 80, 0.35)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.40));
-            transform: translateY(0);
-        }
-
-        50% {
-            filter: drop-shadow(0 0 14px rgba(239, 83, 80, 0.50)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.40));
             transform: translateY(-3px);
         }
     }
@@ -633,64 +653,30 @@
         }
     }
 
-    /* ===== PLATFORMS ===== */
-    .lp-platforms-strip {
-        padding: 3rem 5vw;
-        width: 100%;
-        box-sizing: border-box;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    /* ===== QUOTE BLOCK ===== */
-    .lp-platforms-label {
+    /* ===== CLOSING QUOTE ===== */
+    .lp-closer {
+        padding: 2rem 1rem 2.5rem;
         text-align: center;
-        margin: 0 auto 2rem;
     }
 
-    .lp-platforms-quote {
-        margin: 0;
+    .lp-closer-quote {
+        margin: 0 auto;
         padding: 0;
         border: none;
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 0.15em;
-        flex-wrap: wrap;
+        max-width: 28rem;
     }
 
-    /* The large decorative curly quote marks - keep at big size */
-    .lp-quote-mark {
-        font-size: 3.2rem;
-        font-weight: 900;
-        font-family: var(--header-font);
-        color: var(--primary-color);
-        line-height: 1;
-        opacity: 0.7;
-        flex-shrink: 0;
+    .lp-closer-quote p {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.4;
+        color: var(--text-1);
     }
 
-    .lp-quote-open {
-        margin-right: 0.05em;
-    }
-
-    .lp-quote-close {
-        margin-left: 0.05em;
-    }
-
-    /* The quote body text - slightly smaller */
-    .lp-quote-body {
-        font-size: 2.2rem;
-        font-weight: 900;
-        font-family: var(--header-font);
-        letter-spacing: -0.03em;
-        line-height: 1.1;
-        color: var(--text-0);
-        text-transform: uppercase;
-    }
-
-    .lp-quote-credit {
-        margin: 0.6rem 0 0;
-        font-size: 0.8rem;
+    .lp-closer-quote footer {
+        margin: 0.4rem 0 0;
+        font-size: 0.7rem;
         font-family: var(--mono-text-font);
         color: var(--text-2);
         letter-spacing: 0.04em;
@@ -775,12 +761,11 @@
     }
 
     .lp-showcase-frame {
+        position: relative;
         border-radius: 14px;
         overflow: hidden;
         border: 1px solid var(--border-color);
         background: var(--bg-0);
-        will-change: transform;
-        transition: transform .3s ease-out, box-shadow .3s ease;
         max-width: 1600px;
         margin: 0 auto;
         display: flex;
@@ -808,12 +793,10 @@
     }
 
     :root.dark .lp-showcase-frame {
-        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     :root.light .lp-showcase-frame {
-        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.05);
         border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
@@ -845,13 +828,6 @@
         --dot-inactive-bg: rgba(0, 0, 0, 0.2);
         --dot-hover-bg: rgba(0, 0, 0, 0.4);
         --dot-active-bg: var(--primary-color);
-    }
-
-    /* Support fallback for browsers without backdrop-filter */
-    @supports not (backdrop-filter: blur(24px)) {
-        .lp-showcase-bar {
-            background: var(--bg-1);
-        }
     }
 
     .lp-dot-r,
@@ -954,14 +930,10 @@
     @keyframes lpFade {
         from {
             opacity: 0;
-            transform: scale(.97);
-            filter: blur(4px);
         }
 
         to {
             opacity: 1;
-            transform: scale(1);
-            filter: blur(0);
         }
     }
 
@@ -974,6 +946,11 @@
         overflow: hidden;
     }
 
+    .lp-showcase-slide {
+        position: relative;
+        z-index: 1;
+    }
+
     .lp-showcase-slide .next-image-wrapper {
         aspect-ratio: auto !important;
         /* Let the container/image define the shape */
@@ -981,6 +958,7 @@
         /* Hide LQIP if it forces a ratio */
         height: 100%;
         width: 100%;
+        transform: none;
     }
 
     .lp-showcase-slide img,
@@ -1024,27 +1002,26 @@
 
     .lp-showcase-nav {
         position: absolute;
-        bottom: 24px;
+        bottom: 16px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
+        align-items: center;
         gap: 8px;
-        padding: 8px 12px;
-        background: rgba(var(--bg-1-rgb), 0.8);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 20px;
-        border: 1px solid var(--border-color);
-        z-index: 10;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        padding: 8px 14px;
+        background: rgba(12, 12, 16, 0.82);
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+        z-index: 30;
+        pointer-events: auto;
     }
 
     .lp-showcase-dot {
         width: 8px;
         height: 8px;
         border-radius: 4px;
-        /* Pill radius */
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.5);
         cursor: pointer;
         padding: 0;
         border: none;
@@ -1053,86 +1030,58 @@
 
     @media (hover: hover) {
         .lp-showcase-dot:hover {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
         }
     }
 
     .lp-showcase-dot.active {
         width: 24px;
-        /* Expand to pill shape */
-        background: #ffffff;
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        background: #fff;
     }
 
-    /* ===== PILLARS (FOSS / AppStore / Extensible) ===== */
-    .lp-pillars {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
+    /* ===== POINTS (FOSS / App Store / Extensible) ===== */
+    .lp-points-section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
     }
 
-    .lp-pillar {
-        position: relative;
-        overflow: hidden;
-        background: var(--bg-1);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        padding: 2rem 1.75rem;
-        will-change: transform;
-        transition: all .3s cubic-bezier(.16, 1, .3, 1);
+    .lp-points-section .lp-section-inner {
+        max-width: var(--page-width, 920px);
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    @media (hover: hover) {
-        .lp-pillar:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-4px) !important;
-        }
+    .lp-points-section .lp-section-header {
+        margin-bottom: 1.5rem;
+        max-width: 100%;
     }
 
-    :root.dark .lp-pillar:hover {
-        box-shadow: 0 16px 48px rgba(0, 0, 0, .5);
+    .lp-points-section .lp-section-header p {
+        max-width: 100%;
+        overflow-wrap: break-word;
     }
 
-    :root.light .lp-pillar:hover {
-        box-shadow: 0 8px 32px rgba(0, 0, 0, .08);
+    .lp-points {
+        max-width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: .7rem;
+        text-align: left;
     }
 
-    .lp-pillar-glow {
-        position: absolute;
-        top: -60%;
-        right: -30%;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-        opacity: 0;
-        transition: opacity .4s ease;
-        pointer-events: none;
-    }
-
-    @media (hover: hover) {
-        .lp-pillar:hover .lp-pillar-glow {
-            opacity: .08;
-        }
-    }
-
-    .lp-pillar-icon {
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-    }
-
-    .lp-pillar h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        font-family: var(--header-font);
-        letter-spacing: -.01em;
-        margin: 0 0 .6rem;
-    }
-
-    .lp-pillar p {
-        font-size: .88rem;
-        color: var(--text-2);
-        line-height: 1.6;
+    .lp-points p {
         margin: 0;
+        font-size: .92rem;
+        line-height: 1.55;
+        color: var(--text-2);
+    }
+
+    .lp-points strong {
+        color: var(--text-0);
+        font-weight: 600;
     }
 
     /* ===== FEATURE ROWS ===== */
@@ -1228,687 +1177,241 @@
         margin-top: .25rem;
     }
 
-    /* ===== FEATURES (Horizontal Scrollytelling) ===== */
-    .lp-features-scroll-wrapper {
+    /* ===== INSIDE (vertical architecture, no sideways scroll) ===== */
+    .lp-inside {
         position: relative;
-        /* Bold dark themed background: deep charcoal with a vivid primary-color radial burst */
+        padding: 4.5rem 1.5rem 5rem;
         background:
-            radial-gradient(ellipse 72% 85% at 50% 50%,
-                rgba(239, 83, 80, 0.22) 0%,
-                rgba(60, 20, 55, 0.14) 38%,
-                transparent 68%),
-            linear-gradient(160deg, #0d0d12 0%, #14141d 50%, #0f0f1a 100%);
+            radial-gradient(ellipse 72% 70% at 50% 0%,
+                rgba(239, 83, 80, 0.18) 0%,
+                transparent 62%),
+            linear-gradient(160deg, #0d0d12 0%, #14141d 55%, #0f0f1a 100%);
         border-top: 1px solid rgba(239, 83, 80, 0.25);
         border-bottom: 1px solid rgba(239, 83, 80, 0.25);
     }
 
-    /* Light mode: clean warm-light background with a muted accent radial */
-    :root.light .lp-features-scroll-wrapper {
+    :root.light .lp-inside {
         background:
-            radial-gradient(ellipse 72% 85% at 50% 50%,
-                rgba(239, 83, 80, 0.09) 0%,
-                transparent 65%),
+            radial-gradient(ellipse 72% 70% at 50% 0%,
+                rgba(239, 83, 80, 0.08) 0%,
+                transparent 62%),
             linear-gradient(160deg, #f2f2f8 0%, #eaeaf2 50%, #f0f0f8 100%);
         border-top: 1px solid rgba(239, 83, 80, 0.15);
         border-bottom: 1px solid rgba(239, 83, 80, 0.15);
     }
 
-    .lp-features-sticky {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        width: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        /* Align track to center-vertical but clear the absolute header at top */
-        justify-content: center;
-        touch-action: pan-y;
-        /* Allow vertical scrolling, JS handles horizontal snaps */
+    .lp-inside-inner {
+        width: min(920px, 100%);
+        margin: 0 auto;
     }
 
-    .lp-features-header {
-        position: absolute;
-        top: 5.5%;
-        left: 5%;
-        z-index: 20;
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
+    .lp-inside-header {
+        margin-bottom: 2rem;
     }
 
-    .lp-arch-tag {
+    .lp-inside .lp-arch-tag {
         font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.18em;
         color: var(--primary-color);
         font-family: var(--mono-text-font);
-        text-shadow: 0 0 12px rgba(239, 83, 80, 0.3);
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.35rem;
     }
 
-    .lp-arch-title {
-        font-size: 3.8rem;
+    .lp-inside .lp-arch-title {
+        font-size: clamp(2.2rem, 6vw, 3.4rem);
         font-weight: 900;
         font-family: var(--header-font);
         margin: 0;
         letter-spacing: -0.04em;
-        line-height: 1.0;
-        color: #ffffff;
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+        line-height: 1.05;
+        color: #fff;
     }
 
-    :root.light .lp-arch-title {
+    :root.light .lp-inside .lp-arch-title {
         color: var(--text-0);
-        filter: none;
     }
 
-    .lp-arch-subtitle {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-top: 0.8rem;
-    }
-
-    .lp-arch-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary-color);
-        filter: drop-shadow(0 0 8px rgba(239, 83, 80, 0.4));
-        opacity: 0.85;
-    }
-
-    .lp-arch-line {
-        width: 32px;
-        height: 2px;
-        background: var(--primary-color);
-        border-radius: 4px;
-        opacity: 0.75;
-        box-shadow: 0 0 8px var(--primary-color);
-    }
-
-    .lp-arch-subtitle p {
-        font-size: 1.15rem;
-        color: rgba(255, 255, 255, 0.65);
-        margin: 0;
+    .lp-inside-lead {
+        margin: 0.75rem 0 0;
+        font-size: 1.1rem;
         font-weight: 500;
-        letter-spacing: -0.01em;
+        color: rgba(255, 255, 255, 0.65);
     }
 
-    :root.light .lp-arch-subtitle p {
+    :root.light .lp-inside-lead {
         color: var(--text-2);
     }
 
-    .lp-features-track {
-        display: flex;
-        width: max-content;
-        height: max-content;
-        /* Reserve top space for the absolute-positioned header (~130px) */
-        padding-top: 130px;
-        padding-left: 6vw;
-        /* Match (100vw - width)/2 for perfect centering */
-        padding-right: 50vw;
-        /* Lots of dead space so the last card can align left fully */
-        align-items: center;
-        gap: 6vw;
-    }
-
-    .lp-feature-card {
-        box-sizing: border-box;
-        width: min(620px, calc(100vw - 12vw));
-        min-width: unset;
-        /* More flexible height: allows growth but prevents viewport overflow */
-        max-height: calc(100vh - 280px);
-        margin-bottom: 6rem;
+    .lp-stack {
+        list-style: none;
+        margin: 0 0 2rem;
+        padding: 0.7rem;
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
-        opacity: 0.15;
-        /* Dark mode: slightly lighter glass so cards pop on the dark charcoal bg */
-        background: rgba(30, 28, 36, 0.55);
-        backdrop-filter: blur(28px) saturate(130%);
-        -webkit-backdrop-filter: blur(28px) saturate(130%);
-        padding: 2.75rem;
-        border-radius: 20px;
+        gap: 0.55rem;
+        background: rgba(20, 18, 26, 0.55);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-top: 1px solid rgba(255, 255, 255, 0.18);
-        border-left: 1px solid rgba(255, 255, 255, 0.14);
-        box-shadow:
-            0 24px 56px rgba(0, 0, 0, 0.65),
-            0 0 0 1px rgba(239, 83, 80, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.07);
-        /* GSAP will animate this */
-        transform: scale(0.9);
-        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-        position: relative;
-        overflow: hidden;
+        border-radius: 24px;
     }
 
-    /* Light mode card: warm white frosted glass */
-    :root.light .lp-feature-card {
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-top: 1px solid rgba(255, 255, 255, 0.95);
-        border-left: 1px solid rgba(255, 255, 255, 0.9);
-        box-shadow:
-            0 20px 48px rgba(0, 0, 0, 0.10),
-            0 0 0 1px rgba(239, 83, 80, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    :root.light .lp-stack {
+        background: rgba(255, 255, 255, 0.7);
+        border-color: rgba(0, 0, 0, 0.08);
     }
 
-    /* Subtle neon accent glow inside the card */
-    .lp-feature-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 6px;
-        background: linear-gradient(90deg, var(--primary-color), #ff8e53);
-        opacity: 0.8;
+    .lp-stack-layer {
+        display: grid;
+        grid-template-columns: 7.5rem 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 0.9rem;
+        row-gap: 0.15rem;
+        padding: 0.85rem 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: border-color 0.2s ease, background 0.2s ease;
     }
 
-    /* Force visibility of text/visuals inside the GSAP scroll track */
-    .lp-feature-card .lp-feature-text,
-    .lp-feature-card .lp-feature-visual {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
+    .lp-stack-layer:hover,
+    .lp-stack-layer:focus-within {
+        border-color: rgba(239, 83, 80, 0.45);
+        background: rgba(239, 83, 80, 0.08);
     }
 
-    .lp-feature-card.is-active {
-        opacity: 1;
-        transform: scale(1);
+    :root.light .lp-stack-layer {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.06);
     }
 
-    /* Dark mode card headings: luminous white-to-grey gradient */
-    .lp-feature-text h3 {
-        font-size: 2rem;
+    :root.light .lp-stack-layer:hover,
+    :root.light .lp-stack-layer:focus-within {
+        border-color: rgba(239, 83, 80, 0.4);
+        background: #fff;
+    }
+
+    .lp-stack-kicker {
+        grid-row: 1 / span 2;
+        align-self: center;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-family: var(--mono-text-font);
+        color: var(--primary-color);
+    }
+
+    .lp-stack-layer strong {
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: var(--header-font);
+        color: #fff;
+    }
+
+    :root.light .lp-stack-layer strong {
+        color: var(--text-0);
+    }
+
+    .lp-stack-note {
+        font-size: 0.88rem;
+        line-height: 1.4;
+        color: rgba(255, 255, 255, 0.62);
+    }
+
+    :root.light .lp-stack-note {
+        color: var(--text-2);
+    }
+
+    .lp-inside-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+    }
+
+    .lp-inside-card {
+        margin: 0;
+        padding: 1.25rem 1.35rem;
+        border-radius: 20px;
+        background: rgba(30, 28, 36, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    :root.light .lp-inside-card {
+        background: rgba(255, 255, 255, 0.78);
+        border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .lp-inside-card h3 {
+        margin: 0 0 0.55rem;
+        font-size: 1.2rem;
         font-weight: 800;
         font-family: var(--header-font);
-        margin: 0 0 1rem;
         letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #b0a0a8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #fff;
     }
 
-    /* Light mode card headings: strong primary-color-tinted charcoal gradient */
-    :root.light .lp-feature-text h3 {
-        background: linear-gradient(135deg, #1a1a2e 20%, #ef5350);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    :root.light .lp-inside-card h3 {
+        color: var(--text-0);
     }
 
-    /* Dark mode card body text */
-    .lp-feature-text p {
-        font-size: 1.05rem;
-        line-height: 1.68;
-        color: rgba(255, 255, 255, 0.72);
+    .lp-inside-card p {
         margin: 0;
-        font-weight: 400;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.7);
     }
 
-    /* Light mode card body text */
-    :root.light .lp-feature-text p {
+    :root.light .lp-inside-card p {
         color: #3a3a4a;
     }
 
-    /* Architecture */
-    .lp-arch-mini {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* Mermaid diagram inside a feature card visual */
-    .lp-mermaid-visual {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100px;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    .lp-mermaid-visual .mermaid-wrapper {
-        margin: 0;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        transition: transform 0.3s ease;
-    }
-
-    .lp-mermaid-visual .mermaid-wrapper svg {
-        width: 100%;
-        height: auto;
-        max-width: 100%;
-        max-height: 180px;
-    }
-
-    /* Adaptive Mermaid Sizing & Visibility */
-    @media (max-width: 500px),
-    (max-height: 700px) {
-        .lp-mermaid-visual .mermaid-wrapper {
-            transform: scale(0.85);
-        }
-    }
-
-    @media (max-width: 400px),
-    (max-height: 600px) {
-        .lp-mermaid-visual {
-            display: none !important;
-            /* Hide if too small for legibility */
-        }
-
-        .lp-feature-visual:has(.lp-code-block) {
-            display: none !important;
-            /* Hide code block visuals if there's not enough space to render them legibly */
-        }
-
-        .lp-feature-card {
-            gap: 1rem;
-            padding: 2rem;
-            max-height: calc(100vh - 250px);
-        }
-    }
-
-    /* Dark mode: code blocks inside cards use a slightly lighter bg to stand out */
-    .lp-feature-card .lp-code-block {
-        background: rgba(10, 10, 15, 0.7);
-        border-color: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.88);
-    }
-
-    /* Light mode: code blocks inside cards use a clean white bg */
-    :root.light .lp-feature-card .lp-code-block {
-        background: rgba(255, 255, 255, 0.85);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #2a2a3a;
-    }
-
-    :root.light .lp-feature-card .lp-code-comment {
-        color: #888;
-    }
-
-    :root.light .lp-feature-card .lp-code-fn {
-        color: #2a2a3a;
-    }
-
-    /* Dark mode: stat boxes inside cards */
-    .lp-feature-card .lp-stat {
-        background: rgba(10, 10, 15, 0.6);
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .lp-feature-card .lp-stat-num {
-        color: var(--primary-color);
-    }
-
-    .lp-feature-card .lp-stat-label {
-        color: rgba(255, 255, 255, 0.55);
-    }
-
-    /* Light mode: stat boxes inside cards */
-    :root.light .lp-feature-card .lp-stat {
-        background: rgba(255, 255, 255, 0.85);
-        border-color: rgba(0, 0, 0, 0.1);
-    }
-
-    :root.light .lp-feature-card .lp-stat-num {
-        color: var(--primary-color);
-    }
-
-    :root.light .lp-feature-card .lp-stat-label {
-        color: #666;
-    }
-
-    /* ===== DRIVERS VISUAL (Outline Stack) ===== */
-    .lp-drivers-visual {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        width: 100%;
-    }
-
-    .lp-drivers-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        color: var(--primary-color);
+    .lp-inside-card code {
         font-family: var(--mono-text-font);
-        opacity: 0.8;
-    }
-
-    .lp-drivers-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-    }
-
-    .lp-driver-card {
-        padding: 0.6rem 1rem;
-        background: rgba(var(--bg-1-rgb), 0.4);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-0);
-        font-family: var(--header-font);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(8px);
-    }
-
-    @media (hover: hover) {
-        .lp-driver-card:hover {
-            border-color: var(--primary-color);
-            background: rgba(var(--primary-color-rgb), 0.1);
-            transform: translateY(-2px);
-        }
-    }
-
-    /* ===== SCROLLYBOARD TIMELINE INDICATOR ===== */
-    .lp-sb-timeline {
-        position: absolute;
-        bottom: 5rem;
-        /* Increased padding from bottom edge further to ensure visibility */
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 50;
-        width: min(560px, 80vw);
-        pointer-events: auto;
-    }
-
-    .lp-sb-tl-row {
-        position: relative;
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        /* top padding so the dot scale(1.5) doesn't get clipped */
-        padding-top: 10px;
-    }
-
-    /* Inactive background track */
-    .lp-sb-tl-row::before {
-        content: '';
-        position: absolute;
-        /* Vertically centered at the dot: 10px padding + 6px (half 12px dot) = 16px */
-        top: 16px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 1px;
-        z-index: 0;
-    }
-
-    /* Active fill line */
-    .lp-sb-tl-fill {
-        position: absolute;
-        top: 16px;
-        left: 0;
-        height: 2px;
-        width: 0%;
-        background: linear-gradient(90deg, var(--primary-color), rgba(255, 255, 255, 0.85));
-        border-radius: 1px;
-        z-index: 1;
-        box-shadow: 0 0 8px rgba(239, 83, 80, 0.6);
-    }
-
-    .lp-sb-tl-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.55rem;
-        position: relative;
-        z-index: 2;
-        /* Each step is individually clickable */
-        pointer-events: auto;
-        cursor: pointer;
-    }
-
-    @media (hover: hover) {
-
-        /* Hover glow on unvisited future dots */
-        .lp-sb-tl-step:not(.active):not(.visited):hover .lp-sb-tl-dot {
-            background: rgba(255, 255, 255, 0.45);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: scale(1.25);
-        }
-
-        .lp-sb-tl-step:not(.active):hover .lp-sb-tl-label {
-            color: rgba(255, 255, 255, 0.65);
-        }
-
-        :root.light .lp-sb-tl-step:not(.active):not(.visited):hover .lp-sb-tl-dot {
-            background: rgba(0, 0, 0, 0.22);
-            border-color: rgba(0, 0, 0, 0.3);
-        }
-
-        :root.light .lp-sb-tl-step:not(.active):hover .lp-sb-tl-label {
-            color: rgba(0, 0, 0, 0.55);
-        }
-    }
-
-    .lp-sb-tl-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.18);
-        border: 2px solid rgba(255, 255, 255, 0.22);
-        transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        flex-shrink: 0;
-        position: relative;
-    }
-
-    /* Visited: filled with primary color */
-    .lp-sb-tl-step.visited .lp-sb-tl-dot {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        transform: scale(1);
-        box-shadow: 0 0 6px rgba(239, 83, 80, 0.5);
-    }
-
-    /* Active: bright white glowing orb */
-    .lp-sb-tl-step.active .lp-sb-tl-dot {
-        background: #ffffff;
-        border-color: var(--primary-color);
-        transform: scale(1.55);
-        box-shadow:
-            0 0 0 5px rgba(239, 83, 80, 0.22),
-            0 0 18px rgba(255, 255, 255, 0.45),
-            0 0 32px rgba(239, 83, 80, 0.35);
-    }
-
-    /* Active dot pulse ring */
-    .lp-sb-tl-step.active .lp-sb-tl-dot::after {
-        content: '';
-        position: absolute;
-        inset: -6px;
-        border-radius: 50%;
-        border: 1.5px solid rgba(239, 83, 80, 0.5);
-        animation: sb-dot-ping 1.8s ease-out infinite;
-    }
-
-    @keyframes sb-dot-ping {
-        0% {
-            transform: scale(1);
-            opacity: 0.7;
-        }
-
-        70% {
-            transform: scale(1.9);
-            opacity: 0;
-        }
-
-        100% {
-            transform: scale(1.9);
-            opacity: 0;
-        }
-    }
-
-    /* Labels */
-    .lp-sb-tl-label {
-        font-size: 0.62rem;
-        font-weight: 700;
-        font-family: var(--mono-text-font);
-        color: rgba(255, 255, 255, 0.28);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        white-space: nowrap;
-        transition: color 0.35s ease;
-        text-align: center;
-        user-select: none;
-    }
-
-    .lp-sb-tl-step.visited .lp-sb-tl-label {
-        color: rgba(239, 83, 80, 0.6);
-    }
-
-    .lp-sb-tl-step.active .lp-sb-tl-label {
-        color: rgba(255, 255, 255, 0.92);
-    }
-
-    /* ---- Light mode overrides ---- */
-    :root.light .lp-sb-tl-row::before {
-        background: rgba(0, 0, 0, 0.1);
-    }
-
-    :root.light .lp-sb-tl-fill {
-        background: linear-gradient(90deg, var(--primary-color), rgba(60, 60, 80, 0.5));
-        box-shadow: 0 0 6px rgba(239, 83, 80, 0.4);
-    }
-
-    :root.light .lp-sb-tl-dot {
-        background: rgba(0, 0, 0, 0.12);
-        border-color: rgba(0, 0, 0, 0.16);
-    }
-
-    :root.light .lp-sb-tl-step.visited .lp-sb-tl-dot {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        box-shadow: 0 0 6px rgba(239, 83, 80, 0.4);
-    }
-
-    :root.light .lp-sb-tl-step.active .lp-sb-tl-dot {
-        background: var(--primary-color);
-        border-color: #fff;
-        box-shadow:
-            0 0 0 5px rgba(239, 83, 80, 0.18),
-            0 0 18px rgba(239, 83, 80, 0.4);
-    }
-
-    :root.light .lp-sb-tl-label {
-        color: rgba(0, 0, 0, 0.28);
-    }
-
-    :root.light .lp-sb-tl-step.visited .lp-sb-tl-label {
+        font-size: 0.88em;
         color: var(--primary-color);
-        opacity: 0.7;
     }
 
-    :root.light .lp-sb-tl-step.active .lp-sb-tl-label {
-        color: var(--text-0);
+    .lp-iland-link {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: none !important;
+        border-radius: 6px;
     }
 
-    /* ---- Show on mobile: dots only, labels hidden to avoid overlap ---- */
-    @media (max-width: 768px) {
-        .lp-sb-timeline {
-            /* Full-width across the sticky viewport bottom */
-            display: flex;
-            width: calc(100vw - 3rem);
-            bottom: 4.5rem;
-            /* Match global elevation to clear mobile browser UI */
-        }
-
-        /* CRITICAL: without labels, flex items collapse to 16px each → row = 64px.
-           Force full width so percentage fills resolve against the real container. */
-        .lp-sb-tl-row {
-            width: 100%;
-            padding-top: 8px;
-        }
-
-        /* Each step gets equal flex weight so dots land at 0%, 33%, 67%, 100% */
-        .lp-sb-tl-step {
-            flex: 1;
-            justify-content: center;
-        }
-
-        /* Hide text labels */
-        .lp-sb-tl-label {
-            display: none;
-        }
-
-        /* Adjust track line and fill to centre on the shorter row */
-        .lp-sb-tl-row::before {
-            top: 14px;
-            /* 8px padding + 6px half-dot */
-        }
-
-        .lp-sb-tl-fill {
-            top: 14px;
-        }
+    .lp-iland-link:hover,
+    .lp-iland-link:focus {
+        color: var(--primary-color) !important;
+        background: none !important;
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
     }
 
-    /* ===== CUSTOM MAGNETIC CURSOR ===== */
-
-    .custom-cursor {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 32px;
-        height: 32px;
-        border: 2px solid var(--primary-color);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        transform: translate(-50%, -50%);
-        transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-            height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-            background-color 0.3s ease;
-        mix-blend-mode: difference;
+    .lp-iland-link:hover code,
+    .lp-iland-link:focus code {
+        color: var(--primary-color) !important;
+        background: transparent;
     }
 
-    .custom-cursor.is-hovering {
-        width: 64px;
-        height: 64px;
-        border-width: 2px;
-        background-color: transparent;
-        mix-blend-mode: normal;
-        opacity: 0.8;
-    }
-
-    .custom-cursor.is-swiping {
-        width: 64px;
-        height: 64px;
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        mix-blend-mode: normal;
-        opacity: 0.5;
-    }
-
-    /* Keep exact same visual styles for stats/code blocks as before */
-
-    @media (max-width: 768px) {
-        body {
-            cursor: auto;
-            /* Restore cursor on mobile/touch */
+    @media (max-width: 700px) {
+        .lp-inside {
+            padding: 3.25rem 1.15rem 3.75rem;
         }
 
-        .custom-cursor {
-            display: none !important;
+        .lp-stack-layer {
+            grid-template-columns: 1fr;
+            gap: 0.2rem;
         }
 
-        .lp-pillars {
+        .lp-stack-kicker {
+            grid-row: auto;
+        }
+
+        .lp-inside-grid {
             grid-template-columns: 1fr;
         }
+    }
 
+    @media (max-width: 768px) {
         .lp-feature-row {
             grid-template-columns: 1fr;
         }
@@ -1925,20 +1428,8 @@
             grid-template-columns: 1fr;
         }
 
-        .lp-explore {
-            grid-template-columns: 1fr;
-        }
-
-        .lp-two-col {
-            grid-template-columns: 1fr;
-        }
-
         .lp-platforms {
             gap: 1.25rem;
-        }
-
-        .lp-community-grid {
-            grid-template-columns: 1fr;
         }
 
         .lp-cta-links {
@@ -2114,154 +1605,97 @@
         font-weight: 500;
     }
 
-    /* ===== EXPLORE ===== */
-    .lp-explore {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
+    /* ===== EXPLORE + CONTRIBUTE ===== */
+    .lp-feed-section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
     }
 
-    .lp-explore-card {
-        background: var(--bg-1);
-        /* Fallback */
-        background: rgba(var(--bg-1-rgb), 0.7);
-        backdrop-filter: blur(24px) saturate(150%);
-        -webkit-backdrop-filter: blur(24px) saturate(150%);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        padding: 1.75rem;
-        text-decoration: none;
-        color: inherit;
-        /* Hardware acceleration and specific transitions for "speedy" CSS */
-        transition: transform .3s cubic-bezier(.16, 1, .3, 1),
-            box-shadow .3s cubic-bezier(.16, 1, .3, 1),
-            background-color .3s ease,
-            border-color .3s ease;
-        display: flex;
-        flex-direction: column;
-        border-bottom: none !important;
-        will-change: transform, box-shadow;
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.2);
-        position: relative;
-        transform: translateZ(0);
-        backface-visibility: hidden;
+    .lp-feed-section .lp-section-inner {
+        max-width: var(--page-width, 920px);
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    /* Hitbox stable extension to fix hover / un-hover loop bug */
-    .lp-explore-card::after {
-        content: '';
-        position: absolute;
-        bottom: -20px;
-        left: 0;
-        right: 0;
-        height: 20px;
-        pointer-events: none;
-    }
-
-    @media (hover: hover) {
-        .lp-explore-card:hover::after {
-            pointer-events: auto;
-        }
-    }
-
-    /* Fallback for native backdrop-filter support */
-    @supports not (backdrop-filter: blur(24px)) {
-        .lp-explore-card {
-            background: var(--bg-1);
-        }
-    }
-
-    @media (hover: hover) {
-        .lp-explore-card:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-8px) !important;
-            color: inherit !important;
-            background: rgba(var(--bg-1-rgb), 0.85) !important;
-        }
-    }
-
-    :root.dark .lp-explore-card:hover {
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 32px 64px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 255, 255, 0.05);
-    }
-
-    :root.light .lp-explore-card:hover {
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95), 0 20px 48px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .lp-explore-card svg {
-        color: var(--primary-color);
+    .lp-feed-section .lp-section-header {
         margin-bottom: 1rem;
-        transition: filter .3s ease;
+        max-width: 100%;
+    }
+
+    .lp-feed-section .lp-section-header p {
+        max-width: 100%;
+        overflow-wrap: break-word;
+    }
+
+    #releases-list + .lp-col-item {
+        border-top: 1px solid var(--border-color);
+    }
+
+    .lp-explore {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem 1.1rem;
+        font-size: 0.9rem;
+        margin: 0 auto 1.5rem;
+        padding: 0;
+        width: 100%;
+        position: static;
+        top: auto;
+        z-index: auto;
+        background: transparent;
+        text-align: center;
+    }
+
+    .lp-explore a {
+        display: inline-flex;
+        flex: 0 0 auto;
+        width: auto;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        white-space: nowrap;
+        border-bottom: none !important;
     }
 
     @media (hover: hover) {
-        .lp-explore-card:hover svg {
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
-            /* Icon color remains consistent as per user request */
-        }
-    }
-
-    .lp-explore-card h3 {
-        font-size: 1.05rem;
-        font-weight: 700;
-        font-family: var(--header-font);
-        margin: 0 0 .35rem;
-    }
-
-    .lp-explore-card p {
-        font-size: .85rem;
-        color: var(--text-2);
-        line-height: 1.6;
-        margin: 0;
-        flex: 1;
-    }
-
-    .lp-explore-arrow {
-        font-size: 1.25rem;
-        color: var(--text-2);
-        margin-top: 1rem;
-        transition: transform .3s cubic-bezier(.16, 1, .3, 1), color .3s ease, opacity .3s ease;
-        opacity: 0.6;
-    }
-
-    @media (hover: hover) {
-        .lp-explore-card:hover .lp-explore-arrow {
-            transform: translateX(8px);
-            color: var(--primary-color);
-            opacity: 1;
+        .lp-explore a:hover {
+            text-decoration: underline;
+            text-underline-offset: 0.18em;
+            color: var(--primary-color) !important;
+            background: none !important;
         }
     }
 
     /* ===== TWO COL ===== */
     .lp-two-col {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 1.25rem;
+    }
+
+    .lp-col-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        min-width: 0;
     }
 
     .lp-col-card {
+        display: flex;
+        flex-direction: column;
+        align-self: start;
+        width: 100%;
+        height: auto;
         background: var(--bg-1);
-        background: rgba(var(--bg-1-rgb), 0.6);
-        backdrop-filter: blur(24px) saturate(150%);
-        -webkit-backdrop-filter: blur(24px) saturate(150%);
         border: 1px solid var(--border-color);
         border-radius: 14px;
         overflow: hidden;
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
-    }
-
-    @supports not (backdrop-filter: blur(24px)) {
-        .lp-col-card {
-            background: var(--bg-1);
-        }
-    }
-
-    :root.dark .lp-col-card {
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 12px 32px rgba(0, 0, 0, .4);
-    }
-
-    :root.light .lp-col-card {
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, .06);
     }
 
     .lp-col-header {
@@ -2276,7 +1710,6 @@
     .lp-col-header svg {
         color: var(--primary-color);
         flex-shrink: 0;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     .lp-col-header h3 {
@@ -2284,13 +1717,13 @@
         font-weight: 700;
         font-family: var(--header-font);
         margin: 0;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .lp-col-item {
         display: flex;
-        align-items: baseline;
-        gap: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
         padding: 1rem 1.5rem;
         text-decoration: none;
         color: inherit;
@@ -2351,6 +1784,7 @@
     @media (hover: hover) {
         .lp-col-footer:hover {
             background: rgba(var(--primary-color-rgb, 239, 83, 80), 0.1) !important;
+            color: var(--primary-color) !important;
             padding-left: 1.75rem;
         }
     }
@@ -2395,124 +1829,40 @@
     /* ===== COMMUNITY GRID ===== */
     .lp-community-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: start;
+        gap: 1.25rem;
         margin-top: 1.5rem;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
     }
 
-    .lp-community-block {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 1rem;
-        padding: 1.5rem 1.5rem;
-        background: var(--bg-1);
-        /* Fallback */
-        background: rgba(var(--bg-1-rgb), 0.6);
-        backdrop-filter: blur(24px) saturate(150%);
-        -webkit-backdrop-filter: blur(24px) saturate(150%);
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        text-decoration: none;
-        color: inherit;
-        transition: all 0.4s cubic-bezier(.16, 1, .3, 1);
-        position: relative;
-        overflow: hidden;
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    .lp-community-card {
+        text-align: left;
+        height: auto;
     }
 
-    @media (max-width: 1024px) {
+    .lp-community-card .lp-col-footer {
+        margin-top: 0;
+    }
+
+    @media (max-width: 900px) {
+        .lp-community-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 700px) {
+        .lp-two-col {
+            grid-template-columns: 1fr;
+        }
+
         .lp-community-grid {
             grid-template-columns: 1fr;
-            max-width: 400px;
-        }
-
-        .lp-community-block {
-            padding: 1.25rem 1.5rem;
-        }
-    }
-
-    @supports not (backdrop-filter: blur(24px)) {
-        .lp-community-block {
-            background: var(--bg-1);
-        }
-    }
-
-    @media (hover: hover) {
-        .lp-community-block:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-8px);
-            background: rgba(var(--bg-1-rgb, 30, 30, 40), 0.8) !important;
-            color: inherit !important;
-        }
-    }
-
-    :root.dark .lp-community-block:hover {
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.2);
-    }
-
-    :root.light .lp-community-block:hover {
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 16px 40px rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .lp-community-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        background: var(--bg-0);
-        border: 1px solid var(--border-color);
-        transition: all 0.3s cubic-bezier(.16, 1, .3, 1);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    @media (hover: hover) {
-
-        /* Brand Color Lighting Effects on Hover */
-        .lp-community-block:hover .lp-community-icon {
-            transform: scale(1.15) translateY(-4px);
-            border-color: currentColor;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), inset 0 0 20px currentColor;
         }
     }
 
     .discord {
         color: #5865F2;
-        /* Raw brand color */
-    }
-
-    .github {
-        color: var(--text-0);
-    }
-
-    .kofi {
-        color: #29abe0;
-    }
-
-    .lp-community-content {
-        text-align: center;
-    }
-
-    .lp-community-content h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        font-family: var(--header-font);
-        margin: 0 0 .35rem;
-    }
-
-    .lp-community-content p {
-        font-size: .9rem;
-        color: var(--text-2);
-        line-height: 1.6;
-        margin: 0;
     }
 
     /* ===== CTA ===== */
@@ -2521,36 +1871,12 @@
         max-width: 1200px;
         margin: 0 auto;
         position: relative;
-        overflow: hidden;
-        /* Override .lp-section's 6rem padding to keep everything in-viewport */
         padding-top: 3rem !important;
         padding-bottom: 2rem !important;
     }
 
-    .lp-cta-glow {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 600px;
-        height: 400px;
-        background: radial-gradient(ellipse, var(--primary-color) 0%, transparent 65%);
-        opacity: .05;
-        pointer-events: none;
-        will-change: transform;
-        transition: transform .3s ease-out;
-    }
-
     .lp-cta-inner {
         position: relative;
-    }
-
-    .lp-cta-inner h2 {
-        font-size: 1.75rem;
-        font-weight: 800;
-        font-family: var(--header-font);
-        letter-spacing: -.02em;
-        margin: 0 0 .35rem;
     }
 
     .lp-cta-inner p {
@@ -2618,6 +1944,7 @@
 
     @media (hover: hover) {
         .lp-footer-source-btn:hover {
+            background: transparent !important;
             border-color: var(--primary-color);
             color: var(--primary-color) !important;
             text-decoration: none !important;
@@ -2626,17 +1953,21 @@
 
     /* ===== RESPONSIVE ===== */
     @media(max-width:768px) {
+        .lp-explore {
+            gap: 0.25rem 0.75rem;
+            font-size: 0.82rem;
+        }
+
         .lp-hero {
-            padding: 5rem 1.25rem 3rem;
+            padding: 3rem 0.9rem 3.25rem;
         }
 
         .lp-hero-title {
-            font-size: 2.75rem;
+            font-size: 2.35rem;
         }
 
         .lp-hero-sub {
-            font-size: .95rem;
-            padding: 0 .5rem;
+            font-size: 0.98rem;
         }
 
         .lp-showcase-wrap {
@@ -2647,60 +1978,9 @@
             border-radius: 10px;
         }
 
-        /* --- Mobile Scrollyboard: GSAP still runs, just smaller cards --- */
-
-        /* Keep .lp-features-sticky as position:sticky + height:100vh (GSAP needs it) */
-        /* We only adjust spacing and card size for the smaller screen */
-
-        .lp-features-header {
-            top: 3.5%;
-            left: 6%;
-            gap: 0.25rem;
-        }
-
         .lp-arch-tag {
             font-size: 0.6rem;
             letter-spacing: 0.12em;
-        }
-
-        .lp-arch-title {
-            font-size: 2.2rem;
-            line-height: 1.1;
-        }
-
-        .lp-arch-subtitle {
-            margin-top: 0.4rem;
-            gap: 0.6rem;
-        }
-
-        .lp-arch-subtitle p {
-            font-size: 0.95rem;
-        }
-
-        .lp-arch-icon {
-            transform: scale(0.9);
-        }
-
-        .lp-features-track {
-            /* Reduce right-side dead space; desktop uses 50vw but mobile can use less */
-            padding-right: 10vw !important;
-            /* Slightly less top padding since header font is smaller */
-            padding-top: 110px !important;
-            gap: 4vw !important;
-        }
-
-        .lp-feature-card {
-            /* Wide enough to fill the viewport; GSAP handles the horizontal transform */
-            min-width: 88vw !important;
-            width: 88vw !important;
-            padding: 1.5rem !important;
-            max-height: calc(100vh - 320px) !important;
-            margin-bottom: 6rem !important;
-            gap: 1rem !important;
-        }
-
-        .lp-pillars {
-            grid-template-columns: 1fr;
         }
 
         .lp-feature-row {
@@ -2716,14 +1996,6 @@
             order: 2;
         }
 
-        .lp-explore {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .lp-two-col {
-            grid-template-columns: 1fr;
-        }
-
         .lp-platforms {
             gap: 1.25rem;
         }
@@ -2733,41 +2005,19 @@
             align-items: center;
         }
 
-        /* Keep 3-col community grid on mobile so entire CTA fits in one viewport */
         .lp-community-grid {
-            grid-template-columns: repeat(3, 1fr);
-            max-width: 100%;
-            gap: 0.75rem;
+            gap: 1rem;
             margin-top: 1rem;
-        }
-
-        .lp-community-block {
-            padding: 1rem 0.75rem;
-            gap: 0.5rem;
-            border-radius: 14px;
-        }
-
-        .lp-community-icon {
-            width: 40px;
-            height: 40px;
-        }
-
-        .lp-community-content h3 {
-            font-size: 0.85rem;
-        }
-
-        .lp-community-content p {
-            font-size: 0.75rem;
         }
     }
 
-    @media(max-width:480px) {
-        .lp-hero-title {
-            font-size: 1.85rem;
-        }
-
-        .lp-explore {
-            grid-template-columns: 1fr;
+    @media (prefers-reduced-motion: reduce) {
+        .lp-hero-anim,
+        .lp-gradient-text,
+        .lp-bd-logo-light,
+        .lp-bd-logo-dark,
+        .lp-scroll-hint {
+            animation: none !important;
         }
     }
 </style>

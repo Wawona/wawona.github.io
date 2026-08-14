@@ -56,7 +56,8 @@ function updateItemToggleTheme() {
             if (id === "auto") el.style.filter = getSysDark() ? "invert(1)" : "invert(0)";
         }
     });
-    document.documentElement.className = isDark ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle("light", !isDark);
 }
 
 updateItemToggleTheme();

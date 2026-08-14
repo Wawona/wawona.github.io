@@ -15,6 +15,16 @@
 @import "parts/_components.scss";
 
 :root {
+  /* Optional radius aliases. Prefer existing pixel values on the page. */
+  --r-min: 6px;
+  --r-control: 6px;
+  --r-well: 8px;
+  --r-inset: 12px;
+  --r-frame: 20px;
+  --r-card: 24px;
+  --r-pill: 999px;
+  --r-round: 50%;
+
   /* Used for: block comment, hr, ... */
 
   /* Fonts */
@@ -51,7 +61,8 @@ html {
 body {
   display: flex;
   flex-grow: 1;
-  padding: 0.9rem;
+  flex-wrap: wrap;
+  padding: 0 0.9rem 0.9rem;
   padding-left: calc(0.9rem + env(safe-area-inset-left));
   padding-right: calc(0.9rem + env(safe-area-inset-right));
   padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
@@ -124,7 +135,7 @@ body {
   }
 }
 
-/* Phase A: Implode — slow buildup → violent collapse */
+/* Phase A: Implode. Slow buildup, then collapse. */
 html.theme-preparing {
   transform-origin: var(--reveal-x, 50%) var(--reveal-y, 50%);
   animation: implode-pull 1.2s cubic-bezier(0.4, 0, 1, 1) both;

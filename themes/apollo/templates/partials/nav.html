@@ -1,11 +1,11 @@
 <nav>
     <div class="left-nav">
         {% if config.extra.logo %}
-        <a href={{ config.base_url }} class="logo">
+        <a href="/" class="logo">
             <img alt="{{ config.title }}" src="{{ get_url(path=config.extra.logo) }}" />
         </a>
         {% else %}
-        <a href={{ config.base_url }}>{{ config.title }}</a>
+        <a href="/">{{ config.title }}</a>
         {% endif %}
 
 
@@ -25,7 +25,7 @@
 
     <div class="right-nav">
         {% for menu in config.extra.menu %}
-        <a href={{ get_url(path=menu.url) }} style="margin-right: 0.5em">{{ menu.name }}</a>
+        <a href="/{{ menu.url }}/" style="margin-right: 0.5em">{{ menu.name }}</a>
         {% endfor %}
 
         {% if config.build_search_index %}

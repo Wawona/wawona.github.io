@@ -1,19 +1,29 @@
 {% import "macros/macros.html" as post_macros %}
 
+{% set current_path = current_path | default(value="/") %}
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark{% if current_path is starting_with("/donate") %} on-donate{% endif %}">
 
 {% include "partials/header.html" %}
 
 <body>
+    <div class="site-top">
+        <aside id="donationBanner" class="donate-banner">
+            <p class="donate-banner-copy">Donate to Alex Spaulding to keep Wawona in development.</p>
+            <div class="donate-banner-actions">
+                <a class="donate-banner-go" href="/donate/">Donate</a>
+                <button type="button" class="donate-banner-dismiss" data-donate-dismiss>Not now</button>
+            </div>
+        </aside>
+        {% include "partials/nav.html" %}
+    </div>
+
     <div class="left-content">
         {% block left_content %}
         {% endblock left_content %}
     </div>
 
     <div class="content">
-        {% include "partials/nav.html" %}
-
         <div id="spa-main">
             {# Post page is the default #}
             {% block main_content %}
@@ -75,7 +85,7 @@
                 gap: .35rem;
                 padding: .2rem .65rem;
                 border: 1px solid var(--border-color);
-                border-radius: 100px;
+                border-radius: var(--r-pill);
                 font-size: .78rem;
                 font-weight: 500;
                 font-family: var(--mono-text-font);
@@ -88,6 +98,7 @@
 
             @media (hover: hover) {
                 .site-footer-source-btn:hover {
+                    background: transparent !important;
                     border-color: var(--primary-color);
                     color: var(--primary-color) !important;
                     text-decoration: none !important;
@@ -105,6 +116,7 @@
             <p class="site-footer-sub">Wawona is free and open-source software under the <a
                     href="https://github.com/Wawona/Wawona/blob/main/LICENSE" target="_blank" rel="noopener">MIT
                     License</a>.</p>
+            <p class="site-footer-sub"><a href="/donate/">Donate</a></p>
         </footer>
     </div>
 
@@ -113,13 +125,93 @@
         {% endblock right_content %}
     </div>
 
+    <script>
+        (function donateBanner() {
+            var KEY = "wawonaDonateBanner";
+            var OLD_KEY = "hideDonationBanner";
+            var MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+
+            function loadState() {
+                try {
+                    var raw = localStorage.getItem(KEY);
+                    if (raw) {
+                        var parsed = JSON.parse(raw);
+                        if (parsed && typeof parsed === "object") {
+                            return {
+                                dismissedAt: Number(parsed.dismissedAt) || 0,
+                                lastSeen: Number(parsed.lastSeen) || 0
+                            };
+                        }
+                    }
+                } catch (ignore) { /* ignore */ }
+                if (localStorage.getItem(OLD_KEY) === "true") {
+                    var now = Date.now();
+                    return { dismissedAt: now, lastSeen: now };
+                }
+                return { dismissedAt: 0, lastSeen: 0 };
+            }
+
+            function saveState(state) {
+                try {
+                    localStorage.setItem(KEY, JSON.stringify({
+                        dismissedAt: state.dismissedAt || 0,
+                        lastSeen: state.lastSeen || 0
+                    }));
+                } catch (ignore) { /* ignore */ }
+            }
+
+            function isDonatePath() {
+                var path = (window.location.pathname || "").replace(/\/$/, "") || "/";
+                return path === "/donate" || path.indexOf("/donate/") === 0;
+            }
+
+            function applyBannerVisibility(hide) {
+                document.documentElement.classList.toggle("on-donate", isDonatePath());
+                document.documentElement.classList.toggle("donate-banner-off", hide);
+                document.body.classList.toggle("has-donate-banner", !hide);
+            }
+
+            window.syncDonateBanner = function () {
+                var now = Date.now();
+                var state = loadState();
+                if (state.dismissedAt && (now - state.dismissedAt) >= MONTH_MS) {
+                    state.dismissedAt = 0;
+                }
+                state.lastSeen = now;
+                saveState(state);
+                applyBannerVisibility(!!state.dismissedAt || isDonatePath());
+            };
+
+            window.dismissDonateBanner = function () {
+                var now = Date.now();
+                saveState({ dismissedAt: now, lastSeen: now });
+                applyBannerVisibility(true);
+            };
+
+            document.addEventListener("click", function (event) {
+                var button = event.target && event.target.closest
+                    ? event.target.closest("[data-donate-dismiss]")
+                    : null;
+                if (!button) return;
+                event.preventDefault();
+                window.dismissDonateBanner();
+            });
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", window.syncDonateBanner);
+            } else {
+                window.syncDonateBanner();
+            }
+        })();
+    </script>
+
     <!-- SPA Router Script -->
     <script>
         // ── In-memory SPA page cache ──────────────────────────────────────────
         // Stores up to _spaCacheMax pages keyed by their canonical URL.
         // Each entry: { html: string, title: string, scrollY: number }
         // This means revisiting a page (e.g. Gallery) never re-fetches or
-        // re-renders images — the DOM is restored instantly from the cache.
+        // re-renders images: the DOM is restored instantly from the cache.
         const _spaCache = new Map();
         const _spaCacheMax = 10;
 
@@ -168,22 +260,7 @@
             document.body.style.overflow = '';
             document.documentElement.style.overflow = '';
 
-            // Keep Lenis synced with the new document height after SPA swaps.
-            const routeHasCinematicHero =
-                entry.html.includes('id="hero-section"') || entry.html.includes("id='hero-section'");
-
-            if (routeHasCinematicHero && window._cinematicLenis) {
-                if (typeof window._cinematicLenis.resize === 'function') {
-                    window._cinematicLenis.resize();
-                }
-                if (typeof window._cinematicLenis.scrollTo === 'function') {
-                    window._cinematicLenis.scrollTo(entry.scrollY || 0, { immediate: true });
-                } else {
-                    window.scrollTo(0, entry.scrollY || 0);
-                }
-            } else {
-                window.scrollTo(0, entry.scrollY || 0);
-            }
+            window.scrollTo(0, entry.scrollY || 0);
             updateActiveNavLink();
             highlightOnPage();
             if (window.initCodeBlocks) window.initCodeBlocks();
@@ -191,12 +268,7 @@
             if (window.initNotes) window.initNotes();
             if (window.initMermaid) window.initMermaid();
             if (window.runCinematicSetup) window.runCinematicSetup();
-            const banner = document.getElementById('donationBanner');
-            if (banner && localStorage.getItem('hideDonationBanner') !== 'true') {
-                banner.style.display = 'flex';
-                banner.style.opacity = '1';
-                banner.style.transform = 'translateY(0)';
-            }
+            if (window.syncDonateBanner) window.syncDonateBanner();
             // Re-execute inline <script> blocks so gallery/lightbox JS re-binds
             spaMain.querySelectorAll('script').forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -208,7 +280,7 @@
             });
         }
 
-        // ── Mobile hamburger menu (global — works on every page) ──────────────
+        // ── Mobile hamburger menu (global: works on every page) ──────────────
         let _menuInterlock = false;
         window.toggleMobileMenu = function () {
             if (_menuInterlock) return;
@@ -246,7 +318,7 @@
                     let newHtml = text;
                     words.forEach(word => {
                         const re = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                        newHtml = newHtml.replace(re, '<mark style="background: var(--primary-color); color: var(--hover-color); border-radius: 2px; padding: 0 2px;">$1</mark>');
+                        newHtml = newHtml.replace(re, '<mark style="background: var(--primary-color); color: var(--hover-color); border-radius: 6px; padding: 0 2px;">$1</mark>');
                     });
                     span.innerHTML = newHtml;
                     if (!firstMatch) firstMatch = span;
@@ -338,7 +410,7 @@
                 return;
             }
 
-            // Cache miss — fetch
+            // Cache miss: fetch
             try {
                 const response = await fetch(url);
                 const htmlText = await response.text();
@@ -368,19 +440,7 @@
         });
     </script>
 
-    <!-- Cinematic homepage libraries — loaded globally so SPA navigation can re-use them -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.halo.min.js"></script>
-    <script src="/js/cinematic.js"></script>
+    <script src="/js/cinematic.js" defer></script>
     <svg style="position: fixed; width: 0; height: 0;" aria-hidden="true" focusable="false">
         <filter id="water-filter">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />

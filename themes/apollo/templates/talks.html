@@ -13,7 +13,7 @@
         {% elif page.extra.link_to %}
         {% set video_link = page.extra.link_to %}
         {% else %}
-        {% set video_link = page.permalink | safe %}
+        {% set video_link = page.path %}
         {% endif %}
 
         <a class="talk-video" href="{{ video_link }}" target="_blank" rel="noopener">
@@ -61,7 +61,7 @@
                 {% elif page.extra.video.link %}
                 <a href={{ page.extra.video.link }}>{{ page.title }}</a>
                 {% else %}
-                <a href={{ page.permalink | safe }}>{{ page.title }}</a>
+                <a href="{{ page.path }}">{{ page.title }}</a>
                 {% endif %}
 
             </h1>
@@ -135,14 +135,14 @@
 <ul class="pagination">
     {% if paginator.previous %}
     <span class="page-item page-prev">
-        <a href={{ paginator.previous }} class="page-link" aria-label="Previous"><span aria-hidden="true">←
+        <a href="{{ paginator.previous | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}" class="page-link" aria-label="Previous"><span aria-hidden="true">←
                 Prev</span></a>
     </span>
     {% endif %}
 
     {% if paginator.next %}
     <span class="page-item page-next">
-        <a href={{ paginator.next }} class="page-link" aria-label="Next"><span aria-hidden="true">Next →</span></a>
+        <a href="{{ paginator.next | replace(from=config.base_url | trim_end_matches(pat='/'), to='') }}" class="page-link" aria-label="Next"><span aria-hidden="true">Next →</span></a>
     </span>
     {% endif %}
 </ul>

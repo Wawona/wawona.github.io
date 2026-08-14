@@ -277,7 +277,7 @@ $icon-size: 1.3rem;
   &:hover {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    color: var(--hover-color);
+    color: #fff !important;
   }
 }
 

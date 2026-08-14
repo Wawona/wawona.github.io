@@ -60,7 +60,7 @@ fn main() {
 
 > Two things are infinite: the universe and human stupidity; and I'm not sure about the
 > universe.<br>
-> — <cite>Albert Einstein</cite>
+>: <cite>Albert Einstein</cite>
 
 ## Table Inline Markdown
 
