@@ -133,11 +133,19 @@ a.dl-btn:focus-visible {
 }
 
 html, body {
+    /* Prefer clip for sticky; contain overscroll so iOS rubber-band does not chain. */
     overflow-x: clip;
+    overscroll-behavior-y: none;
 }
 
 html {
     scroll-padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+    /* Stop scroll anchoring from yanking to top when sticky/TOC layout shifts. */
+    overflow-anchor: none;
+}
+
+.site-top {
+    overflow-anchor: none;
 }
 
 .docs-main :is(h1, h2, h3, h4, h5, h6),
@@ -594,8 +602,11 @@ nav .nav-search .nav-search-glass {
     position: sticky;
     top: calc(5.75rem + env(safe-area-inset-top, 0px));
     max-height: calc(100vh - 6.5rem);
+    max-height: calc(100dvh - 6.5rem);
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 0.25rem 0 1rem;
+    overflow-anchor: none;
 }
 
 .docs-toc-inline {
@@ -605,6 +616,7 @@ nav .nav-search .nav-search-glass {
     border: 1px solid var(--border-color);
     border-radius: calc(var(--r-inset) + 0.85rem);
     background: var(--bg-1);
+    overflow-anchor: none;
 }
 
 .docs-toc-inline .toc {
@@ -699,10 +711,13 @@ main .docs-card,
     position: sticky;
     top: calc(5.75rem + env(safe-area-inset-top, 0px));
     max-height: calc(100vh - 6.5rem);
+    max-height: calc(100dvh - 6.5rem);
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 0.35rem 0 2rem;
     background: none;
     z-index: auto;
+    overflow-anchor: none;
 }
 
 .docs-main {

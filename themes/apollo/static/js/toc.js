@@ -15,9 +15,8 @@ window.initTOC = () => {
   }
 
   /*
-   * Prefer the sticky rail TOC (overflow-y: auto). Fall back to inline / legacy.
-   * Never prefer a hidden duplicate ahead of the visible rail — that used to make
-   * scrollIntoView yank the window back to the top of the page while scrolling.
+   * Prefer the sticky rail TOC. Fall back to inline / legacy.
+   * Never prefer a hidden duplicate ahead of the visible rail.
    */
   let submenu = [...document.querySelectorAll(".docs-toc-rail .toc a")];
   if (!submenu.length) {
@@ -47,25 +46,39 @@ window.initTOC = () => {
     return map;
   }, {});
 
-  /**
-   * Keep the active TOC row visible inside a scrollable rail only.
-   * Never call Element.scrollIntoView — that scrolls the window and jumps
-   * the docs page back to the top when the inline TOC is above the viewport.
+  /*
+   * Keep the active TOC row visible inside the sticky rail only.
+   * - Element.closest() must use a compound selector (no descendant combinator)
+   *   or Safari throws and the IntersectionObserver callback aborts.
+   * - Never call scrollIntoView — that scrolls the window (jump-to-top on iOS).
+   * - Skip entirely on touch / coarse pointers; rail auto-scroll fights rubber-banding.
    */
+  const allowRailAutoscroll =
+    window.matchMedia &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
   function ensureTocLinkVisible(link) {
-    if (!link) return;
-    const scroller = link.closest(".docs-toc-rail .toc, .toc");
-    if (!scroller) return;
-    const overflowY = getComputedStyle(scroller).overflowY;
+    if (!allowRailAutoscroll || !link) return;
+    const toc = link.closest(".toc");
+    if (!toc || !toc.closest(".docs-toc-rail")) return;
+    const overflowY = getComputedStyle(toc).overflowY;
     if (overflowY !== "auto" && overflowY !== "scroll") return;
 
-    const scrollerBox = scroller.getBoundingClientRect();
+    const scrollerBox = toc.getBoundingClientRect();
     const linkBox = link.getBoundingClientRect();
     if (linkBox.top < scrollerBox.top) {
-      scroller.scrollTop -= scrollerBox.top - linkBox.top + 8;
+      toc.scrollTop -= scrollerBox.top - linkBox.top + 8;
     } else if (linkBox.bottom > scrollerBox.bottom) {
-      scroller.scrollTop += linkBox.bottom - scrollerBox.bottom + 8;
+      toc.scrollTop += linkBox.bottom - scrollerBox.bottom + 8;
     }
+  }
+
+  function clearActive() {
+    submenu.forEach((a) => {
+      const li = a.closest("li");
+      if (!li) return;
+      li.classList.remove("selected", "parent");
+    });
   }
 
   let selection;
@@ -75,7 +88,7 @@ window.initTOC = () => {
     );
     for (const s of selection) {
       if (!s.isIntersecting) {
-        paragraphMenuMap[s.target.previousHeader]?.parentElement.classList.remove(
+        paragraphMenuMap[s.target.previousHeader]?.parentElement?.classList.remove(
           "selected",
           "parent",
         );
@@ -95,9 +108,14 @@ window.initTOC = () => {
   }
 
   let observer = new IntersectionObserver(handler, {
-    threshold: [0],
+    /* Slight bottom bias so the last section stays selected near page end
+       without thrashing as the iOS chrome expands/collapses. */
+    rootMargin: "0px 0px -25% 0px",
+    threshold: [0, 0.1],
   });
   window._tocObserver = observer;
+  /* Clear stale classes from a previous SPA page before observing. */
+  clearActive();
   paragraphs.forEach((node) => observer.observe(node));
 };
 
