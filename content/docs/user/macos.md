@@ -29,4 +29,8 @@ SSH is regular **OpenSSH**. Waypipe can use IOSurface/Mach.
 
 Separate app bridge for macOS apps on Wayland. Mode A in notarized builds as available; Mode B bundled on 3rd-party macOS under the same partial-SIP bar as Desktop. See [anowaW](@/docs/user/anowaw.md).
 
+## VMs and containers (planned)
+
+Machines will add guest profiles using Apple `Virtualization.framework` and Containerization. See [VMs and containers](@/docs/user/vms-containers.md).
+
 See [Desktop and LockScreen](@/docs/user/desktop.md) and [iland](@/docs/contributor/iland.md).

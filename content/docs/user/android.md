@@ -27,6 +27,9 @@ See [Desktop and LockScreen](@/docs/user/desktop.md).
 
 Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; Mode B only outside Play requirements. See [anowaW](@/docs/user/anowaw.md).
 
-VM and container machine types are allowed when the OS can host them.
+## VMs and containers (planned)
+
+Coming soon as Machine kinds on Android (and macOS / iOS / iPadOS / Linux). Forbidden on tvOS, watchOS, and visionOS. See [VMs and containers](@/docs/user/vms-containers.md).
 
 See [Platforms](@/docs/user/platforms.md).
+

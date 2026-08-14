@@ -192,7 +192,7 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-Desktop and LockScreen are **coming soon** on macOS and Android. iOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only — not in the App Store app). [anowaW](/docs/anowaw/) is a separate planned app bridge (macOS / Android / iOS). VM and container machines are forbidden on tvOS and watchOS. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
+Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only — not in the App Store app). [anowaW](/docs/anowaw/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux — forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
 
 </div>
 </details>
@@ -220,7 +220,7 @@ Yes. Both are mandatory native bundles on every product target. Display backend 
 </summary>
 <div class="faq-answer">
 
-Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. This is not Debian and not `wwn-apt` (that repo is not a Wawona flake input yet). See [On-device shell](/docs/shell/).
+Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is the **on-device shell**, not a VM or container. See [On-device shell](/docs/shell/) and [VMs and containers](/docs/vms/).
 
 </div>
 </details>
@@ -234,7 +234,7 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. This is n
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: partial SIP + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [anowaW](/docs/anowaw/). See [Desktop and LockScreen](/docs/desktop/).
+**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: partial SIP + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [anowaW](/docs/anowaw/). See [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>
@@ -248,7 +248,21 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. This is n
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** anowaW is an app bridge: run macOS, Android, or iOS apps as Wayland clients inside Wawona (zero-copy surface bridge). It is **not** Desktop or LockScreen replacement and **not** MediaProjection-as-desktop. Mode A for store/Play-shaped builds; Mode B outside stores (macOS partial SIP; Android privileged paths; iOS via repo.wawona.io). See [anowaW](/docs/anowaw/).
+**Coming soon.** anowaW is an app bridge: run macOS, Android, iOS, or iPadOS apps as Wayland clients inside Wawona (zero-copy surface bridge). It is **not** Desktop or LockScreen replacement and **not** MediaProjection-as-desktop. Mode A for store/Play-shaped builds; Mode B outside stores (macOS partial SIP; Android privileged paths; iOS/iPadOS via repo.wawona.io). See [anowaW](/docs/anowaw/).
+
+</div>
+</details>
+<details id="vms-containers">
+<summary>
+    Do VMs and containers work in Machines?
+    <button class="faq-share" onclick="copyFaqLink(event, 'vms-containers')" title="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Link
+    </button>
+</summary>
+<div class="faq-answer">
+
+**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Planned engines include UTM-SE on iOS/iPadOS and Virtualization + Containerization on macOS. Forbidden on tvOS, watchOS, and visionOS. The local shell is separate. See [VMs and containers](/docs/vms/).
 
 </div>
 </details>

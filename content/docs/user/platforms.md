@@ -22,20 +22,24 @@ Never say "unsupported". Each cell is one of four states.
 |---|---|---|---|---|---|---|---|
 | Native machines | available | available | available | available | available | available | available |
 | Remote (SSH/waypipe) | available | available | available | available | available | available | available |
-| VM / containers | available | available | available | available | available | forbidden | forbidden |
+| VM / containers | planned | planned | planned | forbidden | planned | forbidden | forbidden |
 | Multi-window | available | if OS allows | required | required | single primary | forbidden | forbidden |
 | Nested Weston + Niri | available | available | available | available | available | available (non-GL fallback) | available (non-GL fallback) |
 | Vulkan / GLES | available | available | available | available | available | planned | blocked |
-| Desktop + LockScreen | planned | planned | forbidden | forbidden | forbidden (App Store) | forbidden | forbidden |
-| anowaW app bridge | planned | planned | forbidden | forbidden | planned | forbidden | forbidden |
+| Desktop + LockScreen | planned | planned | forbidden (App Store) | forbidden | forbidden (App Store) | forbidden | forbidden |
+| anowaW app bridge | planned | planned | planned | forbidden | planned | forbidden | forbidden |
+
+Linux: native + remote available; VM/containers planned; Desktop/LockScreen and anowaW forbidden.
 
 ## Notes
 
-- **Desktop / LockScreen** — coming soon on macOS and Android. iOS path is a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website only). Not Linux. Not App Store iOS family. See [Desktop and LockScreen](@/docs/user/desktop.md).
-- **anowaW** — separate host-app → Wayland bridge (not Desktop). See [anowaW](@/docs/user/anowaw.md).
-- **watchOS GPU** is blocked: no `Metal.framework`, `CAMetalLayer` unavailable. SHM/CPU present path.
-- **tvOS GPU** is planned: the SDK has Metal and OpenGLES. Work is unfinished (`WWN_TVOS_GPU`).
-- **visionOS** matches macOS product parity for bundled clients, VMs, and Machines UX.
+- **iOS and iPadOS** share the same Desktop/LockScreen and anowaW story (store Mode A vs `repo.wawona.io` Mode B / jailbreak Desktop).
+- **VM / containers** — coming soon on macOS, iOS, iPadOS, Android, Linux. Engines: UTM-SE (iOS/iPadOS), Virtualization + Containerization (macOS). Forbidden on tvOS, watchOS, visionOS. See [VMs and containers](@/docs/user/vms-containers.md).
+- **On-device shell** — bundled zsh; not a VM. See [On-device shell](@/docs/user/shell.md).
+- **Desktop / LockScreen** — coming soon on macOS and Android; iOS/iPadOS via [repo.wawona.io](https://repo.wawona.io) (website only). See [Desktop and LockScreen](@/docs/user/desktop.md).
+- **anowaW** — separate host-app → Wayland bridge. See [anowaW](@/docs/user/anowaw.md).
+- **watchOS GPU** is blocked: no `Metal.framework`. **tvOS GPU** is planned.
+- **visionOS** matches macOS product parity for bundled clients and Machines UX, except VM/container kinds (forbidden).
 - **macOS** is never limited by App Store feature rules.
 
 More: [macOS](@/docs/user/macos.md), [Android](@/docs/user/android.md).

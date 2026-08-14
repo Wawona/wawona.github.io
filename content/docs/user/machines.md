@@ -3,7 +3,7 @@ aliases = ["docs/machines"]
 title = "Machines"
 description = "Native, waypipe, terminal, VM, and container profiles. Start, Focus, minimize."
 weight = 2
-date = 2026-08-13
+date = 2026-08-14
 
 +++
 
@@ -11,15 +11,17 @@ A **Machine** is a saved session: how clients reach this compositor. Configure i
 
 ## Kinds
 
-| `type` | What it is |
-|--------|------------|
-| `native` | Clients on this device against Wawona's socket |
-| `ssh_waypipe` | Remote Wayland over SSH + waypipe |
-| `ssh_terminal` | SSH shell only |
-| `virtual_machine` | Guest VM (`wwn-vms`) |
-| `container` | OCI container (`wwn-containers`) |
+| `type` | What it is | Status |
+|--------|------------|--------|
+| `native` | Clients on this device against Wawona's socket | available |
+| `ssh_waypipe` | Remote Wayland over SSH + waypipe | available |
+| `ssh_terminal` | SSH shell only | available |
+| `virtual_machine` | Guest VM (`wwn-vms`) | **planned** — see [VMs and containers](@/docs/user/vms-containers.md) |
+| `container` | OCI / platform container (`wwn-containers`) | **planned** — see [VMs and containers](@/docs/user/vms-containers.md) |
 
-VM and container kinds are **forbidden** on tvOS and watchOS.
+VM and container kinds are **forbidden** on tvOS, watchOS, and visionOS. They are planned on macOS, iOS, iPadOS, Android, and Linux.
+
+The [on-device shell](@/docs/user/shell.md) is bundled zsh on native machines — not a VM.
 
 ## Start, Focus, minimize
 

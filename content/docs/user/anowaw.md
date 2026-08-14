@@ -11,12 +11,13 @@ date = 2026-08-14
 
 ## What it is
 
-**anowaW** is an **application bridge**: run **macOS, Android, or iOS** apps inside a Wayland desktop hosted by Wawona. The goal is a zero-copy (or near zero-copy) surface bridge for HID, resize, and compositing of UIKit / AppKit / Android window surfaces onto Wayland surfaces, so host apps can tile beside other Wayland clients (for example inside a native [niri](@/docs/user/platforms.md) session).
+**anowaW** is an **application bridge**: run **macOS, Android, iOS, or iPadOS** apps inside a Wayland desktop hosted by Wawona. The goal is a zero-copy (or near zero-copy) surface bridge for HID, resize, and compositing of UIKit / AppKit / Android window surfaces onto Wayland surfaces, so host apps can tile beside other Wayland clients (for example inside a native niri session).
 
 ## What it is not
 
 - Not [Desktop / LockScreen replacement](@/docs/user/desktop.md)
 - Not MediaProjection “mirror the screen as the desktop”
+- Not a [VM or container](@/docs/user/vms-containers.md)
 
 ## Platforms
 
@@ -24,8 +25,8 @@ date = 2026-08-14
 |----------|------|
 | macOS | planned (Mode A + Mode B) |
 | Android | planned (Mode A + Mode B) |
-| iOS | planned (Mode A in the store app; Mode B via repo.wawona.io) |
-| iPadOS / tvOS / watchOS / visionOS / Linux | forbidden |
+| iOS / iPadOS | planned (Mode A in the store app; Mode B via repo.wawona.io) — same on iPhone and iPad |
+| tvOS / watchOS / visionOS / Linux | forbidden |
 
 ## Mode A vs Mode B
 
@@ -34,12 +35,12 @@ date = 2026-08-14
 | App Store / Play | Ships in store-shaped builds | **Forbidden** in App Store IPA and Play AAB/APK |
 | macOS | Store-safe / notarized methods as available | Bundled on 3rd-party macOS; needs **partial SIP** (system debugging), same bar as the Desktop `.dylib` |
 | Android | Play-approved bridge methods | Privileged / root paths outside Play requirements |
-| iOS | Mode A only inside the App Store Wawona app | Jailbreak tweak from **[repo.wawona.io](https://repo.wawona.io)** (Sileo): UIKit apps as Wayland clients under nested Wawona |
+| iOS / iPadOS | Mode A only inside the App Store Wawona app | Jailbreak tweak from **[repo.wawona.io](https://repo.wawona.io)** (Sileo): UIKit apps as Wayland clients under nested Wawona |
 
-App Store and TestFlight copy for the Wawona iOS app must **never mention jailbreak**. This page and repo.wawona.io may describe Mode B.
+App Store and TestFlight copy must **never mention jailbreak**. This page and repo.wawona.io may describe Mode B.
 
-## iOS Mode B on repo.wawona.io
+## iOS / iPadOS Mode B on repo.wawona.io
 
-A planned jailbreak tweak will present UIKit apps as Wayland clients on a nested Wayland compositor inside Wawona on iOS — so iOS apps can sit beside other Wayland apps under compositors such as niri. Distributed only from repo.wawona.io, never from the App Store IPA.
+A planned jailbreak tweak will present UIKit apps as Wayland clients on a nested Wayland compositor inside Wawona — so host apps can sit beside other Wayland apps under compositors such as niri. Distributed only from repo.wawona.io, never from the App Store IPA.
 
 Canonical engineering notes: [anowaw.md](https://github.com/Wawona/Wawona/blob/development/docs/anowaw.md).
