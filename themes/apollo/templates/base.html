@@ -308,6 +308,7 @@
             if (window.runCinematicSetup) window.runCinematicSetup();
             if (window.syncDonateBanner) window.syncDonateBanner();
             if (window.syncNavCollapse) window.syncNavCollapse();
+            closeMobileMenu();
             // Re-execute inline <script> blocks so gallery/lightbox JS re-binds
             spaMain.querySelectorAll('script').forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -327,6 +328,16 @@
             if (links) links.classList.remove('active');
             if (btn) btn.setAttribute('aria-expanded', 'false');
         }
+
+        function closeMobileMenu() {
+            const nav = document.querySelector('.site-nav .right-nav');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (nav) nav.classList.remove('active');
+            /* Icon X vs hamburger is driven by aria-expanded — must clear both. */
+            if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+            closeDocsNav();
+        }
+        window.closeMobileMenu = closeMobileMenu;
 
         window.toggleMobileMenu = function () {
             if (_menuInterlock) return;
@@ -419,10 +430,8 @@
                 return;
             }
 
-            // Close mobile menu if open
-            const rightNav = document.querySelector('.site-nav .right-nav');
-            if (rightNav) rightNav.classList.remove('active');
-            closeDocsNav();
+            // Close mobile menu if open (panel + hamburger icon state)
+            closeMobileMenu();
 
             const spaMain = document.getElementById('spa-main');
 

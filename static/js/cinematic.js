@@ -26,8 +26,9 @@ document.addEventListener('click', function (e) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         var nav = document.querySelector('.site-nav .right-nav');
-        if (nav && nav.classList.contains('active') && window.toggleMobileMenu) {
-            window.toggleMobileMenu();
+        if (nav && nav.classList.contains('active')) {
+            if (window.closeMobileMenu) window.closeMobileMenu();
+            else if (window.toggleMobileMenu) window.toggleMobileMenu();
         }
         e.preventDefault();
     }
