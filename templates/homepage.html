@@ -107,7 +107,7 @@
         </div>
         <div class="lp-points lp-reveal">
             <p><strong>Free and open source.</strong> MIT-licensed. No paywall, no telemetry. Read the code, fork it, send a patch.</p>
-            <p><strong>Store or sideload.</strong> Apple mobile and Play builds are meant to pass review. They do not require a jailbreak. Sideload the IPA, APK, or dmg if you want. Desktop and Lock Screen replacement is macOS and Android only. macOS Mode B needs SIP off or partial. Android uses anowaW (rootless or Shizuku). Never on iOS, iPadOS, tvOS, watchOS, or visionOS.</p>
+            <p><strong>Store or sideload.</strong> Apple mobile and Play builds are meant to pass review. Sideload the IPA, APK, or dmg if you want. <a href="{{ get_url(path='@/docs/user/desktop.md') }}">Desktop and LockScreen</a> are coming soon on macOS and Android (iOS via <a href="https://repo.wawona.io" target="_blank" rel="noopener">repo.wawona.io</a> only). <a href="{{ get_url(path='@/docs/user/anowaw.md') }}">anowaW</a> is a separate planned app bridge — not Desktop, not MediaProjection.</p>
             <p><strong>Native, guest, or remote.</strong> Weston, Niri, and the catalog run as native ports. You can also start a VM, a container, or a remote Linux box over SSH and waypipe. The compositor draws the clients either way.</p>
         </div>
     </div>
@@ -156,7 +156,7 @@
             </article>
             <article class="lp-inside-card">
                 <h3>Userspace KMS</h3>
-                <p><a class="lp-iland-link" href="https://github.com/Wawona/wwn-iland" target="_blank" rel="noopener"><code>wwn-iland</code></a> emulates DRM, KMS, and GBM in userspace. Mode A is the store path: static, in-window. Mode B is macOS desktop replacement only, and only when SIP allows it. Drivers stay userland: MoltenVK, KosmicKrisp, ANGLE, SwiftShader.</p>
+                <p><a class="lp-iland-link" href="https://github.com/Wawona/wwn-iland" target="_blank" rel="noopener"><code>wwn-iland</code></a> emulates DRM, KMS, and GBM in userspace. Mode A is the store path: static, in-window. Mode B is the macOS Desktop/LockScreen <code>.dylib</code> path (planned; SIP partial or off; desktop-host builds only). Drivers stay userland: MoltenVK, KosmicKrisp, ANGLE, SwiftShader.</p>
             </article>
             <article class="lp-inside-card">
                 <h3>Three ways to run it</h3>

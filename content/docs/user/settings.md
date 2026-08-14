@@ -37,6 +37,6 @@ watchOS has no public Metal. GPU settings do not apply there.
 | Dictation | Android |
 | Shake / swipe / long-press Menu | Exit the active machine (platform-specific) |
 
-## Desktop (macOS + Android only)
+## Desktop and anowaW (macOS + Android planned)
 
-Never shown on iOS, iPadOS, tvOS, watchOS, or visionOS. See [Desktop Replacement](@/docs/user/desktop.md).
+Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-mobile builds do not expose it. See [Desktop and LockScreen](@/docs/user/desktop.md) and [anowaW](@/docs/user/anowaw.md).

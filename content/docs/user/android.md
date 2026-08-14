@@ -1,9 +1,9 @@
 +++
 aliases = ["docs/android"]
 title = "Android"
-description = "Compose Machines, OpenSSH portable, anowaW Desktop."
+description = "Compose Machines, OpenSSH portable, planned Desktop Home + anowaW."
 weight = 7
-date = 2026-08-13
+date = 2026-08-14
 
 +++
 
@@ -17,10 +17,16 @@ Android uses **OpenSSH portable** (`libssh_bin.so` / keygen / scp) from `wwn-ssh
 
 Runtime-only. System Vulkan or SwiftShader. Direct kernel DRM/KGSL ICDs are **forbidden**. No `/dev/kgsl`.
 
-## Desktop / LockScreen
+## Desktop / LockScreen (planned)
 
-macOS + Android only. **anowaW**: rootless (MediaProjection) vs power (Shizuku/root). Auto-fallback. No SIP. No Mode B dylib.
+Coming soon. Default Home App + LockScreen APIs — **no root required**, no fallback tier. Not the same as [anowaW](@/docs/user/anowaw.md).
+
+See [Desktop and LockScreen](@/docs/user/desktop.md).
+
+## anowaW (planned)
+
+Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; Mode B only outside Play requirements. See [anowaW](@/docs/user/anowaw.md).
 
 VM and container machine types are allowed when the OS can host them.
 
-See [Desktop Replacement](@/docs/user/desktop.md) and [Platforms](@/docs/user/platforms.md).
+See [Platforms](@/docs/user/platforms.md).
