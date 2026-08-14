@@ -1087,8 +1087,8 @@
                 var ang = (-100 + ((i + 0.5) / Math.max(hearts, 1)) * 40 + (Math.random() - 0.5) * 16) * Math.PI / 180;
                 var dist = 26 + i * 5 + Math.random() * 16;
                 var turn = Math.random() < 0.5 ? -1 : 1;
-                spawnFxParticle("heart", x + (i - (hearts - 1) / 2) * 12, y - 4, {
-                    dx: Math.cos(ang) * dist,
+                spawnFxParticle("heart", x + (i - (hearts - 1) / 2) * 22, y - 4, {
+                    dx: Math.cos(ang) * dist * 1.15,
                     dy: Math.sin(ang) * dist - 22,
                     ds: 0.55 + Math.random() * 0.25,
                     spin0: turn * 12,
