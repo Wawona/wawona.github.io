@@ -509,9 +509,11 @@ nav .nav-search .nav-search-glass {
     line-height: 1.5;
 }
 
-/* Docs hub (landing): centered content only, no side rails */
+/* Docs hub + articles share one content measure (overview is the reference). */
 html.layout-docs-hub body > .content,
-.content:has(.docs-layout-hub) {
+html.layout-docs body > .content,
+.content:has(.docs-layout-hub),
+.content:has(.docs-shell) {
     max-width: 1080px;
 }
 
@@ -527,14 +529,9 @@ html.layout-docs-hub body > .content,
     grid-template-columns: minmax(0, 1fr);
 }
 
-/*
- * Docs article: full-bleed row so nav + article + TOC are not jammed into the
- * centered ~920/1080px Apollo column (especially after SPA from the hub).
- */
+/* Hide Apollo side slots on docs articles; shell owns nav/TOC. */
 html.layout-docs body > .left-content,
-html.layout-docs body > .right-content,
-.main:has(.docs-shell) > .left-content:empty,
-.main:has(.docs-shell) > .right-content:empty {
+html.layout-docs body > .right-content {
     display: none !important;
     flex: 0 0 0 !important;
     width: 0 !important;
@@ -544,57 +541,56 @@ html.layout-docs body > .right-content,
     overflow: hidden !important;
 }
 
-html.layout-docs body > .content,
-.content:has(.docs-shell) {
-    /* Own flex row — same trick as .site-top — so the shell can use the viewport */
-    flex: 1 0 100% !important;
-    max-width: none !important;
-    width: 100% !important;
-    padding-left: 0;
-    padding-right: 0;
-    margin-inline: 0;
-    box-sizing: border-box;
-}
-
 .docs-shell {
+    --docs-nav-w: 12.5rem;
+    --docs-toc-w: 13rem;
     --docs-article-max: 42rem;
-    --docs-nav-w: 13.5rem;
-    --docs-toc-w: 15rem;
-    --docs-edge: 1rem;
     display: grid;
-    /* Fixed side rails hug the viewport; center column absorbs leftover space */
     grid-template-columns: var(--docs-nav-w) minmax(0, 1fr) var(--docs-toc-w);
+    grid-template-areas:
+        "head head head"
+        "nav  main toc";
     column-gap: 1.25rem;
+    row-gap: 0;
     align-items: start;
     width: 100%;
-    padding-inline: var(--docs-edge);
     box-sizing: border-box;
 }
 
 .docs-shell:not(.has-toc) {
-    /* Keep a matching empty right track so the article stays viewport-centered */
-    grid-template-columns: var(--docs-nav-w) minmax(0, 1fr) var(--docs-nav-w);
+    grid-template-columns: var(--docs-nav-w) minmax(0, 1fr);
+    grid-template-areas:
+        "head head"
+        "nav  main";
+}
+
+.docs-shell > .docs-page-head {
+    grid-area: head;
+    min-width: 0;
+}
+
+.docs-shell > .docs-page-head .page-header {
+    margin-top: 0.35rem;
 }
 
 .docs-shell > .docs-sidebar {
-    grid-column: 1;
+    grid-area: nav;
     justify-self: stretch;
     width: 100%;
 }
 
 .docs-shell > .docs-main {
-    grid-column: 2;
+    grid-area: main;
     min-width: 0;
     width: 100%;
-    max-width: var(--docs-article-max);
-    justify-self: center;
-    /* Article padding lives here, not on the screen-edge rails */
-    padding-inline: 0.5rem;
+    max-width: none;
+    justify-self: stretch;
+    padding-inline: 0;
     box-sizing: border-box;
 }
 
 .docs-shell > .docs-toc-rail {
-    grid-column: 3;
+    grid-area: toc;
     justify-self: stretch;
     width: 100%;
 }
@@ -861,58 +857,44 @@ main .docs-card,
 }
 
 @media (max-width: 1199px) {
-    /* Not enough room for screen-edge nav + TOC: book menu + inline TOC.
-       Keep hub-width shell so SPA from /docs/ does not suddenly scrunch. */
-    .docs-shell {
+    /* Book menu + inline TOC; same 1080px measure as the overview. */
+    .docs-shell,
+    .docs-shell:not(.has-toc) {
         grid-template-columns: minmax(0, 1fr) auto;
-        max-width: 1080px;
-        margin-inline: auto;
+        grid-template-areas:
+            "head navbtn"
+            "links links"
+            "main main";
         column-gap: 0.25rem;
-        padding-inline: 1.25rem;
+        row-gap: 0;
+        max-width: none;
+        margin-inline: 0;
+        padding-inline: 0;
     }
 
-    .docs-shell .body {
-        max-width: var(--docs-article-max);
+    .docs-shell > .docs-page-head {
+        grid-area: head;
+        align-self: center;
+        min-width: 0;
     }
 
-    .docs-shell > .docs-sidebar,
-    .docs-shell > .docs-main,
-    .docs-shell > .docs-main > article {
+    .docs-shell > .docs-page-head .page-header {
+        margin: 0.35rem 0;
+    }
+
+    .docs-shell > .docs-sidebar {
         display: contents;
-    }
-
-    .docs-shell > .docs-toc-rail {
-        display: none !important;
-    }
-
-    .docs-shell .docs-toc-inline {
-        display: block;
-        grid-column: 1 / -1;
-    }
-
-    .docs-shell .docs-sidebar > *,
-    .docs-shell .docs-main > *,
-    .docs-shell .docs-main > article > * {
-        grid-column: 1 / -1;
     }
 
     .docs-shell .docs-nav-bar {
         display: flex;
-        grid-column: 2;
-        grid-row: 1;
+        grid-area: navbtn;
         align-self: center;
-    }
-
-    .docs-shell .docs-main > .page-header,
-    .docs-shell .docs-main > article > .page-header {
-        grid-column: 1;
-        grid-row: 1;
-        align-self: center;
-        min-width: 0;
-        margin: 0.35rem 0;
+        justify-content: flex-end;
     }
 
     .docs-shell .docs-nav-links {
+        grid-area: links;
         max-height: 0;
         opacity: 0;
         overflow: hidden;
@@ -933,6 +915,24 @@ main .docs-card,
     .docs-shell .docs-nav-links a {
         padding: 0.55rem 0;
         border-bottom: 1px solid var(--border-color);
+    }
+
+    .docs-shell > .docs-main {
+        grid-area: main;
+        display: block;
+        max-width: none;
+    }
+
+    .docs-shell > .docs-main > article {
+        display: block;
+    }
+
+    .docs-shell > .docs-toc-rail {
+        display: none !important;
+    }
+
+    .docs-shell .docs-toc-inline {
+        display: block;
     }
 
     .docs-toc-inline .toc {

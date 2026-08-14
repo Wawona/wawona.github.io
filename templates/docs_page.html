@@ -4,16 +4,18 @@
 {% set current = page.permalink %}
 {% set show_toc = config.extra.toc | default(value=false) and page.toc %}
 <div class="docs-shell{% if show_toc %} has-toc{% endif %}">
+    <header class="docs-page-head">
+        {{ post_macros::page_header(title=page.title) }}
+        {% if page.description %}
+        <p class="page-subtitle">{{ page.description }}</p>
+        {% endif %}
+        {% if page.draft %}
+        <span class="draft-label">DRAFT</span>
+        {% endif %}
+    </header>
     {% include "partials/docs_sidebar.html" %}
     <main class="docs-main docs-article">
         <article>
-            {{ post_macros::page_header(title=page.title) }}
-            {% if page.description %}
-            <p class="page-subtitle">{{ page.description }}</p>
-            {% endif %}
-            {% if page.draft %}
-            <span class="draft-label">DRAFT</span>
-            {% endif %}
             {% if show_toc %}
             <nav class="docs-toc-inline" aria-label="Table of contents">
                 {% include "partials/toc.html" %}
