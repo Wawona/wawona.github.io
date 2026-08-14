@@ -16,7 +16,7 @@ macOS is not a store feature target. Do not wait for a Mac store listing.
 ## Get a build
 
 1. **[Download](/download/)** for GitHub assets (dmg, ipa, apk, AppImage) when a `v*` tag ships.
-2. **TestFlight / Play internal** from [Ship: beta (stores)](https://github.com/Wawona/Wawona) on `master`. Discord is the usual invite path for TestFlight.
+2. **TestFlight / Play internal** — find beta testing links on the [Wawona Discord](https://discord.gg/wHVSV52uw5). Store builds ship from [Ship: beta (stores)](https://github.com/Wawona/Wawona) on `master`.
 3. Apple family schemes exist for iOS, iPadOS, tvOS, watchOS, and visionOS. Android and Linux too.
 
 ## First run

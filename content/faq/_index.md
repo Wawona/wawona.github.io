@@ -248,7 +248,7 @@ macOS: Mode A in-window by default. Mode B (`libwayland-mac.dylib`) only on `waw
 </summary>
 <div class="faq-answer">
 
-Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub assets on `v*` tags. Ship: beta (stores) on `master` is TestFlight and Play internal. Discord is the usual TestFlight invite. macOS is not an App Store feature target.
+Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub assets on `v*` tags. Ship: beta (stores) on `master` is TestFlight and Play internal. Find beta testing links on the [Wawona Discord](https://discord.gg/wHVSV52uw5). macOS is not an App Store feature target.
 
 </div>
 </details>
