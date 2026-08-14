@@ -779,7 +779,7 @@
 
         <div class="dn-field">
             <label for="dn-donation-value">Amount</label>
-            <p class="dn-note" data-interval-hint>GitHub Sponsors opens with this amount. You can change it there.</p>
+            <p class="dn-note" data-interval-hint>GitHub Sponsors opens with this amount. At $0, Sponsors still opens at $1.</p>
             <div class="dn-donation-row">
                 <div class="dn-slider-wrap" id="dn-slider-wrap" data-shape="circle">
                     <input id="dn-donation" data-amount-range type="range" min="0" max="100" value="20" step="1"
@@ -897,11 +897,12 @@
         function sponsorsHref(usd) {
             var user = (page.getAttribute("data-sponsors-user") || "aspauldingcode").trim();
             var freq = interval() === "month" ? "recurring" : "one-time";
-            var url = "https://github.com/sponsors/" + encodeURIComponent(user) +
+            /* GitHub Sponsors needs ≥ $1; $0 slider still opens a $1 pledge. */
+            var amount = Math.max(1, usd || 0);
+            return "https://github.com/sponsors/" + encodeURIComponent(user) +
                 "/sponsorships?sponsor=" + encodeURIComponent(user) +
-                "&frequency=" + freq;
-            if (usd > 0) url += "&amount=" + usd;
-            return url;
+                "&frequency=" + freq +
+                "&amount=" + amount;
         }
 
         function kofiHref(usd) {
@@ -1447,7 +1448,7 @@
                 if (usd > 100) {
                     hint.textContent = "Slider caps at $100. Keep typing for any higher amount.";
                 } else if (usd === 0) {
-                    hint.textContent = "Move the slider to $1 or more, then open GitHub Sponsors.";
+                    hint.textContent = "No charge. Sponsors opens at $1.";
                 } else {
                     hint.textContent = monthly
                         ? "Monthly on GitHub Sponsors until you cancel."
@@ -1455,16 +1456,12 @@
                 }
             }
             if (sponsorsLink) {
+                var sponsorsUsd = Math.max(1, usd);
                 sponsorsLink.href = sponsorsHref(usd);
-                if (usd < 1) {
-                    sponsorsLink.setAttribute("aria-disabled", "true");
-                    sponsorsLink.textContent = "GitHub Sponsors (enter $1+)";
-                } else {
-                    sponsorsLink.removeAttribute("aria-disabled");
-                    sponsorsLink.textContent = monthly
-                        ? ("GitHub Sponsors: $" + usd + "/mo")
-                        : ("GitHub Sponsors: $" + usd);
-                }
+                sponsorsLink.removeAttribute("aria-disabled");
+                sponsorsLink.textContent = monthly
+                    ? ("GitHub Sponsors: $" + sponsorsUsd + "/mo")
+                    : ("GitHub Sponsors: $" + sponsorsUsd);
             }
             if (kofiLink) {
                 kofiLink.href = kofiHref(usd);
@@ -1502,7 +1499,7 @@
                 if (value > 100) {
                     hint.textContent = "Slider caps at $100. Keep typing for any higher amount.";
                 } else if (value === 0) {
-                    hint.textContent = "Move the slider to $1 or more, then open GitHub Sponsors.";
+                    hint.textContent = "No charge. Sponsors opens at $1.";
                 } else {
                     hint.textContent = monthly
                         ? "Monthly on GitHub Sponsors until you cancel."
@@ -1510,16 +1507,12 @@
                 }
             }
             if (sponsorsLink) {
+                var sponsorsUsd = Math.max(1, value);
                 sponsorsLink.href = sponsorsHref(value);
-                if (value < 1) {
-                    sponsorsLink.setAttribute("aria-disabled", "true");
-                    sponsorsLink.textContent = "GitHub Sponsors (enter $1+)";
-                } else {
-                    sponsorsLink.removeAttribute("aria-disabled");
-                    sponsorsLink.textContent = monthly
-                        ? ("GitHub Sponsors: $" + value + "/mo")
-                        : ("GitHub Sponsors: $" + value);
-                }
+                sponsorsLink.removeAttribute("aria-disabled");
+                sponsorsLink.textContent = monthly
+                    ? ("GitHub Sponsors: $" + sponsorsUsd + "/mo")
+                    : ("GitHub Sponsors: $" + sponsorsUsd);
             }
             if (kofiLink) {
                 kofiLink.href = kofiHref(value);
@@ -1675,13 +1668,7 @@
 
         form.addEventListener("submit", function (event) {
             event.preventDefault();
-            if (sponsorsLink && donationUsd() >= 1) window.open(sponsorsLink.href, "_blank", "noopener,noreferrer");
+            if (sponsorsLink) window.open(sponsorsHref(donationUsd()), "_blank", "noopener,noreferrer");
         });
-
-        if (sponsorsLink) {
-            sponsorsLink.addEventListener("click", function (event) {
-                if (donationUsd() < 1) event.preventDefault();
-            });
-        }
     })();
 </script>
