@@ -158,11 +158,10 @@ html {
     scroll-margin-top: var(--site-chrome-offset);
 }
 
-/* Horizontal bleed only — do not set overflow/overscroll on html/body.
-   Those kill iOS Safari rubber-band / inertia at the page edges. */
+/* Do not set max-width here — Apollo's body .content uses --page-width (920px).
+   Docs/home full-bleed is opt-in via html.layout-docs / :has(.docs-shell) / lp-hero. */
 body > .content {
     min-width: 0;
-    max-width: 100%;
 }
 
 /* ===== THEME-AWARE NAVIGATION LOGO ===== */
