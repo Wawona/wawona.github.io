@@ -32,8 +32,23 @@ jobs:
           curl -L https://github.com/getzola/zola/releases/download/v$ZOLA_VERSION/zola-v$ZOLA_VERSION-x86_64-unknown-linux-gnu.tar.gz | tar xz
           sudo mv zola /usr/local/bin/
 
+      - name: Assert live Stripe env
+        env:
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_CHECKOUT_API: ${{ secrets.STRIPE_CHECKOUT_API }}
+        run: bash ./scripts/assert-stripe-mode.sh live
+
       - name: Build
-        run: zola build --base-url ${{ steps.deployment.outputs.page_url || '/' }} --output-dir ./public
+        env:
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_CHECKOUT_API: ${{ secrets.STRIPE_CHECKOUT_API }}
+          STRIPE_MODE: live
+          SECRETSPEC_PROFILE: ci
+          SECRETSPEC_PROVIDER: env://
+        run: zola build --output-dir ./public
+
+      - name: Assert built site is live Checkout
+        run: bash ./scripts/assert-stripe-mode.sh live-build ./public
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

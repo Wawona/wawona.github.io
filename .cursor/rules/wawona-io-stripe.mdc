@@ -1,0 +1,28 @@
+---
+description: Local wawona.io is Stripe sandbox. Published wawona.io is live Checkout only.
+globs: "**/{stripe/**,scripts/**,secretspec.toml,.env*,.github/workflows/**,templates/shortcodes/donate*.html,templates/shortcodes/download_cards.html}"
+alwaysApply: true
+---
+
+# Stripe Checkout: sandbox local, live published
+
+Two Stripe accounts. Do not mix them.
+
+| Where | Account | Keys | Checkout API |
+|---|---|---|---|
+| Local (`zola serve`, `nix run`, `:1111`) | **Wawona sandbox** | `pk_test_` / `sk_test_` / `rk_test_` | `http://127.0.0.1:4242` |
+| Published https://wawona.io | **Wawona** (live) | `pk_live_` only in Pages | Public `https://` session API |
+
+## Hard rules
+
+1. **Local never uses live.** `./scripts/site-env.sh` and `nix run` load sandbox keys and force `:4242`. Unset any inherited `pk_live_` / `sk_live_` / `rk_live_`. Refuse to start `stripe/server.py` on localhost with a live secret.
+2. **Published never uses sandbox.** GitHub Pages `zola build` must bake `pk_live_` and an `https://` `STRIPE_CHECKOUT_API`. Refuse `pk_test_`, `localhost`, and `:4242` in `public/`.
+3. **Never commit `sk_` / `rk_`.** Pages never receives `STRIPE_SECRET_KEY`. Sync only the live public pair with `./scripts/sync-github-secrets.sh`.
+4. **Do not put keys in `config.toml`.** Zola reads env via `get_env`.
+
+## Pass paths
+
+- Sandbox: `secretspec/wawona/site/sandbox/STRIPE_*` then `secretspec/shared/default/STRIPE_*`
+- Live: `secretspec/wawona/site/live/STRIPE_*` (publishable + checkout API URL). Live secret stays on the API host.
+
+See `AGENTS.md` and `docs/secrets.md`.

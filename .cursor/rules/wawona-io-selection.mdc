@@ -1,0 +1,54 @@
+---
+description: wawona.io orange fill is for selection only. Text links underline on hover.
+globs: "**/*.{css,scss,html,md}"
+alwaysApply: true
+---
+
+# Orange fill vs text-link hover
+
+Orange fill (`--primary-color`) plus white text is **selection only**.
+Do not use that fill as the default link hover.
+
+## Selection
+
+```css
+::selection,
+*::selection {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+}
+```
+
+Same for `::-moz-selection`. `!important` is required.
+
+## Text links
+
+Orange text. Hover underlines. No background.
+
+```css
+a.text-link,
+main a:not(.dl-btn):not(.dn-btn) {
+    color: var(--primary-color);
+}
+
+a.text-link:hover,
+main a:not(.dl-btn):not(.dn-btn):hover {
+    color: var(--primary-color) !important;
+    background: none !important;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+```
+
+Do not set `color: #fff` on a text-link hover. That was the old fill hover.
+
+## Not text links
+
+Buttons, nav icons, cards, and the donate-banner CTA keep their own hover.
+Those may use orange fill. Text on that fill stays white.
+
+Never set `a:hover { background: transparent }` globally. Download and
+donate actions are `<a class="dl-btn">`. That rule wipes the orange
+fill and leaves white text on the card.
+
+Keep the global rules in `static/css/custom.css` and theme `_misc.scss`.

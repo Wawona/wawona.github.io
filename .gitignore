@@ -1,6 +1,15 @@
 # Zola output
 public/
 
+# Secrets (never commit)
+.env
+.env.*
+!.env.example
+
+# Survey SQLite (Checkout API host only)
+stripe/data/*.sqlite
+stripe/data/*.sqlite-*
+
 # IDE / Editor junk
 .vscode/
 .idea/

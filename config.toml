@@ -48,6 +48,7 @@ toc = true
 
 # Stripe keys are not committed. Zola reads STRIPE_PUBLISHABLE_KEY and
 # STRIPE_CHECKOUT_API from the environment (see secretspec.toml / scripts/site-env.sh).
+# Local serve is Wawona sandbox (pk_test_, :4242). Pages is live (pk_live_, https).
 # Secret/restricted keys (sk_/rk_) never go in this file.
 kofi_url = "https://ko-fi.com/aspauldingcode"
 # Site-wide donate lives at /donate/ (banner + footer). Download survey stays optional.

@@ -1,0 +1,40 @@
+---
+description: wawona.io site voice. No em dashes. No AI cadence. Write like a person.
+globs: "**/*.{md,html,toml,scss,js}"
+alwaysApply: true
+---
+
+# wawona.io voice
+
+Applies to all public copy, docs, templates, and UI strings in this repo.
+
+## Dashes
+
+Never use an em dash (Unicode U+2014, `&mdash;`, `&#8212;`). Never use an en dash as a stand-in between words.
+
+Use a period, comma, colon, or parentheses. Numeric ranges use a hyphen: `5-15 GB`.
+
+```text
+Bad:  Native on macOS — no VM.
+Good: Native on macOS. No VM.
+
+Bad:  Fastlane — lanes in fastlane/
+Good: Fastlane: lanes in fastlane/
+```
+
+The Bad lines above are the only place this glyph may appear: so the agent can match it. Never put it in site copy.
+
+## Sound like a person
+
+Write short sentences. Say the thing. Do not sell.
+
+Avoid: seamless, robust, leverage, utilize, delve, unlock (metaphor), empower, cutting-edge, next-generation, from the ground up, designed from day one, it's important to note, in order to, simply, effortlessly, revolutionary, catalyst, frontier, orchestrate, monolithic, first-class citizen, the future of.
+
+Avoid three-beat marketing lists ("No X, no Y, no Z") unless they are three product facts.
+
+Avoid fake gravitas on buttons and headings ("Forge the Source", "Enter the Discussion", "Fuel the Vision", "Built Different"). Use "GitHub", "Discord", "Support".
+
+```text
+Bad:  We are bringing high-performance, bare-metal Wayland execution to the hardware where it was previously impossible.
+Good: Wawona is a native Wayland compositor for Mac, iPhone, and Android. No VM.
+```

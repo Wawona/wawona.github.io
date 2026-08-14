@@ -1,0 +1,29 @@
+---
+description: wawona.io corner radii. No squares. Keep the existing look.
+globs: "**/*.{css,scss,html,md}"
+alwaysApply: true
+---
+
+# Corner radii
+
+Never ship a square corner on wawona.io. No `border-radius: 0` on visible
+chrome. No 1-4px radii on boxes, buttons, cards, inputs, banners, or labels.
+Those read as squares.
+
+Keep the existing look:
+
+- cards / banners: 12-26px
+- buttons / controls: 10-12px
+- pills: 100px / 999px
+- circles: 50%
+
+Nested shells that share an edge must stay concentric: parent radius equals
+child radius plus the padding between them. Give the curve enough padding so
+text and controls do not hit the corner. Do not flatten the child to satisfy
+a formula. Do not rewrite the whole site to tokens or
+`calc(var(--r-inset) + var(--pad))`.
+
+Pills and circles stay pills and circles.
+
+Exempt: 1-2px hairline tracks, shimmer underlines, donation slider FX
+particles, and the slider knob morph.
