@@ -1573,8 +1573,8 @@
             </div>
 
             <div class="dl-survey-actions">
-                <a class="dl-btn" data-sponsors-submit href="https://github.com/sponsors/{{ sponsors_user }}/sponsorships?sponsor={{ sponsors_user }}&amp;frequency=recurring&amp;amount=20" target="_blank" rel="noopener noreferrer">GitHub Sponsors: $20/mo</a>
-                <button class="dl-survey-continue" type="submit">Continue to downloads</button>
+                <a class="dl-btn" data-sponsors-submit href="https://github.com/sponsors/{{ sponsors_user }}/sponsorships?sponsor={{ sponsors_user }}&amp;frequency=recurring&amp;amount=20" target="_blank" rel="noopener noreferrer">Sponsors $20/mo</a>
+                <button class="dl-survey-continue" type="submit">Continue</button>
             </div>
             <p class="dl-support-error" hidden></p>
             <div class="dl-survey-result" id="download-survey-result">
@@ -2536,8 +2536,8 @@
                 sponsorsLink.href = sponsorsHref(usd);
                 sponsorsLink.removeAttribute("aria-disabled");
                 sponsorsLink.textContent = monthly
-                    ? ("GitHub Sponsors: $" + sponsorsUsd + "/mo")
-                    : ("GitHub Sponsors: $" + sponsorsUsd);
+                    ? ("Sponsors $" + sponsorsUsd + "/mo")
+                    : ("Sponsors $" + sponsorsUsd);
             }
             if (kofiLink) {
                 kofiLink.href = kofiHref(usd);
@@ -2588,8 +2588,8 @@
                 sponsorsLink.href = sponsorsHref(value);
                 sponsorsLink.removeAttribute("aria-disabled");
                 sponsorsLink.textContent = monthly
-                    ? ("GitHub Sponsors: $" + sponsorsUsd + "/mo")
-                    : ("GitHub Sponsors: $" + sponsorsUsd);
+                    ? ("Sponsors $" + sponsorsUsd + "/mo")
+                    : ("Sponsors $" + sponsorsUsd);
             }
             if (kofiLink) {
                 kofiLink.href = kofiHref(value);
