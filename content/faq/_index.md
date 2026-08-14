@@ -276,7 +276,7 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 </summary>
 <div class="faq-answer">
 
-Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub assets on `v*` tags. Ship: beta (stores) on `master` is TestFlight and Play internal. Find beta testing links on the [Wawona Discord](https://discord.gg/wHVSV52uw5). macOS is not an App Store feature target.
+Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub assets on `v*` tags. Ship: beta (stores) on `master` is TestFlight and Play internal. Find beta testing links on the [Wawona Discord](https://discord.gg/wHVSV52uw5). macOS is not an App Store feature target. Filename scheme for developers: [Prebuilt binary naming](/docs/prebuilt-naming/).
 
 </div>
 </details>

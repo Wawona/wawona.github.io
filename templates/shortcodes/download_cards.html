@@ -1653,13 +1653,13 @@
                     <div class="dl-download">
                     <div class="dl-split">
                         <a id="macos-dl-main"
-                            href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-arm64.dmg"
+                            href="https://github.com/Wawona/Wawona/releases/latest"
                             class="dl-btn dl-split-main" data-asset="macos-arm64" aria-label="Download Wawona.dmg">Wawona.dmg</a>
                         <button type="button" class="dl-btn dl-split-toggle" id="macos-arch-toggle"
                             aria-haspopup="true" aria-expanded="false" aria-controls="macos-arch-menu"
                             aria-label="Choose architecture"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
                         <div class="dl-split-menu" id="macos-arch-menu" role="menu">
-                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-arm64.dmg"
+                            <a href="https://github.com/Wawona/Wawona/releases/latest"
                                 data-arch="arm64" data-asset="macos-arm64" role="menuitem">arm64 <span
                                     class="dl-arch-sub">(Apple Silicon)</span><span class="dl-arch-hint">Recommended</span></a>
                             <span data-arch="x86_64" data-asset="macos-x86_64" role="menuitem" aria-disabled="true">x86_64 <span
@@ -1688,16 +1688,16 @@
                     <div class="dl-download">
                     <div class="dl-split">
                         <a id="linux-dl-main"
-                            href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
+                            href="https://github.com/Wawona/Wawona/releases/latest"
                             class="dl-btn dl-split-main" data-asset="linux-x86_64" aria-label="Download Wawona.AppImage">Wawona.AppImage</a>
                         <button type="button" class="dl-btn dl-split-toggle" id="linux-arch-toggle"
                             aria-haspopup="true" aria-expanded="false" aria-controls="linux-arch-menu"
                             aria-label="Choose architecture"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
                         <div class="dl-split-menu" id="linux-arch-menu" role="menu">
-                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
+                            <a href="https://github.com/Wawona/Wawona/releases/latest"
                                 data-arch="x86_64" data-asset="linux-x86_64" role="menuitem">x86_64 <span
                                     class="dl-arch-sub">(Intel / AMD)</span><span class="dl-arch-hint">Recommended</span></a>
-                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-aarch64.AppImage"
+                            <a href="https://github.com/Wawona/Wawona/releases/latest"
                                 data-arch="aarch64" data-asset="linux-aarch64" role="menuitem">aarch64 <span
                                     class="dl-arch-sub">(ARM64)</span><span class="dl-arch-hint">Recommended</span></a>
                         </div>
@@ -1746,7 +1746,7 @@
                     <div class="dl-btn-stack">
                         <div class="dl-btn dl-btn-ghost" aria-disabled="true">Google Play soon</div>
                         <a class="dl-sideload-link" data-asset="android-apk"
-                            href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona.apk" aria-label="Sideload Wawona.apk">Sideload Wawona.apk</a>
+                            href="https://github.com/Wawona/Wawona/releases/latest" aria-label="Sideload Wawona.apk">Sideload Wawona.apk</a>
                     </div>
                 </div>
             </div>
@@ -2972,15 +2972,15 @@
     })();
 
     (function wawonaDownloads() {
-        var LATEST_FALLBACK = "https://github.com/Wawona/Wawona/releases/latest/download/";
+        var LATEST_PAGE = "https://github.com/Wawona/Wawona/releases/latest";
         var assetUrls = {
-            "macos-arm64": LATEST_FALLBACK + "Wawona-macOS-arm64.dmg",
-            "macos-x86_64": LATEST_FALLBACK + "Wawona-macOS-x86_64.dmg",
-            "macos-dmg": LATEST_FALLBACK + "Wawona-macOS-arm64.dmg",
-            "linux-x86_64": LATEST_FALLBACK + "Wawona-x86_64.AppImage",
-            "linux-aarch64": LATEST_FALLBACK + "Wawona-aarch64.AppImage",
-            "android-apk": LATEST_FALLBACK + "Wawona.apk",
-            "ios-ipa": "https://github.com/Wawona/Wawona/releases/latest"
+            "macos-arm64": LATEST_PAGE,
+            "macos-x86_64": LATEST_PAGE,
+            "macos-dmg": LATEST_PAGE,
+            "linux-x86_64": LATEST_PAGE,
+            "linux-aarch64": LATEST_PAGE,
+            "android-apk": LATEST_PAGE,
+            "ios-ipa": LATEST_PAGE
         };
         var linuxArch = "x86_64";
         var linuxDetected = false;
@@ -3014,24 +3014,36 @@
             applyReleaseTag(release.tag_name || release.name || "");
             var assets = release.assets || [];
             setAssetHref("macos-arm64", pickAsset(assets, function (n) {
-                return n === "Wawona-macOS-arm64.dmg" || /macOS-arm64\.dmg$/i.test(n);
+                return /^Wawona-[\d.]+-macOS-arm64\.dmg$/i.test(n) ||
+                    n === "Wawona-macOS-arm64.dmg" ||
+                    /^Wawona-[\d.]+\.dmg$/i.test(n);
             }));
             setAssetHref("macos-x86_64", pickAsset(assets, function (n) {
-                return n === "Wawona-macOS-x86_64.dmg" || /macOS-(x86_64|intel|amd64)\.dmg$/i.test(n);
+                return /^Wawona-[\d.]+-macOS-x86_64\.dmg$/i.test(n) ||
+                    n === "Wawona-macOS-x86_64.dmg" ||
+                    /macOS-(x86_64|intel|amd64)\.dmg$/i.test(n);
             }));
             assetUrls["macos-dmg"] = assetUrls["macos-arm64"];
             setAssetHref("linux-x86_64", pickAsset(assets, function (n) {
-                return /x86_64.*\.AppImage$/i.test(n) || n === "Wawona-x86_64.AppImage";
+                return /^Wawona-[\d.]+-Linux-x86_64\.AppImage$/i.test(n) ||
+                    n === "Wawona-x86_64.AppImage" ||
+                    /x86_64.*\.AppImage$/i.test(n);
             }));
             setAssetHref("linux-aarch64", pickAsset(assets, function (n) {
-                return /aarch64.*\.AppImage$/i.test(n) || n === "Wawona-aarch64.AppImage";
+                return /^Wawona-[\d.]+-Linux-arm64\.AppImage$/i.test(n) ||
+                    n === "Wawona-aarch64.AppImage" ||
+                    n === "Wawona-arm64.AppImage" ||
+                    /aarch64.*\.AppImage$/i.test(n) ||
+                    /Linux-arm64\.AppImage$/i.test(n);
             }));
             setAssetHref("android-apk", pickAsset(assets, function (n) {
-                return n === "Wawona.apk";
+                return /^Wawona-[\d.]+-Android-arm64\.apk$/i.test(n);
             }) || pickAsset(assets, function (n) {
-                return /\.apk$/i.test(n);
+                return n === "Wawona.apk" || /^Wawona-[\d.]+\.apk$/i.test(n) || /\.apk$/i.test(n);
             }));
             setAssetHref("ios-ipa", pickAsset(assets, function (n) {
+                return /^Wawona-[\d.]+-iOS-arm64\.ipa$/i.test(n);
+            }) || pickAsset(assets, function (n) {
                 return /iOS\.ipa$/i.test(n) || /\.ipa$/i.test(n);
             }));
             applyLinuxArch(linuxArch);

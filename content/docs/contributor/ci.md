@@ -16,10 +16,10 @@ Work lands on **`development`**. **`master`** is the green/release branch.
 
 ## Ship (master only)
 
-- **Ship: beta (stores)** on push to `master`: TestFlight + Play internal
-- **Ship: GitHub assets** on `v*` tags: dmg / ipa / apk / AppImage
+- **Ship: beta (stores)** on push to `master`: TestFlight + Play internal (`Wawona-{calver}-{platform}-{arch}-{build}.{ext}`)
+- **Ship: GitHub assets** on `v*` tags: `Wawona-{calver}-{platform}-{arch}.{ext}` (dmg / ipa / apk / AppImage)
 
-Do not treat Ship workflows as development gates. Do not ship stores from `development`.
+See [Prebuilt binary naming](@/docs/contributor/prebuilt-naming.md). Do not treat Ship workflows as development gates. Do not ship stores from `development`.
 
 Promote with a fast-forward of a green tip. Never force-push `master` or `development`.
 

@@ -46,3 +46,10 @@ Build the Sponsors URL from the slider:
 `https://github.com/sponsors/{user}/sponsorships?sponsor={user}&frequency=recurring|one-time&amount={usd}`
 
 Do not add a Checkout Session server. Do not put payment keys in `config.toml` or Pages.
+
+## Prebuilt binaries
+
+Download cards resolve GitHub Release assets named
+`Wawona-{calver}-{platform}-{arch}.{ext}` (legacy names until the next `v*` tag).
+Developer reference: `/docs/prebuilt-naming/`. Do not hardcode unversioned
+`/latest/download/Wawona.apk` (or alias DMG) fallbacks.
