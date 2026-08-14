@@ -50,7 +50,7 @@ a {
 
 /* Inline text links: orange. Hover underlines. No fill. */
 main {
-  a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(.docs-card) {
+  a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(.docs-card):not(.docs-prevnext-link) {
     color: var(--primary-color);
     border-bottom: none;
 
