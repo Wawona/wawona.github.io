@@ -1497,11 +1497,19 @@
                 </div>
 
                 <div class="dl-field">
-                    <label for="dl-device">Device and version</label>
+                    <label for="dl-device">Device</label>
                     <input id="dl-device" name="device" type="text" autocomplete="off" spellcheck="false"
                         placeholder="Start typing: MacBook Air, Pixel 8, …"
                         aria-describedby="dl-device-hint">
                     <p class="dl-survey-note" id="dl-device-hint">Pick a suggestion, or type a custom name and press comma to add it as Other. Loose text is not kept.</p>
+                </div>
+
+                <div class="dl-field">
+                    <label for="dl-os">OS version</label>
+                    <input id="dl-os" name="os_version" type="text" autocomplete="off" spellcheck="false"
+                        placeholder="Start typing: macOS Sequoia, Android 15, Ubuntu 24.04, …"
+                        aria-describedby="dl-os-hint">
+                    <p class="dl-survey-note" id="dl-os-hint">Apple, Android, or Linux version. Custom names: type and press comma for Other.</p>
                 </div>
 
                 <fieldset class="dl-check-grid dl-field-wide">
@@ -1733,7 +1741,7 @@
         <div class="feed-modal-content">
             <h1 id="surveySkipModalTitle" class="page-header">Unsaved survey</h1>
             <p>
-                You started the survey. Finish it so we get your device and use case,
+                You started the survey. Finish it so we get your device, OS version, and use case,
                 or skip anyway to open downloads without sending.
             </p>
             <div class="dl-skip-actions">
@@ -1763,6 +1771,7 @@
         var err = form && form.querySelector(".dl-support-error");
         var kofiLink = form && form.querySelector("[data-kofi-amount]");
         var deviceInput = document.getElementById("dl-device");
+        var osInput = document.getElementById("dl-os");
         var surveyId = "";
         var surveyEndpoint = (form && form.getAttribute("data-survey-endpoint") || "").trim();
         var skipModal = document.getElementById("surveySkipModal");
@@ -1802,6 +1811,11 @@
         if (window.WawonaDeviceSuggest && deviceInput) {
             WawonaDeviceSuggest.loadCatalog().then(function () {
                 WawonaDeviceSuggest.bind(deviceInput);
+            });
+        }
+        if (window.WawonaOsSuggest && osInput) {
+            WawonaOsSuggest.loadCatalog().then(function () {
+                WawonaOsSuggest.bind(osInput);
             });
         }
 
@@ -2407,12 +2421,30 @@
             var parted = (window.WawonaDeviceSuggest && WawonaDeviceSuggest.partitionForSurvey)
                 ? WawonaDeviceSuggest.partitionForSurvey(stored)
                 : { devices: stored, devices_other: [] };
+
+            var osRaw = (formData.get("os_version") || "").toString();
+            var osStored = (window.WawonaOsSuggest && WawonaOsSuggest.getDevices)
+                ? WawonaOsSuggest.getDevices(osInput)
+                : (window.WawonaOsSuggest && WawonaOsSuggest.normalizeField)
+                    ? WawonaOsSuggest.normalizeField(osRaw)
+                    : osRaw.split(",").map(function (part) { return part.trim(); }).filter(Boolean);
+            var osVersion = osStored.join(", ");
+            if (osInput && osVersion !== osInput.value) {
+                osInput.value = osVersion;
+            }
+            var osParted = (window.WawonaOsSuggest && WawonaOsSuggest.partitionForSurvey)
+                ? WawonaOsSuggest.partitionForSurvey(osStored)
+                : { items: osStored, others: [], devices: osStored, devices_other: [] };
+
             return {
                 skipped: !!skipped,
                 platform: formData.get("platform") || "",
                 device: device,
                 devices: parted.devices,
                 devices_other: parted.devices_other,
+                os_version: osVersion,
+                os_versions: osParted.items || osParted.devices || [],
+                os_versions_other: osParted.others || osParted.devices_other || [],
                 use_cases: getCheckedValues(formData, "useCase"),
                 price: formData.get("price") || "",
                 source: formData.get("source") || "",
@@ -2428,6 +2460,7 @@
             return JSON.stringify({
                 platform: p.platform,
                 device: p.device,
+                os_version: p.os_version,
                 use_cases: p.use_cases.slice().sort(),
                 price: p.price,
                 source: p.source,
@@ -2457,7 +2490,10 @@
 
         function validateRequired(payload) {
             if (!payload.device) {
-                return "Enter your device and version.";
+                return "Enter your device.";
+            }
+            if (!payload.os_version && !(payload.os_versions && payload.os_versions.length)) {
+                return "Enter your OS version.";
             }
             if (!payload.use_cases.length) {
                 return "Pick at least one intended use case.";
@@ -2811,14 +2847,11 @@
         });
 
         if (sponsorsLink) {
-            sponsorsLink.addEventListener("click", function (event) {
-                var problem = validateRequired(surveyPayload(false));
-                if (problem) {
-                    event.preventDefault();
-                    showError(problem);
-                    return;
-                }
-                postSurvey(false).then(function () {
+            sponsorsLink.addEventListener("click", function () {
+                /* Optional support must work without completing the survey. */
+                clearError();
+                var incomplete = !!validateRequired(surveyPayload(false));
+                postSurvey(incomplete).then(function () {
                     unlockDownloads(true);
                 }).catch(function () { /* Sponsors tab still opens */ });
             });

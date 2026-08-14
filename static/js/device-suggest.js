@@ -1,33 +1,43 @@
 /**
- * Device typeahead → non-editable pills (recognized catalog names only).
- * Commas are separators after pills, never part of a device name.
+ * Catalog typeahead → non-editable pills (recognized names only).
+ * Used for devices and OS versions. Commas separate chips; free text
+ * becomes Other: … after an explicit comma.
  */
 (function (global) {
-    var CATALOG_URL = "/data/device-catalog.json";
+    var DEVICE_CATALOG_URL = "/data/device-catalog.json";
+    var OS_CATALOG_URL = "/data/os-catalog.json";
     var MAX_SUGGESTIONS = 8;
     var AUTO_CANONICAL_SCORE = 0.72;
+    var OTHER_LABEL_MAX = 120;
+    var catalogs = Object.create(null);
 
-    var catalogPromise = null;
-    var names = [];
+    function getCatalog(url) {
+        var key = url || DEVICE_CATALOG_URL;
+        if (!catalogs[key]) {
+            catalogs[key] = { names: [], promise: null };
+        }
+        return catalogs[key];
+    }
 
-    function loadCatalog() {
-        if (catalogPromise) return catalogPromise;
-        catalogPromise = fetch(CATALOG_URL, { credentials: "omit" })
+    function loadCatalog(url) {
+        var cat = getCatalog(url);
+        if (cat.promise) return cat.promise;
+        cat.promise = fetch(url || DEVICE_CATALOG_URL, { credentials: "omit" })
             .then(function (res) {
                 if (!res.ok) throw new Error("catalog " + res.status);
                 return res.json();
             })
             .then(function (rows) {
-                names = (rows || [])
+                cat.names = (rows || [])
                     .map(function (row) { return (row && row.name) || ""; })
                     .filter(Boolean);
-                return names;
+                return cat.names;
             })
             .catch(function () {
-                names = [];
-                return names;
+                cat.names = [];
+                return cat.names;
             });
-        return catalogPromise;
+        return cat.promise;
     }
 
     function normalizeKey(s) {
@@ -46,7 +56,11 @@
             .replace(/\bipadpro\b/g, "ipad pro")
             .replace(/\biphone\b/g, "iphone")
             .replace(/\bpixel\b/g, "pixel")
-            .replace(/\bframework\b/g, "framework laptop");
+            .replace(/\bframework\b/g, "framework laptop")
+            .replace(/\bmacos\b/g, "macos")
+            .replace(/\bios\b/g, "ios")
+            .replace(/\bubu\b/g, "ubuntu")
+            .replace(/\bnixos\b/g, "nixos");
         return q.replace(/\s+/g, " ").trim();
     }
 
@@ -79,7 +93,8 @@
         return 0.55 + (0.25 * hit) / Math.max(qParts.length, 1);
     }
 
-    function suggest(query, limit) {
+    function suggest(query, limit, url) {
+        var names = getCatalog(url).names;
         var q = String(query || "").trim();
         if (q.length < 1) return [];
         var scored = [];
@@ -102,13 +117,7 @@
         return String(s || "").replace(/^other:\s*/i, "").trim();
     }
 
-    var OTHER_DEVICE_MAX = 120;
-
-    /**
-     * Sanitize unrecognized device free text with DOMPurify (text-only).
-     * Server re-sanitizes with sanitize-html + validator; this is defense in depth.
-     */
-    function sanitizeOtherDeviceLabel(value) {
+    function sanitizeOtherLabel(value) {
         var text = String(value == null ? "" : value);
         if (global.DOMPurify && typeof DOMPurify.sanitize === "function") {
             text = DOMPurify.sanitize(text, {
@@ -122,72 +131,70 @@
             .replace(/,/g, "")
             .replace(/\s+/g, " ")
             .trim();
-        if (text.length > OTHER_DEVICE_MAX) text = text.slice(0, OTHER_DEVICE_MAX);
+        if (text.length > OTHER_LABEL_MAX) text = text.slice(0, OTHER_LABEL_MAX);
         return text;
     }
 
-    /** Recognized catalog name only; empty if not recognized. */
-    function recognizedDevice(token) {
-        var raw = sanitizeOtherDeviceLabel(stripOtherPrefix(stripCommas(token)));
+    function recognizedName(token, url) {
+        var raw = sanitizeOtherLabel(stripOtherPrefix(stripCommas(token)));
         if (!raw) return "";
+        var names = getCatalog(url).names;
         var key = normalizeKey(raw);
         for (var i = 0; i < names.length; i++) {
             if (normalizeKey(names[i]) === key) return names[i];
         }
-        var top = suggest(raw, 1)[0];
+        var top = suggest(raw, 1, url)[0];
         if (top && top.score >= AUTO_CANONICAL_SCORE) return top.name;
         return "";
     }
 
-    function toStoredDevice(token) {
+    function toStored(token, url) {
         var raw = stripCommas(token).trim();
         if (!raw) return "";
         if (/^other:\s*/i.test(raw)) {
-            var custom = sanitizeOtherDeviceLabel(stripOtherPrefix(raw));
+            var custom = sanitizeOtherLabel(stripOtherPrefix(raw));
             return custom ? ("Other: " + custom) : "";
         }
-        var canon = recognizedDevice(raw);
+        var canon = recognizedName(raw, url);
         if (canon) return canon;
-        var other = sanitizeOtherDeviceLabel(raw);
+        var other = sanitizeOtherLabel(raw);
         return other ? ("Other: " + other) : "";
     }
 
-    function isOtherDevice(token) {
+    function isOtherEntry(token) {
         return /^other:\s*/i.test(String(token || "").trim());
     }
 
-    /**
-     * Split stored chips into graph buckets + free-text labels.
-     * Unrecognized devices count as "Other" in aggregates; custom text
-     * stays in devices_other for later review.
-     */
     function partitionForSurvey(list) {
-        var devices = [];
-        var devices_other = [];
+        var items = [];
+        var others = [];
         (list || []).forEach(function (entry) {
             var raw = String(entry || "").trim();
             if (!raw) return;
-            if (isOtherDevice(raw)) {
-                devices.push("Other");
-                var custom = sanitizeOtherDeviceLabel(stripOtherPrefix(raw));
-                if (custom) devices_other.push(custom);
+            if (isOtherEntry(raw)) {
+                items.push("Other");
+                var custom = sanitizeOtherLabel(stripOtherPrefix(raw));
+                if (custom) others.push(custom);
             } else {
-                devices.push(raw);
+                items.push(raw);
             }
         });
-        return { devices: devices, devices_other: devices_other };
+        return { items: items, others: others, devices: items, devices_other: others };
     }
 
-    function normalizeDeviceField(value) {
+    function normalizeField(value, url) {
         return String(value || "")
             .split(",")
-            .map(toStoredDevice)
+            .map(function (part) { return toStored(part, url); })
             .filter(Boolean);
     }
 
-    function bindDeviceSuggest(input) {
-        if (!input || input.dataset.deviceSuggestBound === "1") return;
-        input.dataset.deviceSuggestBound = "1";
+    function bindCatalogSuggest(input, options) {
+        options = options || {};
+        var catalogUrl = options.catalogUrl || DEVICE_CATALOG_URL;
+        var boundFlag = options.boundFlag || "catalogSuggestBound";
+        if (!input || input.dataset[boundFlag] === "1") return;
+        input.dataset[boundFlag] = "1";
 
         var selected = [];
         var wrap = document.createElement("div");
@@ -197,19 +204,18 @@
         var chips = document.createElement("div");
         chips.className = "dl-device-chips";
         chips.setAttribute("role", "group");
-        chips.setAttribute("aria-label", "Selected devices");
+        chips.setAttribute("aria-label", options.groupLabel || "Selected items");
 
         var draft = document.createElement("input");
         draft.type = "text";
         draft.className = "dl-device-draft";
-        draft.id = input.id ? input.id + "-draft" : "dl-device-draft";
+        draft.id = input.id ? input.id + "-draft" : "dl-catalog-draft";
         draft.setAttribute("autocomplete", "off");
         draft.setAttribute("spellcheck", "false");
         draft.setAttribute("aria-autocomplete", "list");
-        draft.setAttribute("aria-label", "Add a device");
-        draft.placeholder = input.placeholder || "Start typing a device…";
+        draft.setAttribute("aria-label", options.draftLabel || "Add an item");
+        draft.placeholder = input.placeholder || "Start typing…";
 
-        /* Keep original field as the serialized value for forms / dirty checks. */
         input.type = "hidden";
         input.removeAttribute("placeholder");
         wrap.appendChild(chips);
@@ -229,6 +235,7 @@
 
         var activeIndex = -1;
         var current = [];
+        var optPrefix = (input.id || "dl-catalog") + "-opt-";
 
         function syncHidden() {
             input.value = selected.join(", ");
@@ -236,7 +243,7 @@
             input.dispatchEvent(new Event("change", { bubbles: true }));
         }
 
-        function getDevices() {
+        function getSelected() {
             return selected.slice();
         }
 
@@ -258,19 +265,19 @@
             }
             items.forEach(function (item, index) {
                 var li = document.createElement("li");
-                li.id = "dl-device-opt-" + index;
+                li.id = optPrefix + index;
                 li.className = "dl-device-suggest-item" + (index === 0 ? " is-active" : "");
                 li.setAttribute("role", "option");
                 li.textContent = item.name;
                 li.addEventListener("mousedown", function (event) {
                     event.preventDefault();
-                    addDevice(item.name);
+                    addItem(item.name);
                 });
                 list.appendChild(li);
             });
             list.hidden = false;
             if (activeIndex >= 0) {
-                draft.setAttribute("aria-activedescendant", "dl-device-opt-" + activeIndex);
+                draft.setAttribute("aria-activedescendant", optPrefix + activeIndex);
             }
         }
 
@@ -281,7 +288,7 @@
             for (var i = 0; i < items.length; i++) {
                 items[i].classList.toggle("is-active", i === activeIndex);
             }
-            draft.setAttribute("aria-activedescendant", "dl-device-opt-" + activeIndex);
+            draft.setAttribute("aria-activedescendant", optPrefix + activeIndex);
         }
 
         function renderChips() {
@@ -319,10 +326,10 @@
             });
         }
 
-        function addDevice(name, asOther) {
+        function addItem(name, asOther) {
             var store = asOther
-                ? toStoredDevice("Other: " + sanitizeOtherDeviceLabel(stripOtherPrefix(stripCommas(name))))
-                : (recognizedDevice(name) || "");
+                ? toStored("Other: " + sanitizeOtherLabel(stripOtherPrefix(stripCommas(name))), catalogUrl)
+                : (recognizedName(name, catalogUrl) || "");
             if (!store) return false;
             var key = normalizeKey(store);
             for (var i = 0; i < selected.length; i++) {
@@ -345,9 +352,9 @@
             opts = opts || {};
             var raw = stripCommas(draft.value).trim();
             if (!raw) return false;
-            var canon = recognizedDevice(raw);
-            if (canon) return addDevice(canon, false);
-            if (opts.allowOther) return addDevice(raw, true);
+            var canon = recognizedName(raw, catalogUrl);
+            if (canon) return addItem(canon, false);
+            if (opts.allowOther) return addItem(raw, true);
             return false;
         }
 
@@ -357,7 +364,7 @@
                 hide();
                 return;
             }
-            var items = suggest(q, MAX_SUGGESTIONS).filter(function (item) {
+            var items = suggest(q, MAX_SUGGESTIONS, catalogUrl).filter(function (item) {
                 var key = normalizeKey(item.name);
                 for (var i = 0; i < selected.length; i++) {
                     if (normalizeKey(selected[i]) === key) return false;
@@ -370,7 +377,7 @@
         function seedFromValue(value) {
             selected = [];
             String(value || "").split(",").forEach(function (part) {
-                var store = toStoredDevice(part);
+                var store = toStored(part, catalogUrl);
                 if (!store) return;
                 var key = normalizeKey(store);
                 var dup = selected.some(function (s) { return normalizeKey(s) === key; });
@@ -406,7 +413,7 @@
             if (event.key === ",") {
                 event.preventDefault();
                 if (!tryCommitDraft({ allowOther: true }) && activeIndex >= 0 && current[activeIndex]) {
-                    addDevice(current[activeIndex].name, false);
+                    addItem(current[activeIndex].name, false);
                 }
                 return;
             }
@@ -420,7 +427,6 @@
             if (list.hidden || !current.length) {
                 if (event.key === "Enter") {
                     event.preventDefault();
-                    /* Recognized only. Unrecognized needs an explicit comma → Other. */
                     tryCommitDraft();
                 }
                 return;
@@ -434,7 +440,7 @@
             } else if (event.key === "Enter" || event.key === "Tab") {
                 if (activeIndex >= 0 && current[activeIndex]) {
                     event.preventDefault();
-                    addDevice(current[activeIndex].name, false);
+                    addItem(current[activeIndex].name, false);
                 } else if (event.key === "Enter") {
                     event.preventDefault();
                     tryCommitDraft();
@@ -447,13 +453,12 @@
         draft.addEventListener("blur", function () {
             setTimeout(function () {
                 tryCommitDraft();
-                /* Drop leftover freeform unless it was committed as Other via comma. */
                 draft.value = "";
                 hide();
             }, 120);
         });
 
-        loadCatalog().then(function () {
+        loadCatalog(catalogUrl).then(function () {
             seedFromValue(input.value);
             draft.addEventListener("click", refresh);
             draft.addEventListener("keyup", function (event) {
@@ -463,26 +468,45 @@
             });
         });
 
-        input._deviceSuggestGet = getDevices;
-        input._deviceSuggestAdd = addDevice;
+        input._deviceSuggestGet = getSelected;
+        input._deviceSuggestAdd = addItem;
     }
 
-    function getDevicesFromInput(input) {
+    function getSelectedFromInput(input, url) {
         if (input && typeof input._deviceSuggestGet === "function") {
             return input._deviceSuggestGet();
         }
-        return normalizeDeviceField(input && input.value);
+        return normalizeField(input && input.value, url);
     }
 
-    global.WawonaDeviceSuggest = {
-        loadCatalog: loadCatalog,
-        suggest: suggest,
-        normalizeDeviceField: normalizeDeviceField,
-        recognizedDevice: recognizedDevice,
-        isOtherDevice: isOtherDevice,
-        partitionForSurvey: partitionForSurvey,
-        sanitizeOtherDeviceLabel: sanitizeOtherDeviceLabel,
-        getDevices: getDevicesFromInput,
-        bind: bindDeviceSuggest
-    };
+    function makeApi(catalogUrl, labels) {
+        return {
+            loadCatalog: function () { return loadCatalog(catalogUrl); },
+            suggest: function (q, limit) { return suggest(q, limit, catalogUrl); },
+            normalizeDeviceField: function (v) { return normalizeField(v, catalogUrl); },
+            normalizeField: function (v) { return normalizeField(v, catalogUrl); },
+            recognizedDevice: function (t) { return recognizedName(t, catalogUrl); },
+            isOtherDevice: isOtherEntry,
+            partitionForSurvey: partitionForSurvey,
+            sanitizeOtherDeviceLabel: sanitizeOtherLabel,
+            getDevices: function (input) { return getSelectedFromInput(input, catalogUrl); },
+            bind: function (input) {
+                return bindCatalogSuggest(input, {
+                    catalogUrl: catalogUrl,
+                    boundFlag: catalogUrl === OS_CATALOG_URL ? "osSuggestBound" : "deviceSuggestBound",
+                    groupLabel: labels.groupLabel,
+                    draftLabel: labels.draftLabel
+                });
+            }
+        };
+    }
+
+    global.WawonaDeviceSuggest = makeApi(DEVICE_CATALOG_URL, {
+        groupLabel: "Selected devices",
+        draftLabel: "Add a device"
+    });
+    global.WawonaOsSuggest = makeApi(OS_CATALOG_URL, {
+        groupLabel: "Selected OS versions",
+        draftLabel: "Add an OS version"
+    });
 })(window);
