@@ -40,9 +40,9 @@ template = "faq_section.html"
     -webkit-user-select: none;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.2s ease, border-radius 0.2s ease;
+    transition: background-color 0.2s ease;
     background: none;
-    /* Closed: full card radius. Expanded: square bottom against the answer. */
+    /* Closed: full card radius. Expanded: square bottom against the answer (instant). */
     border-radius: var(--r-card);
 }
 
