@@ -39,8 +39,10 @@ Linux/PC). Comma-separated multi-device. Suggestions insert canonical
 names so README device counts stay consistent. Unrecognized names are
 stored as `Other: <text>` in the human-readable `device` line and in
 `devices_other`; the `devices` array uses the bucket `Other` so graphs
-group them. Other-device free text is sanitized with DOMPurify (site) and
-`sanitize-html` + `validator` (Vercel API). See `static/data/DEVICE_CATALOG.md`.
+group them. Intended use case **Other** is the same shape: `use_cases`
+holds `Other`, optional note in `use_cases_other`. Other free text is
+sanitized with DOMPurify (site) and `sanitize-html` + `validator`
+(Vercel API). See `static/data/DEVICE_CATALOG.md`.
 
 If a later feature needs a token, put the **name** in git and the
 **value** in pass (`git@github.com:aspauldingcode/.password-store.git`).

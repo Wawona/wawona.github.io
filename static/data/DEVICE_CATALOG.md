@@ -3,7 +3,8 @@
 Built for the download survey typeahead. Canonical marketing names so
 counts group cleanly. Unrecognized entries become the graph bucket
 `Other` while the typed label is kept in `devices_other` /
-`os_versions_other`.
+`os_versions_other`. Intended use case **Other** uses `use_cases_other`
+the same way (optional free text; pie stays one Other slice).
 
 ## Device catalog (`device-catalog.json`)
 

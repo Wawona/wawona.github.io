@@ -188,6 +188,36 @@
         width: auto;
     }
 
+    .dl-use-other-detail {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        margin: 0;
+        padding: 0.65rem 0.75rem;
+        border: 1px dashed var(--border-color);
+        border-radius: var(--dl-r-in);
+        background: var(--bg-0);
+    }
+
+    .dl-use-other-detail[hidden] {
+        display: none;
+    }
+
+    .dl-use-other-detail label {
+        border: 0;
+        padding: 0;
+        background: transparent;
+        font-weight: 600;
+        color: var(--text-2);
+        font-size: 0.85rem;
+    }
+
+    .dl-use-other-detail input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     .dl-field label.dl-one-time,
     .dl-one-time {
         display: flex;
@@ -1520,7 +1550,15 @@
                     <label><input type="checkbox" name="useCase" value="Creative tools"> Creative tools</label>
                     <label><input type="checkbox" name="useCase" value="Learning"> Learning</label>
                     <label><input type="checkbox" name="useCase" value="Fun"> Fun</label>
-                    <label><input type="checkbox" name="useCase" value="Other"> Other</label>
+                    <label><input type="checkbox" name="useCase" value="Other" id="dl-use-other"> Other</label>
+                    <div class="dl-use-other-detail" id="dl-use-other-wrap" hidden>
+                        <label for="dl-use-other-text">Describe other use case (optional)</label>
+                        <input id="dl-use-other-text" name="useCaseOther" type="text" maxlength="120"
+                            autocomplete="off" spellcheck="true"
+                            placeholder="e.g. classroom labs, kiosk, CI runners"
+                            aria-describedby="dl-use-other-hint">
+                        <p class="dl-survey-note" id="dl-use-other-hint">Graphs count this as Other; your note is kept privately for review.</p>
+                    </div>
                 </fieldset>
 
                 <div class="dl-field">
@@ -1772,6 +1810,9 @@
         var kofiLink = form && form.querySelector("[data-kofi-amount]");
         var deviceInput = document.getElementById("dl-device");
         var osInput = document.getElementById("dl-os");
+        var useOtherCheck = document.getElementById("dl-use-other");
+        var useOtherWrap = document.getElementById("dl-use-other-wrap");
+        var useOtherText = document.getElementById("dl-use-other-text");
         var surveyId = "";
         var surveyEndpoint = (form && form.getAttribute("data-survey-endpoint") || "").trim();
         var skipModal = document.getElementById("surveySkipModal");
@@ -1817,6 +1858,68 @@
             WawonaOsSuggest.loadCatalog().then(function () {
                 WawonaOsSuggest.bind(osInput);
             });
+        }
+
+        function syncUseOtherDetail() {
+            if (!useOtherWrap || !useOtherCheck) return;
+            var on = !!useOtherCheck.checked;
+            useOtherWrap.hidden = !on;
+            if (!on && useOtherText) useOtherText.value = "";
+        }
+        if (useOtherCheck) {
+            useOtherCheck.addEventListener("change", syncUseOtherDetail);
+            syncUseOtherDetail();
+        }
+
+        function sanitizeUseOtherLabel(value) {
+            if (window.WawonaDeviceSuggest && WawonaDeviceSuggest.sanitizeOtherDeviceLabel) {
+                return WawonaDeviceSuggest.sanitizeOtherDeviceLabel(value);
+            }
+            return String(value == null ? "" : value)
+                .replace(/[\u0000-\u001F\u007F]/g, "")
+                .replace(/,/g, "")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 120);
+        }
+
+        function partitionUseCases(checked, otherText) {
+            var cases = [];
+            var others = [];
+            var seenCase = new Set();
+            var seenOther = new Set();
+            function pushCase(label) {
+                var s = String(label || "").trim();
+                if (!s) return;
+                var key = s.toLowerCase();
+                if (seenCase.has(key)) return;
+                seenCase.add(key);
+                cases.push(s);
+            }
+            function pushOther(label) {
+                var custom = sanitizeUseOtherLabel(label);
+                if (!custom) return;
+                var key = custom.toLowerCase();
+                if (seenOther.has(key)) return;
+                seenOther.add(key);
+                others.push(custom);
+            }
+            (checked || []).forEach(function (entry) {
+                var raw = String(entry || "").trim();
+                if (!raw) return;
+                if (/^other:\s*/i.test(raw)) {
+                    pushCase("Other");
+                    pushOther(raw.replace(/^other:\s*/i, ""));
+                } else if (/^other$/i.test(raw)) {
+                    pushCase("Other");
+                } else {
+                    pushCase(raw);
+                }
+            });
+            if (seenCase.has("other")) {
+                pushOther(otherText);
+            }
+            return { use_cases: cases, use_cases_other: others };
         }
 
         function interval() {
@@ -2436,6 +2539,11 @@
                 ? WawonaOsSuggest.partitionForSurvey(osStored)
                 : { items: osStored, others: [], devices: osStored, devices_other: [] };
 
+            var useParted = partitionUseCases(
+                getCheckedValues(formData, "useCase"),
+                (formData.get("useCaseOther") || "").toString()
+            );
+
             return {
                 skipped: !!skipped,
                 platform: formData.get("platform") || "",
@@ -2445,7 +2553,8 @@
                 os_version: osVersion,
                 os_versions: osParted.items || osParted.devices || [],
                 os_versions_other: osParted.others || osParted.devices_other || [],
-                use_cases: getCheckedValues(formData, "useCase"),
+                use_cases: useParted.use_cases,
+                use_cases_other: useParted.use_cases_other,
                 price: formData.get("price") || "",
                 source: formData.get("source") || "",
                 notes: formData.get("notes") || "",
@@ -2462,6 +2571,7 @@
                 device: p.device,
                 os_version: p.os_version,
                 use_cases: p.use_cases.slice().sort(),
+                use_cases_other: (p.use_cases_other || []).slice().sort(),
                 price: p.price,
                 source: p.source,
                 notes: p.notes,
