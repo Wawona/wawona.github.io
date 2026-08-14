@@ -1,5 +1,1 @@
-<script src="{{ get_url(path='js/mermaid.js') }}"></script>
-
-<pre class="mermaid">
-  {{ body | safe }}
-</pre>
+<pre class="mermaid" data-lang="mermaid"><code class="language-mermaid">{{ body | trim | safe }}</code></pre>

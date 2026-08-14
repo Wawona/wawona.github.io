@@ -11,12 +11,12 @@ Canonical: [wwn-repo-dag.md](https://github.com/Wawona/Wawona/blob/development/d
 
 {% mermaid() %}
 flowchart BT
-  toolchain[L0 wwn-toolchain]
-  iland[L1 wwn-iland]
-  kmscube[L2 wwn-kmscube]
-  weston[L3 wwn-weston]
-  peers[L3prime waypipe ssh zsh niri vms]
-  app[L4 Wawona]
+  toolchain["L0 wwn-toolchain"]
+  iland["L1 wwn-iland"]
+  kmscube["L2 wwn-kmscube"]
+  weston["L3 wwn-weston"]
+  peers["L3' waypipe ssh zsh niri vms"]
+  app["L4 Wawona"]
   toolchain --> iland --> kmscube --> weston --> app
   toolchain --> peers --> app
   iland --> app

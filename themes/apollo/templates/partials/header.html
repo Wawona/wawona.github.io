@@ -467,40 +467,60 @@
         }
 
         /**
-         * Find all mermaid code blocks in the page and render them.
-         * Zola renders ```mermaid fences as <pre><code class="language-mermaid">.
-         * We replace each such block with a rendered SVG.
+         * Collect mermaid sources. Authors use either:
+         *   {% mermaid() %} → <pre class="mermaid"><code class="language-mermaid">
+         *   ```mermaid     → <pre><code class="language-mermaid"> or data-lang=mermaid
+         */
+        function collectMermaidBlocks() {
+            const out = [];
+            const seen = new Set();
+            function add(el, source) {
+                if (!el || seen.has(el)) return;
+                const text = String(source || '').trim();
+                if (!text) return;
+                seen.add(el);
+                out.push({ el, source: text });
+            }
+            document.querySelectorAll(
+                'pre code.language-mermaid, pre code[data-lang="mermaid"]'
+            ).forEach((code) => {
+                add(code.closest('pre') || code.parentElement, code.textContent);
+            });
+            document.querySelectorAll('pre.mermaid, pre[data-lang="mermaid"]').forEach((pre) => {
+                add(pre, pre.textContent);
+            });
+            return out;
+        }
+
+        /**
+         * Replace mermaid source blocks with SVGs. Theme toggle restores data-source
+         * and runs this again.
          */
         async function initMermaid() {
             mermaid.initialize(buildMermaidConfig());
 
-            // On theme toggle: restore raw <pre><code> blocks previously replaced so we
-            // can re-render them with the new palette.
             document.querySelectorAll('.mermaid-wrapper[data-source]').forEach(wrapper => {
                 const pre = document.createElement('pre');
+                pre.className = 'mermaid';
+                pre.setAttribute('data-lang', 'mermaid');
                 const code = document.createElement('code');
+                code.className = 'language-mermaid';
                 code.setAttribute('data-lang', 'mermaid');
                 code.textContent = wrapper.dataset.source;
                 pre.appendChild(code);
                 wrapper.replaceWith(pre);
             });
 
-            // Apollo theme: data-lang="mermaid". Standard Zola: class="language-mermaid"
-            const codeBlocks = document.querySelectorAll(
-                'pre code.language-mermaid, pre code[data-lang="mermaid"]'
-            );
             let idx = 0;
-            for (const code of codeBlocks) {
-                const pre = code.parentElement;
-                const graphDefinition = code.textContent;
+            for (const block of collectMermaidBlocks()) {
                 const id = 'mermaid-diagram-' + Date.now() + '-' + (idx++);
                 try {
-                    const { svg } = await mermaid.render(id, graphDefinition);
+                    const { svg } = await mermaid.render(id, block.source);
                     const wrapper = document.createElement('div');
                     wrapper.className = 'mermaid-wrapper';
-                    wrapper.dataset.source = graphDefinition; // for re-render on theme toggle
+                    wrapper.dataset.source = block.source;
                     wrapper.innerHTML = svg;
-                    pre.replaceWith(wrapper);
+                    block.el.replaceWith(wrapper);
                 } catch (err) {
                     console.warn('[Mermaid] Failed to render diagram:', err);
                 }
