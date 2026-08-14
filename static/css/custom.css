@@ -142,12 +142,6 @@ html:not(.donate-banner-off):not(.on-donate) {
     --site-chrome-offset: calc(10rem + env(safe-area-inset-top, 0px));
 }
 
-html, body {
-    /* Prefer clip for sticky; contain overscroll so iOS rubber-band does not chain. */
-    overflow-x: clip;
-    overscroll-behavior-y: none;
-}
-
 html {
     scroll-padding-top: var(--site-chrome-offset);
     /* Stop scroll anchoring from yanking to top when sticky/TOC layout shifts. */
@@ -164,8 +158,11 @@ html {
     scroll-margin-top: var(--site-chrome-offset);
 }
 
+/* Horizontal bleed only — do not set overflow/overscroll on html/body.
+   Those kill iOS Safari rubber-band / inertia at the page edges. */
 body > .content {
     min-width: 0;
+    max-width: 100%;
 }
 
 /* ===== THEME-AWARE NAVIGATION LOGO ===== */
@@ -720,9 +717,9 @@ main .docs-card,
 .docs-sidebar {
     display: block;
     position: sticky;
-    top: calc(5.75rem + env(safe-area-inset-top, 0px));
-    max-height: calc(100vh - 6.5rem);
-    max-height: calc(100dvh - 6.5rem);
+    top: var(--site-chrome-offset);
+    max-height: calc(100vh - var(--site-chrome-offset) - 1rem);
+    max-height: calc(100dvh - var(--site-chrome-offset) - 1rem);
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 0.35rem 0 2rem;
