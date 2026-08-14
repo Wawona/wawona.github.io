@@ -511,6 +511,7 @@ nav .nav-search .nav-search-glass {
 }
 
 /* Docs hub (landing): centered content only, no side rails */
+html.layout-docs-hub body > .content,
 .content:has(.docs-layout-hub) {
     max-width: 1080px;
 }
@@ -527,29 +528,33 @@ nav .nav-search .nav-search-glass {
     grid-template-columns: minmax(0, 1fr);
 }
 
-/* Docs article: centered reading column; nav left, TOC right, outside padding */
-.main:has(.docs-shell) {
-    width: 100%;
-    max-width: none;
-}
-
+/*
+ * Docs article: full-bleed row so nav + article + TOC are not jammed into the
+ * centered ~920/1080px Apollo column (especially after SPA from the hub).
+ */
+html.layout-docs body > .left-content,
+html.layout-docs body > .right-content,
 .main:has(.docs-shell) > .left-content:empty,
 .main:has(.docs-shell) > .right-content:empty {
     display: none !important;
-    flex: 0 0 0;
-    width: 0;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
 }
 
+html.layout-docs body > .content,
 .content:has(.docs-shell) {
-    max-width: none;
-    width: 100%;
+    /* Own flex row — same trick as .site-top — so the shell can use the viewport */
+    flex: 1 0 100% !important;
+    max-width: none !important;
+    width: 100% !important;
     padding-left: 0;
     padding-right: 0;
     margin-inline: 0;
+    box-sizing: border-box;
 }
 
 .docs-shell {
@@ -857,13 +862,18 @@ main .docs-card,
 }
 
 @media (max-width: 1199px) {
-    /* Not enough room for screen-edge nav + TOC: book menu + inline TOC */
+    /* Not enough room for screen-edge nav + TOC: book menu + inline TOC.
+       Keep hub-width shell so SPA from /docs/ does not suddenly scrunch. */
     .docs-shell {
         grid-template-columns: minmax(0, 1fr) auto;
-        max-width: calc(var(--docs-article-max) + 2.5rem);
+        max-width: 1080px;
         margin-inline: auto;
         column-gap: 0.25rem;
         padding-inline: 1.25rem;
+    }
+
+    .docs-shell .body {
+        max-width: var(--docs-article-max);
     }
 
     .docs-shell > .docs-sidebar,

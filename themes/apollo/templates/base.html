@@ -300,6 +300,18 @@
             slot.innerHTML = html || '';
         }
 
+        /* Class-based layout beats fragile :has() after SPA swaps (hub → article). */
+        function syncPageLayout() {
+            const spa = document.getElementById('spa-main');
+            const root = document.documentElement;
+            root.classList.remove('layout-home', 'layout-docs', 'layout-docs-hub');
+            if (!spa) return;
+            if (spa.querySelector('.lp-hero')) root.classList.add('layout-home');
+            else if (spa.querySelector('.docs-shell')) root.classList.add('layout-docs');
+            else if (spa.querySelector('.docs-layout-hub')) root.classList.add('layout-docs-hub');
+        }
+        window.syncPageLayout = syncPageLayout;
+
         // Restore a cached page into #spa-main and the side columns.
         function _spaRestoreFromCache(spaMain, entry, url, pushState) {
             spaMain.innerHTML = entry.html;
@@ -314,6 +326,7 @@
             document.body.style.transform = '';
             document.documentElement.style.transform = '';
             _spaCurrentKey = _spaCanonical(url);
+            syncPageLayout();
 
             const dest = new URL(url, window.location.origin);
             requestAnimationFrame(() => {
@@ -568,6 +581,7 @@
                 );
                 _spaCurrentKey = _spaCanonical(window.location.href);
             }
+            syncPageLayout();
             updateActiveNavLink();
             highlightOnPage();
             if (window.location.hash) {
