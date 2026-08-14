@@ -36,7 +36,9 @@ The download survey device field uses `static/data/device-catalog.json`
 plus `static/js/device-suggest.js`. Catalog is vendored (Apple marketing
 names from apple-device-identifiers, filtered Android list, curated
 Linux/PC). Comma-separated multi-device. Suggestions insert canonical
-names so README device counts stay consistent. Unrecognized names are
+names so README device counts stay consistent. Optional catalog
+`aliases` remap colloquial typed names (for example `MacBook Pro M1 14"`)
+to the Apple marketing name. Unrecognized names are
 stored as `Other: <text>` in the human-readable `device` line and in
 `devices_other`; the `devices` array uses the bucket `Other` so graphs
 group them. Intended use case **Other** is the same shape: `use_cases`

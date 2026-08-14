@@ -13,6 +13,11 @@ the same way (optional free text; pie stays one Other slice).
 - Filtered marketing names from
   [pbakondy/android-device-list](https://github.com/pbakondy/android-device-list)
 - Curated Linux / handheld / laptop extras
+- Optional `aliases` on a row map colloquial typed names to the
+  canonical `name` (typeahead and storage). Do not add a second `name`
+  for the same machine. Example: people type `MacBook Pro M1 14"` for
+  Apple's `MacBook Pro (14-inch, 2021)` (M1 Pro / M1 Max; there is no
+  base-M1 14-inch Pro).
 
 ## OS catalog (`os-catalog.json`)
 

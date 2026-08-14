@@ -28,9 +28,21 @@
                 return res.json();
             })
             .then(function (rows) {
-                cat.names = (rows || [])
-                    .map(function (row) { return (row && row.name) || ""; })
-                    .filter(Boolean);
+                cat.names = [];
+                cat.aliasToName = Object.create(null);
+                cat.aliasTexts = [];
+                (rows || []).forEach(function (row) {
+                    var name = (row && row.name) || "";
+                    if (!name) return;
+                    cat.names.push(name);
+                    var aliases = (row && row.aliases) || [];
+                    for (var i = 0; i < aliases.length; i++) {
+                        var alias = String(aliases[i] || "").trim();
+                        if (!alias) continue;
+                        cat.aliasToName[normalizeKey(alias)] = name;
+                        cat.aliasTexts.push({ text: alias, name: name });
+                    }
+                });
                 return cat.names;
             })
             .catch(function () {
@@ -94,13 +106,26 @@
     }
 
     function suggest(query, limit, url) {
-        var names = getCatalog(url).names;
+        var cat = getCatalog(url);
+        var names = cat.names;
         var q = String(query || "").trim();
         if (q.length < 1) return [];
+        var best = Object.create(null);
+        function consider(matchText, canonical) {
+            var s = scoreMatch(q, matchText);
+            if (s < 0.55) return;
+            if (!best[canonical] || s > best[canonical]) best[canonical] = s;
+        }
+        for (var i = 0; i < names.length; i++) consider(names[i], names[i]);
+        var aliasTexts = cat.aliasTexts || [];
+        for (var j = 0; j < aliasTexts.length; j++) {
+            consider(aliasTexts[j].text, aliasTexts[j].name);
+        }
         var scored = [];
-        for (var i = 0; i < names.length; i++) {
-            var s = scoreMatch(q, names[i]);
-            if (s >= 0.55) scored.push({ name: names[i], score: s });
+        for (var name in best) {
+            if (Object.prototype.hasOwnProperty.call(best, name)) {
+                scored.push({ name: name, score: best[name] });
+            }
         }
         scored.sort(function (a, b) {
             if (b.score !== a.score) return b.score - a.score;
@@ -138,8 +163,11 @@
     function recognizedName(token, url) {
         var raw = sanitizeOtherLabel(stripOtherPrefix(stripCommas(token)));
         if (!raw) return "";
-        var names = getCatalog(url).names;
+        var cat = getCatalog(url);
+        var names = cat.names;
+        var aliasToName = cat.aliasToName || Object.create(null);
         var key = normalizeKey(raw);
+        if (aliasToName[key]) return aliasToName[key];
         for (var i = 0; i < names.length; i++) {
             if (normalizeKey(names[i]) === key) return names[i];
         }
