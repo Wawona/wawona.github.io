@@ -11,6 +11,34 @@
         if (!tag) return;
         el.textContent = tag.charAt(0) === 'v' ? tag : 'v' + tag;
         if (release.html_url) el.setAttribute('href', release.html_url);
+        fitHeroPill();
+    }
+
+    /* Keep the version / Open source / MIT pill inline until it actually
+       overflows the hero — no early fixed-width media breakpoint. */
+    function fitHeroPill() {
+        const pill = document.querySelector('.lp-hero-kicker .lp-hero-pill');
+        if (!pill) return;
+        const host = pill.parentElement;
+        if (!host) return;
+        pill.classList.remove('lp-hero-pill--stack');
+        /* Force layout in pill mode, then compare intrinsic width to host. */
+        const needsStack = pill.scrollWidth > host.clientWidth + 0.5;
+        pill.classList.toggle('lp-hero-pill--stack', needsStack);
+    }
+
+    function initHeroPill() {
+        fitHeroPill();
+        const host = document.querySelector('.lp-hero-kicker');
+        if (!host || typeof ResizeObserver === 'undefined') {
+            window.addEventListener('resize', fitHeroPill, { passive: true });
+            return;
+        }
+        if (host._lpPillObs) return;
+        host._lpPillObs = new ResizeObserver(function () {
+            fitHeroPill();
+        });
+        host._lpPillObs.observe(host);
     }
 
     async function fetchReleases() {
@@ -184,7 +212,7 @@
     }
 
     // === Init ===
-    function lpInit() { fetchReleases(); initShowcase(); initReveal(); initParallax(); initMouseTrack(); }
+    function lpInit() { fetchReleases(); initHeroPill(); initShowcase(); initReveal(); initParallax(); initMouseTrack(); }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lpInit); else lpInit();
 </script>
 
@@ -357,10 +385,12 @@
 
     .lp-hero-kicker .lp-hero-pill {
         display: inline-flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
         justify-content: center;
         gap: 0.55rem 0.85rem;
+        max-width: 100%;
+        box-sizing: border-box;
         padding: 0.35rem 1rem;
         border: 1px solid var(--border-color);
         border-radius: var(--r-pill);
@@ -388,24 +418,23 @@
         color: var(--border-color);
     }
 
-    @media (max-width: 560px) {
-        .lp-hero-kicker .lp-hero-pill {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            gap: 0.4rem;
-            padding: 0;
-            border: none;
-            border-radius: 0;
-            background: none;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
+    /* Applied only when the pill’s intrinsic width exceeds the hero. */
+    .lp-hero-kicker .lp-hero-pill.lp-hero-pill--stack {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0.4rem;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
 
-        .lp-hero-kicker .lp-hero-pill > span::before {
-            content: none;
-            margin: 0;
-        }
+    .lp-hero-kicker .lp-hero-pill.lp-hero-pill--stack > span::before {
+        content: none;
+        margin: 0;
     }
 
     .lp-hero-title {
