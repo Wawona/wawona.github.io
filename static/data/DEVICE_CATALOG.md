@@ -15,9 +15,11 @@ the same way (optional free text; pie stays one Other slice).
 - Curated Linux / handheld / laptop extras
 - Optional `aliases` on a row map colloquial typed names to the
   canonical `name` (typeahead and storage). Do not add a second `name`
-  for the same machine. Example: people type `MacBook Pro M1 14"` for
-  Apple's `MacBook Pro (14-inch, 2021)` (M1 Pro / M1 Max; there is no
-  base-M1 14-inch Pro).
+  for the same machine.
+- Apple Silicon rows that omit the chip in Apple's marketing name get
+  the chip family in `name` plus a `chip` field (for example
+  `MacBook Pro (14-inch, M1 Pro/Max, 2021)`). The official string stays
+  an alias. There is no base-M1 14-inch Pro.
 
 ## OS catalog (`os-catalog.json`)
 

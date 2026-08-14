@@ -38,7 +38,8 @@ names from apple-device-identifiers, filtered Android list, curated
 Linux/PC). Comma-separated multi-device. Suggestions insert canonical
 names so README device counts stay consistent. Optional catalog
 `aliases` remap colloquial typed names (for example `MacBook Pro M1 14"`)
-to the Apple marketing name. Unrecognized names are
+to the chip-tagged canonical name. Apple Silicon marketing names that
+omit the chip are stored with the chip family in `name`. Unrecognized names are
 stored as `Other: <text>` in the human-readable `device` line and in
 `devices_other`; the `devices` array uses the bucket `Other` so graphs
 group them. Intended use case **Other** is the same shape: `use_cases`
