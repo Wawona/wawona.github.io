@@ -215,13 +215,31 @@
         const _spaCache = new Map();
         const _spaCacheMax = 10;
 
+        function _spaCanonical(url) {
+            const next = new URL(url, window.location.origin);
+            next.hash = '';
+            return next.href;
+        }
+
+        function scrollToHash(hash) {
+            if (!hash) return false;
+            let id = hash.charAt(0) === '#' ? hash.slice(1) : hash;
+            try { id = decodeURIComponent(id); } catch (e) { /* keep raw */ }
+            if (!id) return false;
+            const el = document.getElementById(id);
+            if (!el) return false;
+            el.scrollIntoView({ block: 'start' });
+            return true;
+        }
+
         function _spaCacheSet(url, html, title, leftHtml, rightHtml) {
-            if (!_spaCache.has(url) && _spaCache.size >= _spaCacheMax) {
+            const key = _spaCanonical(url);
+            if (!_spaCache.has(key) && _spaCache.size >= _spaCacheMax) {
                 // LRU eviction: remove oldest entry
                 _spaCache.delete(_spaCache.keys().next().value);
             }
-            const existing = _spaCache.get(url) || {};
-            _spaCache.set(url, {
+            const existing = _spaCache.get(key) || {};
+            _spaCache.set(key, {
                 html,
                 title,
                 leftHtml: leftHtml || '',
@@ -231,7 +249,7 @@
         }
 
         function _spaCacheSaveScroll(url) {
-            const entry = _spaCache.get(url);
+            const entry = _spaCache.get(_spaCanonical(url));
             if (entry) entry.scrollY = window.scrollY;
         }
 
@@ -276,7 +294,11 @@
             document.body.style.transform = '';
             document.documentElement.style.transform = '';
 
-            window.scrollTo(0, entry.scrollY || 0);
+            const dest = new URL(url, window.location.origin);
+            requestAnimationFrame(() => {
+                if (dest.hash && scrollToHash(dest.hash)) return;
+                window.scrollTo(0, entry.scrollY || 0);
+            });
             updateActiveNavLink();
             highlightOnPage();
             if (window.initCodeBlocks) window.initCodeBlocks();
@@ -310,7 +332,11 @@
             if (_menuInterlock) return;
             _menuInterlock = true;
             const nav = document.querySelector('.site-nav .right-nav');
-            if (nav) nav.classList.toggle('active');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (nav) {
+                const open = nav.classList.toggle('active');
+                if (menuBtn) menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
             closeDocsNav();
             setTimeout(() => { _menuInterlock = false; }, 400);
         };
@@ -376,6 +402,13 @@
                 e.ctrlKey || e.metaKey || e.shiftKey
             ) return;
 
+            // Same-page heading links (TOC, zola-anchor). Let the browser scroll.
+            if (link.hash) {
+                const here = (window.location.pathname.replace(/\/$/, '') || '/');
+                const there = (link.pathname.replace(/\/$/, '') || '/');
+                if (here === there) return;
+            }
+
             e.preventDefault();
             const url = link.href;
             const targetPath = new URL(url).pathname;
@@ -397,8 +430,8 @@
             _spaCacheSaveScroll(window.location.href);
 
             // ── Cache hit: restore instantly ──────────────────────────────────
-            if (_spaCache.has(url)) {
-                _spaRestoreFromCache(spaMain, _spaCache.get(url), url, true);
+            if (_spaCache.has(_spaCanonical(url))) {
+                _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, true);
                 return;
             }
 
@@ -418,7 +451,7 @@
                     const left = doc.querySelector('.left-content');
                     const right = doc.querySelector('.right-content');
                     _spaCacheSet(url, newContent.innerHTML, doc.title, left && left.innerHTML, right && right.innerHTML);
-                    _spaRestoreFromCache(spaMain, _spaCache.get(url), url, true);
+                    _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, true);
                 } else {
                     window.location.href = url;
                 }
@@ -441,8 +474,8 @@
             const spaMain = document.getElementById('spa-main');
 
             // Cache hit
-            if (_spaCache.has(url)) {
-                _spaRestoreFromCache(spaMain, _spaCache.get(url), url, false);
+            if (_spaCache.has(_spaCanonical(url))) {
+                _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, false);
                 return;
             }
 
@@ -458,7 +491,7 @@
                     const left = doc.querySelector('.left-content');
                     const right = doc.querySelector('.right-content');
                     _spaCacheSet(url, newContent.innerHTML, doc.title, left && left.innerHTML, right && right.innerHTML);
-                    _spaRestoreFromCache(spaMain, _spaCache.get(url), url, false);
+                    _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, false);
                 } else {
                     window.location.reload();
                 }
@@ -483,9 +516,13 @@
             }
             updateActiveNavLink();
             highlightOnPage();
+            if (window.location.hash) {
+                requestAnimationFrame(() => scrollToHash(window.location.hash));
+            }
         });
     </script>
 
+    <script src="/js/hints.js" defer></script>
     <script src="/js/cinematic.js" defer></script>
     <svg style="position: fixed; width: 0; height: 0;" aria-hidden="true" focusable="false">
         <filter id="water-filter">

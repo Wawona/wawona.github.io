@@ -22,7 +22,7 @@
    Do not set a:hover { background: transparent } globally: that
    wipes <a class="dl-btn"> and other filled button links. */
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next),
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card),
 .dn-copy a,
 .dn-note a,
 .dn-kofi-under a,
@@ -40,8 +40,8 @@ main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-
     color: var(--primary-color);
 }
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):hover,
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):focus-visible,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):hover,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):focus-visible,
 .dn-copy a:hover,
 .dn-note a:hover,
 .dn-kofi-under a:hover,
@@ -69,16 +69,58 @@ main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-
     background: transparent;
 }
 
-a.dl-btn:hover,
 a.dn-btn:hover,
 a.dn-thanks-go:hover,
-a.donate-banner-go:hover {
+a.donate-banner-go:hover,
+a.donate-banner-go:focus-visible {
     background: var(--primary-color);
     color: #fff !important;
     text-decoration: none;
+    filter: brightness(1.1);
 }
 
-/* Optional radius aliases. Prefer the existing pixel values on the page. */
+button.donate-banner-dismiss:hover,
+button.donate-banner-dismiss:focus-visible {
+    color: var(--text-0) !important;
+    background: var(--bg-1) !important;
+    border: 1px solid var(--primary-color);
+}
+
+/* Download buttons keep their own hover in download_cards.html.
+   Do not force an outline or fill swap from here. */
+a.dl-btn:hover,
+a.dl-btn:focus-visible {
+    text-decoration: none;
+}
+
+/* Symbols Nerd Font (subset): slider fire + star particles.
+   Static local woff2 so glyphs are ready before first spawn. */
+@font-face {
+    font-family: "Symbols Nerd Font";
+    src: url("../fonts/nerd/SymbolsNerdFont-Slider.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+/* Force early glyph rasterization with the subset font. */
+.nf-slider-preload {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    font-family: "Symbols Nerd Font", "Symbols Nerd Font Mono", sans-serif;
+    font-size: 16px;
+    line-height: 1;
+    color: transparent;
+    pointer-events: none;
+}
+
 :root {
     --r-min: 6px;
     --r-control: 6px;
@@ -92,6 +134,15 @@ a.donate-banner-go:hover {
 
 html, body {
     overflow-x: clip;
+}
+
+html {
+    scroll-padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+}
+
+.docs-main :is(h1, h2, h3, h4, h5, h6),
+.body :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: calc(5.75rem + env(safe-area-inset-top, 0px));
 }
 
 body > .content {
@@ -306,6 +357,47 @@ nav .nav-search .nav-search-glass {
     }
 }
 
+/* Hamburger → X when the mobile nav is open */
+.mobile-menu-btn {
+    color: var(--text-0);
+}
+
+.mobile-menu-btn .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20px;
+    height: 14px;
+}
+
+.mobile-menu-btn .hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transform-origin: center;
+    transition: transform 0.25s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-menu-btn[aria-expanded="true"],
+.mobile-menu-btn[aria-expanded="true"]:hover {
+    color: var(--primary-color);
+}
+
+.mobile-menu-btn[aria-expanded="true"] .hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.mobile-menu-btn[aria-expanded="true"] .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.4);
+}
+
+.mobile-menu-btn[aria-expanded="true"] .hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
 @keyframes nav-feed-bar {
     0%,
     100% {
@@ -389,7 +481,8 @@ nav .nav-search .nav-search-glass {
 }
 
 @media (max-width: 1365px) {
-    .right-content:has(.toc) {
+    /* Non-docs pages may still use Apollo right-rail TOC; docs use docs-shell. */
+    .right-content:has(.toc):not(:has(.docs-shell)) {
         display: none;
     }
 }
@@ -401,16 +494,132 @@ nav .nav-search .nav-search-glass {
     line-height: 1.5;
 }
 
-.content:has(.docs-layout) {
+/* Docs hub (landing): centered content only, no side rails */
+.content:has(.docs-layout-hub) {
     max-width: 1080px;
 }
 
 .docs-layout {
     display: grid;
-    grid-template-columns: 11.5rem minmax(0, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
     align-items: start;
     width: 100%;
+}
+
+.docs-layout-hub {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* Docs article: centered reading column; nav left, TOC right, outside padding */
+.main:has(.docs-shell) {
+    width: 100%;
+    max-width: none;
+}
+
+.main:has(.docs-shell) > .left-content:empty,
+.main:has(.docs-shell) > .right-content:empty {
+    display: none !important;
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.content:has(.docs-shell) {
+    max-width: none;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-inline: 0;
+}
+
+.docs-shell {
+    --docs-article-max: 42rem;
+    --docs-nav-w: 13.5rem;
+    --docs-toc-w: 15rem;
+    --docs-edge: 1rem;
+    display: grid;
+    /* Fixed side rails hug the viewport; center column absorbs leftover space */
+    grid-template-columns: var(--docs-nav-w) minmax(0, 1fr) var(--docs-toc-w);
+    column-gap: 1.25rem;
+    align-items: start;
+    width: 100%;
+    padding-inline: var(--docs-edge);
+    box-sizing: border-box;
+}
+
+.docs-shell:not(.has-toc) {
+    /* Keep a matching empty right track so the article stays viewport-centered */
+    grid-template-columns: var(--docs-nav-w) minmax(0, 1fr) var(--docs-nav-w);
+}
+
+.docs-shell > .docs-sidebar {
+    grid-column: 1;
+    justify-self: stretch;
+    width: 100%;
+}
+
+.docs-shell > .docs-main {
+    grid-column: 2;
+    min-width: 0;
+    width: 100%;
+    max-width: var(--docs-article-max);
+    justify-self: center;
+    /* Article padding lives here, not on the screen-edge rails */
+    padding-inline: 0.5rem;
+    box-sizing: border-box;
+}
+
+.docs-shell > .docs-toc-rail {
+    grid-column: 3;
+    justify-self: stretch;
+    width: 100%;
+}
+
+.docs-toc-rail,
+.docs-toc-inline {
+    min-width: 0;
+}
+
+/* Beat Apollo's global .toc { display:none } below 1365px */
+.docs-toc-rail .toc,
+.docs-toc-inline .toc {
+    display: block !important;
+}
+
+.docs-toc-rail .toc {
+    position: sticky;
+    top: calc(5.75rem + env(safe-area-inset-top, 0px));
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    padding: 0.25rem 0 1rem;
+}
+
+.docs-toc-inline {
+    display: none;
+    margin: 0 0 1.5rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: calc(var(--r-inset) + 0.85rem);
+    background: var(--bg-1);
+}
+
+.docs-toc-inline .toc {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+}
+
+.docs-toc-inline .toc .heading {
+    margin-bottom: 0.35rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-1);
 }
 
 .docs-intro p {
@@ -439,11 +648,13 @@ nav .nav-search .nav-search-glass {
     margin: 1rem 0 2rem;
 }
 
+main .docs-card,
 .docs-card {
     --pad: 1.25rem;
     display: block;
     padding: var(--pad);
     border: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     border-radius: calc(var(--r-inset) + var(--pad));
     background: var(--bg-1);
     color: inherit !important;
@@ -468,6 +679,13 @@ nav .nav-search .nav-search-glass {
     font-size: 1.05rem;
 }
 
+.docs-card:hover strong,
+.docs-card:focus-visible strong {
+    color: var(--primary-color);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
 .docs-card span {
     display: block;
     color: var(--text-1);
@@ -479,8 +697,8 @@ nav .nav-search .nav-search-glass {
 .docs-sidebar {
     display: block;
     position: sticky;
-    top: 72px;
-    max-height: calc(100vh - 90px);
+    top: calc(5.75rem + env(safe-area-inset-top, 0px));
+    max-height: calc(100vh - 6.5rem);
     overflow-y: auto;
     padding: 0.35rem 0 2rem;
     background: none;
@@ -509,13 +727,7 @@ nav .nav-search .nav-search-glass {
 .docs-nav-bar {
     display: none;
     align-items: center;
-    justify-content: space-between;
-}
-
-.docs-nav-label {
-    font-family: var(--header-font);
-    font-size: 0.95rem;
-    font-weight: 500;
+    justify-content: flex-end;
 }
 
 .docs-nav-menu-btn {
@@ -527,11 +739,17 @@ nav .nav-search .nav-search-glass {
     background: none;
     color: var(--text-0);
     cursor: pointer;
+    overflow: visible;
 }
 
 .docs-nav-menu-btn:hover {
     background: var(--bg-1);
     border-radius: 8px;
+}
+
+.docs-nav-menu-btn[aria-expanded="true"],
+.docs-nav-menu-btn[aria-expanded="true"]:hover {
+    color: var(--primary-color);
 }
 
 .docs-book {
@@ -615,23 +833,54 @@ nav .nav-search .nav-search-glass {
     font-size: 0.9rem;
 }
 
-@media (max-width: 767px) {
-    .docs-layout {
+@media (max-width: 1199px) {
+    /* Not enough room for screen-edge nav + TOC: book menu + inline TOC */
+    .docs-shell {
+        grid-template-columns: minmax(0, 1fr) auto;
+        max-width: calc(var(--docs-article-max) + 2.5rem);
+        margin-inline: auto;
+        column-gap: 0.25rem;
+        padding-inline: 1.25rem;
+    }
+
+    .docs-shell > .docs-sidebar,
+    .docs-shell > .docs-main,
+    .docs-shell > .docs-main > article {
+        display: contents;
+    }
+
+    .docs-shell > .docs-toc-rail {
+        display: none !important;
+    }
+
+    .docs-shell .docs-toc-inline {
         display: block;
+        grid-column: 1 / -1;
     }
 
-    .docs-sidebar {
-        position: static;
-        max-height: none;
-        overflow: visible;
-        padding: 0 0 1rem;
+    .docs-shell .docs-sidebar > *,
+    .docs-shell .docs-main > *,
+    .docs-shell .docs-main > article > * {
+        grid-column: 1 / -1;
     }
 
-    .docs-nav-bar {
+    .docs-shell .docs-nav-bar {
         display: flex;
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
     }
 
-    .docs-nav-links {
+    .docs-shell .docs-main > .page-header,
+    .docs-shell .docs-main > article > .page-header {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+        min-width: 0;
+        margin: 0.35rem 0;
+    }
+
+    .docs-shell .docs-nav-links {
         max-height: 0;
         opacity: 0;
         overflow: hidden;
@@ -640,7 +889,7 @@ nav .nav-search .nav-search-glass {
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .docs-nav-links.active {
+    .docs-shell .docs-nav-links.active {
         max-height: min(70vh, 40rem);
         opacity: 1;
         visibility: visible;
@@ -649,9 +898,22 @@ nav .nav-search .nav-search-glass {
         padding-top: 0.5rem;
     }
 
-    .docs-nav-links a {
+    .docs-shell .docs-nav-links a {
         padding: 0.55rem 0;
         border-bottom: 1px solid var(--border-color);
+    }
+
+    .docs-toc-inline .toc {
+        display: block !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .docs-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        align-items: start;
     }
 }
 
@@ -668,5 +930,9 @@ nav .nav-search .nav-search-glass {
     .docs-book-open {
         transition: none;
         transform: none;
+    }
+
+    .mobile-menu-btn .hamburger-line {
+        transition: none;
     }
 }

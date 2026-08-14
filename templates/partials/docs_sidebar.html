@@ -2,8 +2,7 @@
 {% set current = current | default(value="") %}
 <aside class="docs-sidebar" aria-label="Documentation">
     <div class="docs-nav-bar">
-        <span class="docs-nav-label">Docs</span>
-        <button type="button" class="docs-nav-menu-btn" aria-label="Documentation menu" aria-expanded="false" onclick="toggleDocsNav()">
+        <button type="button" class="docs-nav-menu-btn" data-hint="Docs Navigation" aria-label="Documentation menu" aria-expanded="false" onclick="toggleDocsNav()">
             <svg class="docs-book" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" overflow="visible">
                 <g class="docs-book-closed">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />

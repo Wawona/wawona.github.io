@@ -16,6 +16,10 @@ template = "faq_section.html"
     scroll-margin-top: 100px;
 }
 
+.faq-content details:hover:not([open]) {
+    border-color: var(--primary-color);
+}
+
 .faq-content details[open] {
     border-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -26,6 +30,7 @@ template = "faq_section.html"
     font-weight: 600;
     font-size: 1.05rem;
     font-family: var(--header-font);
+    color: var(--text-0);
     cursor: pointer;
     list-style: none;
     display: flex;
@@ -35,14 +40,22 @@ template = "faq_section.html"
     -webkit-user-select: none;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, border-radius 0.2s ease;
     background: none;
+    /* Closed: full card radius. Expanded: square bottom against the answer. */
     border-radius: var(--r-card);
 }
 
-.faq-content details summary:hover {
-    background-color: var(--bg-2);
-    color: inherit;
+.faq-content details summary:hover,
+.faq-content details summary:focus-visible {
+    /* Beat theme summary:hover { color: #fff !important; background: primary }. */
+    background-color: var(--bg-2) !important;
+    color: var(--text-0) !important;
+}
+
+.faq-content details[open] summary {
+    color: var(--text-0) !important;
+    border-radius: var(--r-card) var(--r-card) 0 0;
 }
 
 .faq-content details summary::-webkit-details-marker {

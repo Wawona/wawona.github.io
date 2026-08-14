@@ -7,9 +7,11 @@
     <div class="lp-hero-inner">
         <p class="lp-hero-kicker lp-hero-anim">
             {# Keep in sync with Wawona/VERSION until this reads GitHub latest-release. #}
-            <a id="lpHeroVersion" href="https://github.com/Wawona/Wawona/releases/latest" target="_blank" rel="noopener">v26.8.12</a>
-            <span>Open source</span>
-            <span>MIT License</span>
+            <span class="lp-hero-pill">
+                <a id="lpHeroVersion" href="https://github.com/Wawona/Wawona/releases/latest" target="_blank" rel="noopener">v26.8.12</a>
+                <span>Open source</span>
+                <span>MIT License</span>
+            </span>
         </p>
         <h1 class="lp-hero-title lp-hero-anim">
             Run any desktop software,<br>
@@ -19,8 +21,8 @@
             A native Wayland compositor for macOS, Android, and the iOS family.
         </p>
         <div class="lp-hero-actions lp-hero-anim">
-            <a href="{{ get_url(path='@/docs/user/getting-started.md') }}" class="lp-btn lp-btn-primary">Get started</a>
-            <a href="/download/" class="lp-btn lp-btn-ghost">Download</a>
+            <a href="/download/" class="lp-btn lp-btn-primary">Download</a>
+            <a href="{{ get_url(path='@/docs/user/getting-started.md') }}" class="lp-btn lp-btn-ghost">Get started</a>
         </div>
         <p class="lp-hero-links lp-hero-anim">
             <a href="https://github.com/Wawona/Wawona" target="_blank" rel="noopener">GitHub</a>
@@ -36,20 +38,20 @@
             <li>visionOS</li>
         </ul>
     </div>
-    <div class="lp-scroll-hint" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="m6 9 6 6 6-6" />
-        </svg>
-    </div>
 </section>
 
 <!-- SHOWCASE -->
 <section class="lp-section lp-showcase-wrap lp-reveal" data-parallax="0.1">
     <div class="container">
         <div class="lp-showcase-frame">
-            <div class="lp-showcase-bar"><span class="lp-dot-r"></span><span class="lp-dot-y"></span><span
-                    class="lp-dot-g"></span><span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma nested in Wawona</span></div>
+            <div class="lp-showcase-bar">
+                <div class="lp-showcase-traffic" aria-hidden="true">
+                    <span class="lp-dot-r"></span>
+                    <span class="lp-dot-y"></span>
+                    <span class="lp-dot-g"></span>
+                </div>
+                <span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma nested in Wawona</span>
+            </div>
             <div class="lp-showcase-track" id="showcaseTrack">
                 <div class="lp-showcase-slide active" data-title="KDE Plasma nested in Wawona">
                     <div class="lp-showcase-img-container">

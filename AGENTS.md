@@ -29,14 +29,20 @@ tokens or `calc(inset + pad)`. See `.cursor/rules/wawona-io-radii.mdc`.
 
 ## Secrets
 
-Never put `sk_` / `rk_` in git, `config.toml`, or Pages. Stripe and survey tokens go through `secretspec.toml` and `./scripts/site-env.sh`. Details: `docs/secrets.md`.
+The site has no payment secrets. Do not add Stripe, Checkout Session APIs, or `sk_` / `rk_` keys.
+The download beta survey posts to `survey_endpoint` (Vercel). The GitHub write
+token is `SURVEY_GITHUB_TOKEN` in pass and Vercel only. Private inbox:
+`Wawona/beta-survey`. Raw answers stay private. Aggregate use-case, device, and
+value graphs are published on wawona.io twice a year. Device typeahead uses
+`static/data/device-catalog.json` (Apple marketing names + filtered Android /
+Linux). Details: `docs/secrets.md`.
 
-## Stripe Checkout (sandbox local, live published)
+## Donate
 
-Local development always uses the **Wawona sandbox** Stripe account (`pk_test_` / `sk_test_` / `rk_test_`) and `http://127.0.0.1:4242`.
+GitHub Sponsors is the primary path. Ko-fi is the alternative.
 
-Published https://wawona.io always uses the **Wawona** live Stripe account (`pk_live_`) and a public `https://` Checkout Session API.
+Build the Sponsors URL from the slider:
 
-Do not mix them. `./scripts/site-env.sh` and `nix run` force sandbox. Pages `zola build` plus `./scripts/assert-stripe-mode.sh live-build` refuse test keys and localhost. Sync live public values only: `./scripts/sync-github-secrets.sh`.
+`https://github.com/sponsors/{user}/sponsorships?sponsor={user}&frequency=recurring|one-time&amount={usd}`
 
-See `.cursor/rules/wawona-io-stripe.mdc`.
+Do not add a Checkout Session server. Do not put payment keys in `config.toml` or Pages.

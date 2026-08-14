@@ -1,13 +1,14 @@
-{% set stripe_checkout_api = get_env(name="STRIPE_CHECKOUT_API", default="") %}
-{% set stripe_publishable_key = get_env(name="STRIPE_PUBLISHABLE_KEY", default="") %}
 {% set kofi_url = config.extra.kofi_url | default(value="https://ko-fi.com/aspauldingcode") %}
+{% set sponsors_user = config.extra.github_sponsors_user | default(value="aspauldingcode") %}
+{% set survey_endpoint = config.extra.survey_endpoint | default(value="https://wawona-beta-survey.vercel.app/api/survey") %}
 <style>
     .download-page {
+        /* Card 24 + pad 12 → inset controls 12 (concentric). */
         --dl-r: 24px;
         --dl-pad: 12px;
         --dl-r-in: 12px;
-        --dl-r-ctrl: 10px;
-        --dl-r-item: 8px;
+        --dl-r-ctrl: 12px;
+        --dl-r-item: 10px;
         --dl-r-icon: 12px;
         padding: 0.5rem 0 1.25rem;
         max-width: 1000px;
@@ -61,15 +62,36 @@
         max-width: 680px;
     }
 
-    .dl-survey-skip {
+    .dl-survey-skip,
+    .dl-survey-continue {
         border: 1px solid var(--border-color);
         background: var(--bg-2);
         color: var(--text-1);
         border-radius: var(--r-pill);
         padding: 0.55rem 1rem;
         cursor: pointer;
+        font: inherit;
         font-weight: 700;
         white-space: nowrap;
+        line-height: 1.2;
+    }
+
+    .dl-survey-continue {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+        color: #fff;
+    }
+
+    .dl-survey-continue:hover,
+    .dl-survey-continue:focus-visible {
+        filter: brightness(1.06);
+        outline: none;
+    }
+
+    .dl-survey-skip:hover,
+    .dl-survey-skip:focus-visible {
+        color: var(--text-0);
+        outline: none;
     }
 
     .dl-survey-grid {
@@ -96,20 +118,48 @@
         font-weight: 800;
     }
 
-    .dl-field input:not([type="range"]),
+    .dl-field input:not([type="range"]):not([type="hidden"]):not(.dl-device-draft),
     .dl-field select,
     .dl-field textarea {
         width: 100%;
+        box-sizing: border-box;
         border: 1px solid var(--border-color);
         border-radius: var(--dl-r-in);
         background: var(--bg-0);
         color: var(--text-0);
         padding: 0.65rem 0.85rem;
         font: inherit;
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .dl-field input:not([type="range"]):not([type="hidden"]):not(.dl-device-draft),
+    .dl-field select {
+        min-height: 2.85rem;
+        height: 2.85rem;
+    }
+
+    .dl-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 2.35rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+        cursor: pointer;
+    }
+
+    .dl-field select:hover,
+    .dl-field select:focus-visible {
+        border-color: var(--primary-color);
+        outline: none;
     }
 
     .dl-field textarea {
         min-height: 72px;
+        height: auto;
         resize: vertical;
     }
 
@@ -237,6 +287,27 @@
         cursor: grabbing;
     }
 
+    .dl-slider-cutoff {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 3px;
+        height: 14px;
+        transform: translateY(-50%);
+        border-radius: 2px;
+        background: var(--border-color);
+        opacity: 0.5;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .dl-slider-wrap.is-overflow .dl-slider-cutoff {
+        height: 18px;
+        opacity: 1;
+        background: var(--knob-color, #ef5350);
+        box-shadow: 0 0 8px color-mix(in srgb, var(--knob-color, #ef5350) 65%, transparent);
+    }
+
     .dl-slider-wrap input[type="range"] {
         -webkit-appearance: none;
         appearance: none;
@@ -316,6 +387,36 @@
         transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-radius 0.28s ease, transform 0.28s ease, box-shadow 0.2s ease;
     }
 
+    .dl-slider-wrap.is-overflow .dl-slider-knob {
+        /* Match nav donate heart double-thump; keep heart rotation */
+        transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-radius 0.28s ease, box-shadow 0.2s ease;
+        animation: dl-knob-heart-thump 1.15s ease-in-out infinite;
+        box-shadow: 0 0 10px color-mix(in srgb, var(--knob-color) 70%, transparent);
+    }
+
+    @keyframes dl-knob-heart-thump {
+        0%,
+        100% {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+        }
+
+        16% {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1.12);
+        }
+
+        28% {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+        }
+
+        44% {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1.12);
+        }
+
+        56% {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+        }
+    }
+
     .dl-slider-knob::before,
     .dl-slider-knob::after {
         content: "";
@@ -358,7 +459,9 @@
     }
 
     .dl-fx-circle,
-    .dl-fx-heart {
+    .dl-fx-star,
+    .dl-fx-heart,
+    .dl-fx-fire {
         display: block;
         transform-origin: center center;
     }
@@ -367,16 +470,68 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: var(--fx-color, #ef5350);
+        background: var(--fx-color, #ff6d00);
     }
 
+    .dl-fx-bit.is-fire {
+        animation-name: dl-fx-flame;
+    }
+
+    .dl-fx-bit.is-star {
+        animation-name: dl-fx-spark;
+    }
+
+    /* Shared particle icon size: star / fire / heart match. */
+    .dl-fx-star,
+    .dl-fx-fire,
     .dl-fx-heart {
+        --fx-size: 1.35rem;
         position: relative;
-        width: 8px;
-        height: 8px;
+        box-sizing: border-box;
+        width: var(--fx-size);
+        height: var(--fx-size);
+        transform-origin: 50% 50%;
+    }
+
+    .dl-fx-star,
+    .dl-fx-fire {
+        display: grid;
+        place-items: center;
+        font-family: "Symbols Nerd Font", "Symbols Nerd Font Mono", sans-serif;
+        font-size: var(--fx-size);
+        font-weight: 400;
+        line-height: 1;
+        color: var(--fx-color, #ff6d00);
+        text-align: center;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .dl-fx-star {
+        color: var(--fx-color, #ffeb3b);
+        -webkit-text-fill-color: var(--fx-color, #ffeb3b);
+        filter: drop-shadow(0 0 4px color-mix(in srgb, var(--fx-color, #ffeb3b) 85%, transparent));
+    }
+
+    .dl-fx-fire {
+        color: var(--fx-color, #ff6d00);
+        filter: drop-shadow(0 0 4px color-mix(in srgb, var(--fx-color, #ff6d00) 70%, transparent));
+        transform-origin: 50% 100%;
+    }
+
+    .dl-fx-fire::before,
+    .dl-fx-fire::after {
+        content: none;
+    }
+
+    /* CSS heart AABB ≈ 1.5× body; size body so lobes match --fx-size. */
+    .dl-fx-heart {
+        width: calc(var(--fx-size) / 1.5);
+        height: calc(var(--fx-size) / 1.5);
+        margin: calc(var(--fx-size) / 6);
         background: var(--fx-color, #ff1744);
         border-radius: 15%;
         transform: rotate(45deg);
+        filter: drop-shadow(0 0 4px color-mix(in srgb, var(--fx-color, #ff1744) 70%, transparent));
     }
 
     .dl-fx-heart::before,
@@ -414,7 +569,68 @@
         }
     }
 
+    @keyframes dl-fx-flame {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -80%) translate(0, 4px) scale(0.55, 0.4) rotate(var(--spin0));
+            filter: blur(0px);
+        }
+        14% {
+            opacity: 1;
+            transform: translate(-50%, -80%) translate(calc(var(--dx) * 0.12), calc(var(--dy) * 0.18)) scale(1.05, 1.15) rotate(var(--spin0));
+            filter: blur(0px);
+        }
+        55% {
+            opacity: 0.9;
+            transform: translate(-50%, -80%) translate(calc(var(--dx) * 0.55), calc(var(--dy) * 0.62)) scale(0.85, 1.05) rotate(calc(var(--spin0) * 0.5 + var(--spin1) * 0.5));
+            filter: blur(0.35px);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -80%) translate(var(--dx), var(--dy)) scale(var(--ds, 0.3), 0.55) rotate(var(--spin1));
+            filter: blur(1.4px);
+        }
+    }
+
+    @keyframes dl-fx-spark {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(0, 0) scale(0.4) rotate(var(--spin0));
+        }
+        18% {
+            opacity: 1;
+            transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.2)) scale(1.2) rotate(calc(var(--spin0) + 40deg));
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--ds, 0.65)) rotate(var(--spin1));
+        }
+    }
+
+    .dl-fx-bit.is-radial {
+        animation-name: dl-fx-radial;
+    }
+
+    @keyframes dl-fx-radial {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(0, 0) scale(0.35) rotate(var(--spin0));
+        }
+        10% {
+            opacity: 1;
+            transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.08), calc(var(--dy) * 0.08)) scale(1.25) rotate(var(--spin0));
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--ds, 0.55)) rotate(var(--spin1));
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
+        .dl-slider-wrap.is-overflow .dl-slider-knob {
+            animation: none;
+        }
+
         .dl-slider-fx {
             display: none;
         }
@@ -443,20 +659,61 @@
 
     .dl-field .dl-usd input,
     .dl-usd input {
-        width: 5.75rem;
+        width: auto;
+        box-sizing: border-box;
         border: 1px solid var(--border-color);
         border-radius: var(--dl-r-in);
         background: var(--bg-0);
-        padding: 0.55rem 0.75rem;
+        color: var(--text-0);
+        padding: 0.55rem 0.5rem 0.55rem 0.75rem;
         min-width: 0;
-        -moz-appearance: textfield;
-        appearance: textfield;
+        font: inherit;
+        /* Keep browser-native steppers (desktop spinners / iOS number UI) */
+        appearance: auto;
+        -moz-appearance: auto;
+        -webkit-appearance: auto;
+        color-scheme: light dark;
+    }
+
+    :root.dark .dl-usd input,
+    html.dark .dl-usd input {
+        color-scheme: dark;
+    }
+
+    :root.light .dl-usd input,
+    html.light .dl-usd input {
+        color-scheme: light;
     }
 
     .dl-usd input::-webkit-inner-spin-button,
     .dl-usd input::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+        -webkit-appearance: auto;
+        opacity: 1;
+        display: block;
+        height: 1.6rem;
+        margin: 0 0 0 0.15rem;
+        cursor: pointer;
+    }
+
+    /* WebKit spin glyphs stay near-black unless forced light in dark UI. */
+    :root.dark .dl-usd input::-webkit-inner-spin-button,
+    :root.dark .dl-usd input::-webkit-outer-spin-button,
+    html.dark .dl-usd input::-webkit-inner-spin-button,
+    html.dark .dl-usd input::-webkit-outer-spin-button {
+        filter: invert(1) brightness(1.4);
+        opacity: 1;
+    }
+
+    .dl-survey-sep {
+        grid-column: 1 / -1;
+        height: 0;
+        margin: 0.35rem 0 0.15rem;
+        border: 0;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .dl-support-block {
+        margin-top: 0.35rem;
     }
 
     .dl-kofi-under {
@@ -472,10 +729,11 @@
     }
 
     .dl-survey-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-        align-items: stretch;
-        gap: 0.55rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
         margin-top: 0.85rem;
         position: relative;
     }
@@ -484,12 +742,19 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
+        width: auto;
         margin: 0;
-        padding: 0.45rem 0.8rem;
-        font-size: 0.88rem;
+        padding: 0.55rem 1rem;
+        font-size: inherit;
+        font-weight: 700;
+        line-height: 1.2;
+        border-radius: var(--r-pill);
         box-sizing: border-box;
         white-space: nowrap;
+    }
+
+    .dl-survey-actions .dl-survey-continue {
+        margin-left: auto;
     }
 
     .dl-field [data-interval-hint] {
@@ -504,6 +769,11 @@
     @media (max-width: 520px) {
         .dl-survey-actions .dl-btn {
             white-space: normal;
+        }
+
+        .dl-survey-actions .dl-survey-continue {
+            white-space: normal;
+            text-align: center;
         }
     }
 
@@ -537,6 +807,174 @@
 
     .dl-survey-result.is-visible {
         display: block;
+    }
+
+    .dl-device-suggest {
+        position: relative;
+    }
+
+    .dl-device-chips {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        width: 100%;
+        min-height: 2.65rem;
+        padding: 0.45rem 0.55rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--dl-r-in);
+        background: var(--bg-0);
+        cursor: text;
+        box-sizing: border-box;
+    }
+
+    .dl-device-chips:focus-within {
+        border-color: var(--primary-color);
+    }
+
+    .dl-device-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        max-width: 100%;
+        padding: 0.2rem 0.2rem 0.2rem 0.65rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--r-pill);
+        font-size: 0.78rem;
+        font-weight: 500;
+        font-family: var(--mono-text-font);
+        color: var(--text-2);
+        background: transparent;
+        white-space: nowrap;
+    }
+
+    .dl-device-chip-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dl-device-chip-remove {
+        appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0 0.35rem;
+        margin: 0;
+        font: inherit;
+        font-size: 1rem;
+        line-height: 1;
+        border-radius: 999px;
+    }
+
+    .dl-device-chip.is-other {
+        border-style: dashed;
+    }
+
+    .dl-device-chip-remove:hover,
+    .dl-device-chip-remove:focus-visible {
+        color: var(--primary-color);
+        outline: none;
+    }
+
+    .dl-device-draft {
+        flex: 1 1 8rem;
+        min-width: 7rem;
+        width: auto !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0.3rem 0.15rem !important;
+        margin: 0;
+        color: var(--text-0);
+        font: inherit;
+        outline: none;
+    }
+
+    .dl-device-suggest-list {
+        --pad: 6px;
+        --r-item: 10px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 4px);
+        z-index: 40;
+        margin: 0;
+        padding: var(--pad);
+        list-style: none;
+        background: var(--bg-0);
+        border: 1px solid var(--border-color);
+        border-radius: calc(var(--r-item) + var(--pad));
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+        max-height: 14rem;
+        overflow-y: auto;
+    }
+
+    .dl-device-suggest-list[hidden] {
+        display: none !important;
+    }
+
+    .dl-device-suggest-item {
+        padding: 0.45rem 0.65rem;
+        border-radius: var(--r-item);
+        color: var(--text-0);
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1.35;
+    }
+
+    .dl-device-suggest-item:hover,
+    .dl-device-suggest-item.is-active {
+        background: var(--bg-1);
+        color: var(--primary-color);
+    }
+
+    .dl-skip-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        margin: 1rem 0 0.35rem;
+    }
+
+    .dl-skip-actions .dl-btn {
+        margin: 0;
+        width: auto;
+        border-radius: var(--r-pill);
+        padding: 0.55rem 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* Survey modals: card radius, not theme 6–8px squares. */
+    #surveySkipModal .feed-modal-content,
+    #linuxPkgModal .feed-modal-content {
+        border-radius: var(--dl-r);
+        padding: calc(var(--dl-pad) + 0.35rem + env(safe-area-inset-top))
+            calc(var(--dl-pad) + 0.35rem + env(safe-area-inset-right))
+            calc(var(--dl-pad) + 0.35rem + env(safe-area-inset-bottom))
+            calc(var(--dl-pad) + 0.35rem + env(safe-area-inset-left));
+        border-color: var(--border-color);
+    }
+
+    #linuxPkgModal .feed-close-button {
+        border-radius: var(--r-pill);
+        padding: 0.55rem 1rem;
+        font-weight: 700;
+    }
+
+    #surveySkipModal .dl-btn-secondary {
+        background: var(--bg-2);
+        color: var(--text-0) !important;
+        border: 1px solid var(--border-color);
+    }
+
+    #surveySkipModal .dl-btn-secondary:hover,
+    #surveySkipModal .dl-btn-secondary:focus-visible {
+        background: var(--bg-2) !important;
+        color: var(--text-0) !important;
+        outline: none;
+        box-shadow: none;
+        filter: brightness(1.04);
     }
 
     .dl-access.is-locked {
@@ -588,8 +1026,14 @@
 
     .dl-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+        .dl-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .dl-card-premium {
@@ -715,7 +1159,7 @@
         border-radius: var(--dl-r-ctrl);
         font-weight: 700;
         font-size: 0.95rem;
-        transition: filter 0.2s ease;
+        transition: background-color 0.2s ease, color 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -725,15 +1169,60 @@
         cursor: pointer;
         box-shadow: none;
         text-align: center;
+        text-decoration: none !important;
+        outline: none;
     }
 
     .dl-btn:hover,
-    a.dl-btn:hover {
+    .dl-btn:focus-visible,
+    a.dl-btn:hover,
+    a.dl-btn:focus-visible {
         background: var(--primary-color);
         color: #fff !important;
         text-decoration: none;
         filter: brightness(1.08);
         box-shadow: none;
+        outline: none;
+    }
+
+    .dl-grid .dl-btn:not(.dl-btn-ghost) {
+        background: var(--bg-2);
+        color: var(--text-0) !important;
+        filter: none;
+    }
+
+    /* Main, chevron, or open menu — whole split paints primary together. */
+    .dl-grid .dl-btn:not(.dl-btn-ghost):hover,
+    .dl-grid .dl-btn:not(.dl-btn-ghost):focus-visible,
+    .dl-grid a.dl-btn:not(.dl-btn-ghost):hover,
+    .dl-grid a.dl-btn:not(.dl-btn-ghost):focus-visible,
+    .dl-grid .dl-split:hover .dl-btn:not(.dl-btn-ghost),
+    .dl-grid .dl-split:focus-within .dl-btn:not(.dl-btn-ghost),
+    .dl-grid .dl-card-premium.dl-menu-open .dl-split .dl-btn:not(.dl-btn-ghost) {
+        background: var(--primary-color);
+        color: #fff !important;
+        filter: brightness(1.08);
+        box-shadow: none;
+        outline: none;
+        text-decoration: none;
+    }
+
+    .recommended-hero .dl-btn:not(.dl-btn-ghost),
+    .recommended-hero .dl-btn:not(.dl-btn-ghost):hover,
+    .recommended-hero .dl-btn:not(.dl-btn-ghost):focus-visible,
+    .recommended-hero a.dl-btn:not(.dl-btn-ghost):hover,
+    .recommended-hero a.dl-btn:not(.dl-btn-ghost):focus-visible {
+        background: var(--primary-color) !important;
+        color: #fff !important;
+    }
+
+    .recommended-hero .dl-btn:not(.dl-btn-ghost):hover,
+    .recommended-hero .dl-btn:not(.dl-btn-ghost):focus-visible,
+    .recommended-hero a.dl-btn:not(.dl-btn-ghost):hover,
+    .recommended-hero a.dl-btn:not(.dl-btn-ghost):focus-visible {
+        filter: brightness(1.08);
+        box-shadow: none;
+        outline: none;
     }
 
     .dl-btn-ghost {
@@ -744,12 +1233,31 @@
         cursor: not-allowed;
     }
 
+    .dl-btn-ghost:hover,
+    .dl-btn-ghost:focus-visible {
+        outline: none;
+        box-shadow: none;
+        filter: none;
+    }
+
     .dl-sideload-link {
         display: inline-block;
         color: var(--primary-color);
         font-size: 0.9rem;
         font-weight: 600;
         text-decoration: none;
+        appearance: none;
+        background: none;
+        border: none;
+        padding: 0;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    .dl-sideload-link:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
     }
 
     .dl-btn-stack {
@@ -764,8 +1272,8 @@
     .dl-btn-stack .dl-split,
     .dl-content > .dl-split {
         margin: 0;
-        width: 100%;
-        max-width: 22rem;
+        width: fit-content;
+        max-width: none;
     }
 
     /* Split download button (main action + architecture dropdown) */
@@ -780,33 +1288,53 @@
 
     .dl-split .dl-split-main {
         margin: 0;
-        flex: 1;
+        flex: 0 0 auto;
+        width: auto;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
     }
 
     .dl-split .dl-split-toggle {
         margin: 0;
-        padding: 0.7rem 0.9rem;
+        padding: 0 0.7rem;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
-        border-left: 1px solid rgba(255, 255, 255, 0.25);
+        border-left: 1px solid rgba(255, 255, 255, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.85rem;
         line-height: 1;
     }
 
+    .dl-grid .dl-split .dl-split-toggle {
+        border-left-color: color-mix(in srgb, var(--text-0) 22%, transparent);
+    }
+
+    /* Keep the split divider visible on hover / focus / open menu */
+    .dl-split .dl-split-toggle:hover,
+    .dl-split .dl-split-toggle:focus-visible,
+    .dl-split:hover .dl-split-toggle,
+    .dl-split:focus-within .dl-split-toggle,
+    .dl-card-premium.dl-menu-open .dl-split .dl-split-toggle {
+        border-left-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .dl-split .dl-split-toggle svg {
+        display: block;
+        width: 14px;
+        height: 14px;
+    }
+
     .dl-split-menu {
+        --pad: 8px;
+        --r-item: 10px;
         position: absolute;
         top: calc(100% + 0.5rem);
         right: 0;
         min-width: 220px;
         background: var(--bg-0);
         border: 1px solid var(--border-color);
-        --pad: 0.4rem;
-        border-radius: var(--dl-r-in);
+        border-radius: calc(var(--r-item) + var(--pad));
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
         padding: var(--pad);
         z-index: 5000;
@@ -819,12 +1347,13 @@
         position: fixed;
     }
 
-    .dl-split-menu a {
+    .dl-split-menu a,
+    .dl-split-menu [role="menuitem"] {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.6rem 0.8rem;
-        border-radius: var(--dl-r-item);
+        border-radius: var(--r-item);
         color: var(--text-0) !important;
         text-decoration: none !important;
         font-size: 0.9rem;
@@ -837,10 +1366,56 @@
         color: var(--text-0) !important;
     }
 
-    .dl-split-menu a .dl-arch-sub {
+    .dl-split-menu [aria-disabled="true"] {
+        opacity: 0.6;
+        cursor: not-allowed;
+        color: var(--text-1) !important;
+    }
+
+    .dl-split-menu [aria-disabled="true"]:hover {
+        background: none;
+        color: var(--text-1) !important;
+    }
+
+    .dl-split-menu .dl-arch-sub {
         color: var(--text-2);
         font-weight: 500;
         font-size: 0.8rem;
+    }
+
+    .dl-arch-hint {
+        display: none;
+        margin-left: auto;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--primary-color);
+    }
+
+    .dl-split-menu [data-arch].is-recommended .dl-arch-hint {
+        display: inline;
+    }
+
+    .dl-download {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .dl-detected {
+        margin: 0;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--text-2);
+    }
+
+    .dl-detected[hidden] {
+        display: none;
     }
 
     .svg-icon {
@@ -869,19 +1444,23 @@
 </style>
 
 <div class="download-page">
+    <span class="nf-slider-preload" aria-hidden="true">&#xF0238;&#xF04CE;</span>
     <div class="dl-survey-card" id="download-survey-card">
         <div class="dl-survey-header">
             <div>
                 <div class="dl-survey-eyebrow">Beta access survey</div>
                 <h2 class="dl-survey-title">Tell us how you plan to use Wawona.</h2>
-                <p class="dl-survey-copy">Helps us pick which platforms and TestFlight seats to work on next.
-                    Submit the survey to see downloads. Skip if you want. Support is optional.</p>
+                <p class="dl-survey-copy">Helps us choose platforms and TestFlight seats.
+                    Device and use case matter most. Submit to see downloads, or skip.
+                    Support is optional. We keep individual answers private.
+                    Twice a year we post aggregate graphs on wawona.io: use cases,
+                    common devices, and how people value Wawona.</p>
             </div>
             <button type="button" class="dl-survey-skip" id="download-survey-skip">Skip survey</button>
         </div>
 
-        <form id="download-survey-form" data-stripe-support data-checkout-api="{{ stripe_checkout_api }}"
-            data-publishable-key="{{ stripe_publishable_key }}">
+        <form id="download-survey-form" data-sponsors-user="{{ sponsors_user }}" data-kofi-url="{{ kofi_url }}"
+            data-survey-endpoint="{{ survey_endpoint }}">
             <div class="dl-survey-grid">
                 <div class="dl-field">
                     <label for="dl-survey-platform">Primary platform</label>
@@ -899,8 +1478,10 @@
 
                 <div class="dl-field">
                     <label for="dl-device">Device and version</label>
-                    <input id="dl-device" name="device" type="text"
-                        placeholder="MacBook Air M2, iPad Pro, Pixel 8, Apple TV 4K">
+                    <input id="dl-device" name="device" type="text" autocomplete="off" spellcheck="false"
+                        placeholder="Start typing: MacBook Air, Pixel 8, …"
+                        aria-describedby="dl-device-hint">
+                    <p class="dl-survey-note" id="dl-device-hint">Pick a suggestion, or type a custom name and press comma to add it as Other. Loose text is not kept.</p>
                 </div>
 
                 <fieldset class="dl-check-grid dl-field-wide">
@@ -942,20 +1523,25 @@
                     <textarea id="dl-notes" name="notes"
                         placeholder="Apps, workflows, devices, or blockers"></textarea>
                 </div>
+            </div>
 
-                <div class="dl-field dl-field-wide">
+            <hr class="dl-survey-sep" role="separator" aria-label="Optional support">
+
+            <div class="dl-field dl-field-wide dl-support-block">
                     <label for="dl-donation-value">Optional support</label>
-                    <p class="dl-survey-note" data-interval-hint>Billed every month until you cancel. $0 skips Stripe.</p>
+                    <p class="dl-survey-note" data-interval-hint>GitHub Sponsors opens with this amount. $0 skips support.</p>
                     <div class="dl-donation-row">
                         <div class="dl-slider-wrap" id="dl-slider-wrap" data-shape="circle">
                             <input id="dl-donation" data-amount-range type="range" min="0" max="100" value="20" step="1"
-                                aria-label="Amount slider">
+                                aria-label="Amount slider, 0 to 100. Type above 100 in the dollar field.">
+                            <span class="dl-slider-cutoff" aria-hidden="true"></span>
                             <span class="dl-slider-knob" aria-hidden="true"></span>
                         </div>
                         <div class="dl-usd">
                             <span class="dl-usd-prefix" aria-hidden="true">$</span>
-                            <input id="dl-donation-value" name="amount_usd" type="number" min="0" max="10000" value="20"
-                                step="1" inputmode="numeric" aria-label="Amount in US dollars">
+                            <input id="dl-donation-value" name="amount_usd" type="number" min="0" value="20"
+                                step="1" inputmode="numeric" enterkeyhint="done"
+                                aria-label="Amount in US dollars">
                         </div>
                     </div>
                     <label class="dl-one-time">
@@ -963,20 +1549,17 @@
                         <span class="dl-switch" aria-hidden="true"></span>
                         Make one-time payment
                     </label>
-                    <p class="dl-kofi-under">Prefer Ko-fi? <a data-kofi-amount href="{{ kofi_url }}" target="_blank" rel="noopener noreferrer">Ko-fi</a>.</p>
-                </div>
-
+                    <p class="dl-kofi-under">Or use <a data-kofi-amount href="{{ kofi_url }}" target="_blank" rel="noopener noreferrer">Ko-fi</a>.</p>
             </div>
 
             <div class="dl-survey-actions">
-                <button class="dl-btn" type="submit">Continue to downloads</button>
-                <button class="dl-btn" type="button" data-checkout-submit>Stripe Checkout: $20/mo</button>
+                <a class="dl-btn" data-sponsors-submit href="https://github.com/sponsors/{{ sponsors_user }}/sponsorships?sponsor={{ sponsors_user }}&amp;frequency=recurring&amp;amount=20" target="_blank" rel="noopener noreferrer">GitHub Sponsors: $20/mo</a>
+                <button class="dl-survey-continue" type="submit">Continue to downloads</button>
             </div>
             <p class="dl-support-error" hidden></p>
             <div class="dl-survey-result" id="download-survey-result">
-                Survey stored. Optional fallback:
-                <a id="download-survey-issue-link" href="https://github.com/Wawona/wawona.io/issues/new"
-                    target="_blank" rel="noopener">file a GitHub issue</a>.
+                Survey sent. Individual answers stay with the Wawona team.
+                Aggregate graphs (use cases, devices, value) post on wawona.io twice a year.
             </div>
         </form>
     </div>
@@ -1001,21 +1584,23 @@
                 <div class="dl-content">
                     <h3 class="dl-title">macOS <span class="dl-version" data-release-version>latest</span></h3>
                     <p class="dl-description">Native Mac app. Requires macOS 13+.</p>
+                    <div class="dl-download">
                     <div class="dl-split">
                         <a id="macos-dl-main"
                             href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-arm64.dmg"
                             class="dl-btn dl-split-main" data-asset="macos-arm64" aria-label="Download Wawona.dmg">Wawona.dmg</a>
                         <button type="button" class="dl-btn dl-split-toggle" id="macos-arch-toggle"
                             aria-haspopup="true" aria-expanded="false" aria-controls="macos-arch-menu"
-                            aria-label="Choose architecture">&#9662;</button>
+                            aria-label="Choose architecture"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
                         <div class="dl-split-menu" id="macos-arch-menu" role="menu">
                             <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-arm64.dmg"
                                 data-arch="arm64" data-asset="macos-arm64" role="menuitem">arm64 <span
-                                    class="dl-arch-sub">(Apple Silicon)</span></a>
-                            <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-macOS-x86_64.dmg"
-                                data-arch="x86_64" data-asset="macos-x86_64" role="menuitem">x86_64 <span
-                                    class="dl-arch-sub">(Intel)</span></a>
+                                    class="dl-arch-sub">(Apple Silicon)</span><span class="dl-arch-hint">Recommended</span></a>
+                            <span data-arch="x86_64" data-asset="macos-x86_64" role="menuitem" aria-disabled="true">x86_64 <span
+                                    class="dl-arch-sub">(Intel, soon)</span><span class="dl-arch-hint">Recommended</span></span>
                         </div>
+                    </div>
+                    <p class="dl-detected" data-detected-for="macos" hidden></p>
                     </div>
                 </div>
             </div>
@@ -1033,21 +1618,27 @@
                 <div class="dl-content">
                     <h3 class="dl-title">Linux <span class="dl-version" data-release-version>latest</span></h3>
                     <p class="dl-description">Portable AppImage. No install.</p>
+                    <div class="dl-btn-stack">
+                    <div class="dl-download">
                     <div class="dl-split">
                         <a id="linux-dl-main"
                             href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
                             class="dl-btn dl-split-main" data-asset="linux-x86_64" aria-label="Download Wawona.AppImage">Wawona.AppImage</a>
                         <button type="button" class="dl-btn dl-split-toggle" id="linux-arch-toggle"
                             aria-haspopup="true" aria-expanded="false" aria-controls="linux-arch-menu"
-                            aria-label="Choose architecture">&#9662;</button>
+                            aria-label="Choose architecture"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
                         <div class="dl-split-menu" id="linux-arch-menu" role="menu">
                             <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-x86_64.AppImage"
                                 data-arch="x86_64" data-asset="linux-x86_64" role="menuitem">x86_64 <span
-                                    class="dl-arch-sub">(Intel / AMD)</span></a>
+                                    class="dl-arch-sub">(Intel / AMD)</span><span class="dl-arch-hint">Recommended</span></a>
                             <a href="https://github.com/Wawona/Wawona/releases/latest/download/Wawona-aarch64.AppImage"
                                 data-arch="aarch64" data-asset="linux-aarch64" role="menuitem">aarch64 <span
-                                    class="dl-arch-sub">(ARM64)</span></a>
+                                    class="dl-arch-sub">(ARM64)</span><span class="dl-arch-hint">Recommended</span></a>
                         </div>
+                    </div>
+                    <p class="dl-detected" data-detected-for="linux" hidden></p>
+                    </div>
+                    <button type="button" class="dl-sideload-link" id="linux-pkg-open">Package Manager</button>
                     </div>
                 </div>
             </div>
@@ -1101,10 +1692,42 @@
         <a href="https://github.com/Wawona/Wawona/releases/latest" target="_blank" rel="noopener">latest GitHub
             release</a>.
     </p>
-    <p class="dl-survey-note" id="dl-donated-banner" hidden>Thanks. Stripe confirmed your payment. <a href="/donate/#manage">Manage or cancel</a></p>
+    <p class="dl-survey-note" id="dl-donated-banner" hidden>Thanks. That keeps Wawona in development. <a href="/donate/#manage">Manage or cancel</a></p>
+    </div>
+
+    <div id="linuxPkgModal" class="search-modal js" role="dialog" aria-labelledby="linuxPkgModalTitle" aria-modal="true">
+        <div class="feed-modal-content">
+            <h1 id="linuxPkgModalTitle" class="page-header">Package Manager</h1>
+            <p>
+                Distro packages are coming soon: apt, dnf, pacman, and the rest.
+                Until then, use the AppImage. Same compositor, no install.
+            </p>
+            <p>
+                Reminder: after you download the AppImage, mark it executable before you run it.
+            </p>
+            <button type="button" id="close-linux-pkg-modal" class="feed-close-button">Close</button>
+        </div>
+    </div>
+
+    <div id="surveySkipModal" class="search-modal js" role="dialog" aria-labelledby="surveySkipModalTitle" aria-modal="true">
+        <div class="feed-modal-content">
+            <h1 id="surveySkipModalTitle" class="page-header">Unsaved survey</h1>
+            <p>
+                You started the survey. Finish it so we get your device and use case,
+                or skip anyway to open downloads without sending.
+            </p>
+            <div class="dl-skip-actions">
+                <button type="button" class="dl-btn" id="survey-skip-finish">Finish survey</button>
+                <button type="button" class="dl-btn dl-btn-secondary" id="survey-skip-save">Save</button>
+                <button type="button" class="dl-btn dl-btn-secondary" id="survey-skip-anyway">Skip anyway</button>
+            </div>
+            <p class="dl-support-error" id="survey-skip-error" hidden></p>
+        </div>
     </div>
 </div>
 
+<script src="{{ get_url(path='js/vendor/purify.min.js') }}"></script>
+<script src="{{ get_url(path='js/device-suggest.js') }}"></script>
 <script>
     (function initDownloadSurvey() {
         var form = document.getElementById("download-survey-form");
@@ -1112,36 +1735,74 @@
         var access = document.getElementById("download-access");
         var skip = document.getElementById("download-survey-skip");
         var result = document.getElementById("download-survey-result");
-        var issueLink = document.getElementById("download-survey-issue-link");
         var range = form && form.querySelector("[data-amount-range]");
         var amount = form && form.querySelector("[name=amount_usd]");
         var oneTime = form && form.querySelector("[data-one-time-toggle]");
         var hint = form && form.querySelector("[data-interval-hint]");
-        var stripeBtn = form && form.querySelector("[data-checkout-submit]");
+        var sponsorsLink = form && form.querySelector("[data-sponsors-submit]");
         var err = form && form.querySelector(".dl-support-error");
         var kofiLink = form && form.querySelector("[data-kofi-amount]");
+        var deviceInput = document.getElementById("dl-device");
         var surveyId = "";
+        var surveyEndpoint = (form && form.getAttribute("data-survey-endpoint") || "").trim();
+        var skipModal = document.getElementById("surveySkipModal");
+        var skipFinish = document.getElementById("survey-skip-finish");
+        var skipSave = document.getElementById("survey-skip-save");
+        var skipAnyway = document.getElementById("survey-skip-anyway");
+        var skipErr = document.getElementById("survey-skip-error");
+        var baseline = null;
         var sliderWrap = document.getElementById("dl-slider-wrap");
         var sliderKnob = sliderWrap && sliderWrap.querySelector(".dl-slider-knob");
         var lastThanksUsd = NaN;
         var lastThanksAt = 0;
+        var lastFireSpawnX = NaN;
         var fxLayer = null;
         var knobDragging = false;
+        var visualUsd = 20;
+        var targetVisualUsd = 20;
+        var sliderRaf = 0;
+        var sliderMode = "idle";
+        var velocityUsd = 0;
+        var lastPointerSample = null;
+        var lastTickAt = 0;
+        var overflowTimer = 0;
+        var overflowActive = false;
+        var amountEditing = false;
 
         if (!form || !access) return;
 
-        function checkoutApi() {
-            var raw = (form.getAttribute("data-checkout-api") || "").trim().replace(/\/$/, "");
-            if (raw) return raw;
-            var origin = window.location.origin || "";
-            if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
-                return "http://127.0.0.1:4242";
-            }
-            return "";
+        /* Warm subset Nerd Font before slider particles (avoid tofu boxes). */
+        if (document.fonts && document.fonts.load) {
+            document.fonts.load(
+                '16px "Symbols Nerd Font"',
+                String.fromCodePoint(0xF0238) + String.fromCodePoint(0xF04CE)
+            ).catch(function () { /* ignore */ });
+        }
+
+        if (window.WawonaDeviceSuggest && deviceInput) {
+            WawonaDeviceSuggest.loadCatalog().then(function () {
+                WawonaDeviceSuggest.bind(deviceInput);
+            });
         }
 
         function interval() {
-            return (oneTime && oneTime.checked) ? "one_time" : "month";
+            return (oneTime && oneTime.checked) ? "once" : "month";
+        }
+
+        function sponsorsHref(usd) {
+            var user = (form.getAttribute("data-sponsors-user") || "aspauldingcode").trim();
+            var freq = interval() === "month" ? "recurring" : "one-time";
+            var url = "https://github.com/sponsors/" + encodeURIComponent(user) +
+                "/sponsorships?sponsor=" + encodeURIComponent(user) +
+                "&frequency=" + freq;
+            if (usd > 0) url += "&amount=" + usd;
+            return url;
+        }
+
+        function kofiHref(usd) {
+            var base = (form.getAttribute("data-kofi-url") || "https://ko-fi.com/aspauldingcode").replace(/\/$/, "");
+            if (usd > 0) return base + "?amount=" + usd;
+            return base;
         }
 
         function donationUsd() {
@@ -1158,11 +1819,58 @@
             return "rgb(" + mixChannel(239, 255, t) + "," + mixChannel(83, 23, t) + "," + mixChannel(80, 68, t) + ")";
         }
 
+        /* Slider particles: yellow (star) / orange (fire) / red (heart). */
+        function fxParticleColor(kind) {
+            if (kind === "star") return Math.random() < 0.55 ? "#ffeb3b" : "#ffc107";
+            if (kind === "fire") {
+                var oranges = ["#ff9100", "#ff6d00", "#ff3d00"];
+                return oranges[Math.floor(Math.random() * oranges.length)];
+            }
+            var reds = ["#ff1744", "#f44336", "#ff5252"];
+            return reds[Math.floor(Math.random() * reds.length)];
+        }
+
         function heartAmount(usd) {
             var cap = Math.min(Math.max(usd, 0), 100);
             if (cap <= 28) return 0;
             if (cap >= 50) return 1;
             return (cap - 28) / 22;
+        }
+
+        /* Mega support tiers after slider overflow: $250 / $500 / $750 / $1000. */
+        function megaTier(usd) {
+            if (usd >= 1000) return 4;
+            if (usd >= 750) return 3;
+            if (usd >= 500) return 2;
+            if (usd >= 250) return 1;
+            return 0;
+        }
+
+        function overflowKnobPx(usd) {
+            var px = 44;
+            if (usd >= 250) px += 8;
+            if (usd >= 500) px += 10;
+            if (usd >= 750) px += 12;
+            if (usd >= 1000) px += 16;
+            return px;
+        }
+
+        function megaParticleMix(usd) {
+            var tier = megaTier(usd);
+            if (tier >= 4) return { heart: 10, star: 8, fire: 8, radial: 18 };
+            if (tier === 3) return { heart: 7, star: 6, fire: 6, radial: 12 };
+            if (tier === 2) return { heart: 3, star: 7, fire: 7, radial: 0 };
+            if (tier === 1) return { heart: 7, star: 7, fire: 0, radial: 6 };
+            return { heart: 5, star: 0, fire: 0, radial: 10 };
+        }
+
+        function crossedMegaMarks(fromUsd, toUsd) {
+            var marks = [250, 500, 750, 1000];
+            var hit = [];
+            for (var i = 0; i < marks.length; i += 1) {
+                if (fromUsd < marks[i] && toUsd >= marks[i]) hit.push(marks[i]);
+            }
+            return hit;
         }
 
         function ensureFxLayer() {
@@ -1185,31 +1893,39 @@
             var rect = range.getBoundingClientRect();
             var pct = (clientX - rect.left) / (rect.width || 1);
             pct = Math.min(1, Math.max(0, pct));
-            return Math.round(bounds.min + pct * (bounds.max - bounds.min));
+            /* Continuous for visual tracking; integer commit happens via Math.round. */
+            return bounds.min + pct * (bounds.max - bounds.min);
         }
 
-        function applySliderUsd(usd, fromPointer) {
-            if (!range || !amount) return;
-            var bounds = sliderBounds();
-            usd = Math.min(bounds.max, Math.max(bounds.min, usd));
-            range.value = String(usd);
-            amount.value = String(usd);
-            sync(true);
+        function prefersReducedMotion() {
+            return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
         }
 
-        function updateSliderKnob() {
+        function stopSliderAnim() {
+            if (sliderRaf) {
+                cancelAnimationFrame(sliderRaf);
+                sliderRaf = 0;
+            }
+            sliderMode = "idle";
+            velocityUsd = 0;
+        }
+
+        function paintSliderVisual(usdFloat) {
             if (!sliderWrap || !range) return;
-            var usd = donationUsd();
+            if (overflowActive) clearOverflowMode();
+            var bounds = sliderBounds();
+            var usd = Math.min(bounds.max, Math.max(bounds.min, usdFloat));
             var cap = Math.min(usd, 100);
-            var sizeT = cap / 100;
+            /* Knob diameter holds until $50; heart grows $50→$100. Color still ramps 0→100. */
+            var sizeT = cap <= 50 ? 0 : (cap - 50) / 50;
+            var colorT = cap / 100;
             var heart = heartAmount(cap);
             var knobPx = 18 + 26 * sizeT;
             sliderWrap.setAttribute("data-shape", heart >= 1 ? "heart" : "circle");
             sliderWrap.style.setProperty("--heart", heart.toFixed(3));
             sliderWrap.style.setProperty("--knob", knobPx + "px");
-            sliderWrap.style.setProperty("--knob-color", knobColor(sizeT));
-            var bounds = sliderBounds();
-            var pct = (parseInt(range.value, 10) - bounds.min) / (bounds.max - bounds.min || 1);
+            sliderWrap.style.setProperty("--knob-color", knobColor(colorT));
+            var pct = (usd - bounds.min) / (bounds.max - bounds.min || 1);
             sliderWrap.style.setProperty("--fill", (pct * 100).toFixed(2) + "%");
             var wrapRect = sliderWrap.getBoundingClientRect();
             var rangeRect = range.getBoundingClientRect();
@@ -1218,41 +1934,116 @@
             sliderWrap.style.setProperty("--knob-x", x + "px");
         }
 
-        function spawnThanks(fromUsd, toUsd) {
-            if (toUsd <= fromUsd) return;
-            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        function spawnFxParticle(kind, x, y, opts) {
+            opts = opts || {};
+            var layer = ensureFxLayer();
+            var bit = document.createElement("span");
+            bit.className = kind === "fire"
+                ? "dl-fx-bit is-fire"
+                : (kind === "star" ? "dl-fx-bit is-star" : "dl-fx-bit");
+            bit.style.left = x + "px";
+            bit.style.top = y + "px";
+            bit.style.setProperty("--dx", (opts.dx != null ? opts.dx : 0) + "px");
+            bit.style.setProperty("--dy", (opts.dy != null ? opts.dy : -24) + "px");
+            bit.style.setProperty("--ds", opts.ds != null ? String(opts.ds) : "0.6");
+            bit.style.setProperty("--spin0", (opts.spin0 != null ? opts.spin0 : 0) + "deg");
+            bit.style.setProperty("--spin1", (opts.spin1 != null ? opts.spin1 : 20) + "deg");
+            bit.style.setProperty("--fx-color", opts.color || fxParticleColor(kind));
+            bit.style.animationDuration = (opts.duration || 0.7) + "s";
+            var inner = document.createElement("span");
+            inner.className = "dl-fx-" + kind;
+            if (kind === "fire") {
+                inner.textContent = String.fromCodePoint(0xF0238);
+                inner.setAttribute("aria-hidden", "true");
+            } else if (kind === "star") {
+                inner.textContent = String.fromCodePoint(0xF04CE);
+                inner.setAttribute("aria-hidden", "true");
+            }
+            bit.appendChild(inner);
+            layer.appendChild(bit);
+            bit.addEventListener("animationend", function (event) {
+                var node = event.currentTarget;
+                if (node && node.parentNode) node.parentNode.removeChild(node);
+            });
+        }
+
+        function spawnParticleBurst(mix, origin) {
+            if (!sliderKnob && !(origin && origin.x != null)) return;
+            var box = sliderKnob ? sliderKnob.getBoundingClientRect() : null;
+            var x = origin && origin.x != null ? origin.x : (box.left + box.width / 2);
+            var y = origin && origin.y != null ? origin.y : (box.top + box.height / 2);
+            var hearts = mix.heart || 0;
+            var stars = mix.star || 0;
+            var fires = mix.fire || 0;
+            var radial = mix.radial || 0;
+            var i;
+            for (i = 0; i < hearts; i += 1) {
+                var ang = (-100 + ((i + 0.5) / Math.max(hearts, 1)) * 40 + (Math.random() - 0.5) * 16) * Math.PI / 180;
+                var dist = 26 + i * 5 + Math.random() * 16;
+                var turn = Math.random() < 0.5 ? -1 : 1;
+                spawnFxParticle("heart", x + (i - (hearts - 1) / 2) * 12, y - 4, {
+                    dx: Math.cos(ang) * dist,
+                    dy: Math.sin(ang) * dist - 22,
+                    ds: 0.55 + Math.random() * 0.25,
+                    spin0: turn * 12,
+                    spin1: turn * 40,
+                    color: fxParticleColor("heart"),
+                    duration: 0.75 + Math.random() * 0.25
+                });
+            }
+            for (i = 0; i < stars; i += 1) {
+                var sang = (-105 + ((i + 0.5) / Math.max(stars, 1)) * 50 + (Math.random() - 0.5) * 20) * Math.PI / 180;
+                var sdist = 28 + i * 6 + Math.random() * 18;
+                var sturn = Math.random() < 0.5 ? -1 : 1;
+                spawnFxParticle("star", x + (i - (stars - 1) / 2) * 14, y - 2, {
+                    dx: Math.cos(sang) * sdist,
+                    dy: Math.sin(sang) * sdist - 20,
+                    ds: 0.55 + Math.random() * 0.25,
+                    spin0: sturn * (24 + Math.random() * 40),
+                    spin1: sturn * (90 + Math.random() * 110),
+                    color: fxParticleColor("star"),
+                    duration: 0.7 + Math.random() * 0.25
+                });
+            }
+            for (i = 0; i < fires; i += 1) {
+                var lane = (i - (fires - 1) / 2) * 18;
+                spawnFxParticle("fire", x + lane, y - (box ? box.height * 0.1 : 6), {
+                    dx: lane + (Math.random() - 0.5) * 8,
+                    dy: -(30 + Math.random() * 28 + i * 5),
+                    ds: 0.35 + Math.random() * 0.2,
+                    spin0: (Math.random() - 0.5) * 16,
+                    spin1: (Math.random() - 0.5) * 32,
+                    color: fxParticleColor("fire"),
+                    duration: 0.5 + Math.random() * 0.3
+                });
+            }
+            if (radial > 0) spawnRadialHearts(radial);
+        }
+
+        function spawnRadialHearts(count) {
             if (!sliderKnob) return;
-            var now = Date.now();
-            if (now - lastThanksAt < 70) return;
-            lastThanksAt = now;
+            if (prefersReducedMotion()) return;
             var layer = ensureFxLayer();
             var box = sliderKnob.getBoundingClientRect();
-            var x = box.left + box.width / 2;
-            var y = box.top + box.height / 2;
-            var delta = toUsd - fromUsd;
-            var kind = toUsd >= 50 ? "heart" : "circle";
-            var count = kind === "heart"
-                ? Math.min(5, 2 + Math.floor(delta * 0.35))
-                : Math.min(2, 1 + Math.floor(delta * 0.15));
-            var color = sliderWrap && sliderWrap.style.getPropertyValue("--knob-color") || "#ef5350";
+            var cx = box.left + box.width / 2;
+            var cy = box.top + box.height / 2;
+            var reach = Math.max(window.innerWidth, window.innerHeight) * 0.72;
             for (var i = 0; i < count; i += 1) {
                 var bit = document.createElement("span");
-                bit.className = "dl-fx-bit";
-                var angle = (-98 + ((i + 0.5) / count) * 36 + (Math.random() - 0.5) * 14) * Math.PI / 180;
-                var lift = 4 + box.width * 0.08;
-                bit.style.left = (x + Math.cos(angle) * lift) + "px";
-                bit.style.top = (y + Math.sin(angle) * lift) + "px";
-                var dist = 22 + i * 4 + Math.random() * 12;
-                var turn = Math.random() < 0.5 ? -1 : 1;
-                bit.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
-                bit.style.setProperty("--dy", (Math.sin(angle) * dist - 18) + "px");
-                bit.style.setProperty("--ds", (0.55 + Math.random() * 0.2).toFixed(2));
-                bit.style.setProperty("--spin0", "0deg");
-                bit.style.setProperty("--spin1", (turn * 12).toFixed(1) + "deg");
-                bit.style.setProperty("--fx-color", color);
-                bit.style.animationDuration = (0.7 + Math.random() * 0.2) + "s";
+                bit.className = "dl-fx-bit is-radial";
+                var angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.55;
+                var dist = 70 + Math.random() * reach;
+                bit.style.left = cx + "px";
+                bit.style.top = cy + "px";
+                bit.style.setProperty("--dx", (Math.cos(angle) * dist).toFixed(1) + "px");
+                bit.style.setProperty("--dy", (Math.sin(angle) * dist).toFixed(1) + "px");
+                bit.style.setProperty("--ds", (0.4 + Math.random() * 0.35).toFixed(2));
+                bit.style.setProperty("--spin0", ((Math.random() - 0.5) * 40).toFixed(1) + "deg");
+                bit.style.setProperty("--spin1", ((Math.random() - 0.5) * 160).toFixed(1) + "deg");
+                bit.style.setProperty("--fx-color", fxParticleColor("heart"));
+                bit.style.animationDuration = (0.85 + Math.random() * 0.55) + "s";
                 var inner = document.createElement("span");
-                inner.className = "dl-fx-" + kind;
+                inner.className = "dl-fx-heart";
                 bit.appendChild(inner);
                 layer.appendChild(bit);
                 bit.addEventListener("animationend", function (event) {
@@ -1262,46 +2053,345 @@
             }
         }
 
-        function unlockDownloads() {
+        function overflowPulse() {
+            overflowTimer = 0;
+            if (!overflowActive || donationUsd() <= 100) {
+                clearOverflowMode();
+                return;
+            }
+            var usd = donationUsd();
+            var mix = megaParticleMix(usd);
+            /* Soft pulse: half the burst each beat. */
+            spawnParticleBurst({
+                heart: Math.max(1, Math.round((mix.heart || 0) * 0.55)),
+                star: Math.round((mix.star || 0) * 0.55),
+                fire: Math.round((mix.fire || 0) * 0.55),
+                radial: Math.max(4, Math.round((mix.radial || 0) * 0.55))
+            });
+            overflowTimer = window.setTimeout(function () {
+                if (!overflowActive) return;
+                spawnParticleBurst({
+                    heart: Math.max(1, Math.round((mix.heart || 0) * 0.4)),
+                    star: Math.round((mix.star || 0) * 0.4),
+                    fire: Math.round((mix.fire || 0) * 0.4),
+                    radial: Math.max(3, Math.round((mix.radial || 0) * 0.4))
+                });
+                overflowTimer = window.setTimeout(overflowPulse, 660);
+            }, 490);
+        }
+
+        function startOverflowMode() {
+            if (!sliderWrap || !range) return;
+            if (prefersReducedMotion()) {
+                overflowActive = true;
+                sliderWrap.classList.add("is-overflow");
+                return;
+            }
+            if (overflowActive) return;
+            overflowActive = true;
+            sliderWrap.classList.add("is-overflow");
+            if (overflowTimer) window.clearTimeout(overflowTimer);
+            overflowPulse();
+        }
+
+        function clearOverflowMode() {
+            overflowActive = false;
+            if (overflowTimer) {
+                window.clearTimeout(overflowTimer);
+                overflowTimer = 0;
+            }
+            if (sliderWrap) sliderWrap.classList.remove("is-overflow");
+        }
+
+        function paintOverflowHeart() {
+            if (!sliderWrap || !range) return;
+            var bounds = sliderBounds();
+            var usd = donationUsd();
+            var knobPx = overflowKnobPx(usd);
+            sliderWrap.setAttribute("data-shape", "heart");
+            sliderWrap.style.setProperty("--heart", "1");
+            sliderWrap.style.setProperty("--knob", knobPx + "px");
+            sliderWrap.style.setProperty("--knob-color", knobColor(1));
+            sliderWrap.style.setProperty("--fill", "100%");
+            var wrapRect = sliderWrap.getBoundingClientRect();
+            var rangeRect = range.getBoundingClientRect();
+            var travel = Math.max(0, rangeRect.width - knobPx);
+            var x = (rangeRect.left - wrapRect.left) + travel + knobPx / 2;
+            sliderWrap.style.setProperty("--knob-x", x + "px");
+            visualUsd = bounds.max;
+            targetVisualUsd = bounds.max;
+            startOverflowMode();
+        }
+
+        function applyOverflowState() {
+            var usd = donationUsd();
+            if (usd > 100) {
+                if (sliderRaf) {
+                    cancelAnimationFrame(sliderRaf);
+                    sliderRaf = 0;
+                }
+                sliderMode = "idle";
+                velocityUsd = 0;
+                if (range) range.value = "100";
+                paintOverflowHeart();
+                return true;
+            }
+            if (overflowActive) clearOverflowMode();
+            return false;
+        }
+
+        function commitRoundedFromVisual() {
+            if (!range || !amount) return;
+            var bounds = sliderBounds();
+            var rounded = Math.round(Math.min(bounds.max, Math.max(bounds.min, visualUsd)));
+            /* Keep custom field value when parked on the right cutoff. */
+            if (donationUsd() > 100 && rounded >= bounds.max) {
+                range.value = String(bounds.max);
+                return;
+            }
+            if (rounded === lastThanksUsd) return;
+            var prev = lastThanksUsd;
+            range.value = String(rounded);
+            amount.value = String(rounded);
+            syncLabel();
+            if (!Number.isNaN(prev)) spawnThanks(prev, rounded);
+            lastThanksUsd = rounded;
+        }
+
+        function samplePointerVelocity(usd, now) {
+            if (lastPointerSample) {
+                var dt = (now - lastPointerSample.t) / 1000;
+                if (dt > 0.001 && dt < 0.12) {
+                    var instant = (usd - lastPointerSample.usd) / dt;
+                    velocityUsd = velocityUsd * 0.3 + instant * 0.7;
+                }
+            }
+            lastPointerSample = { t: now, usd: usd };
+        }
+
+        function tickSlider(now) {
+            sliderRaf = 0;
+            if (!lastTickAt) lastTickAt = now;
+            var dt = Math.min(0.033, Math.max(0.001, (now - lastTickAt) / 1000));
+            lastTickAt = now;
+            var bounds = sliderBounds();
+
+            if (sliderMode === "coast") {
+                visualUsd += velocityUsd * dt;
+                if (visualUsd < bounds.min) {
+                    visualUsd = bounds.min;
+                    velocityUsd = Math.abs(velocityUsd) * 0.32;
+                } else if (visualUsd > bounds.max) {
+                    visualUsd = bounds.max;
+                    velocityUsd = -Math.abs(velocityUsd) * 0.32;
+                }
+                velocityUsd *= Math.exp(-3.8 * dt);
+                paintSliderVisual(visualUsd);
+                commitRoundedFromVisual();
+                if (Math.abs(velocityUsd) < 10) {
+                    velocityUsd = 0;
+                    targetVisualUsd = Math.round(visualUsd);
+                    sliderMode = "ease";
+                }
+                sliderRaf = requestAnimationFrame(tickSlider);
+                return;
+            }
+
+            if (sliderMode === "ease") {
+                var diff = targetVisualUsd - visualUsd;
+                if (Math.abs(diff) < 0.02) {
+                    visualUsd = targetVisualUsd;
+                    paintSliderVisual(visualUsd);
+                    commitRoundedFromVisual();
+                    sliderMode = "idle";
+                    lastTickAt = 0;
+                    return;
+                }
+                visualUsd += diff * (1 - Math.exp(-16 * dt));
+                paintSliderVisual(visualUsd);
+                commitRoundedFromVisual();
+                sliderRaf = requestAnimationFrame(tickSlider);
+            }
+        }
+
+        function startSliderLoop() {
+            if (sliderRaf) return;
+            lastTickAt = 0;
+            sliderRaf = requestAnimationFrame(tickSlider);
+        }
+
+        function setVisualTarget(usdFloat, mode) {
+            var bounds = sliderBounds();
+            usdFloat = Math.min(bounds.max, Math.max(bounds.min, usdFloat));
+            targetVisualUsd = usdFloat;
+            if (mode === "follow" || mode === "snap" || prefersReducedMotion()) {
+                if (sliderRaf) {
+                    cancelAnimationFrame(sliderRaf);
+                    sliderRaf = 0;
+                }
+                sliderMode = "idle";
+                velocityUsd = 0;
+                visualUsd = usdFloat;
+                paintSliderVisual(visualUsd);
+                return;
+            }
+            if (mode === "coast") {
+                sliderMode = "coast";
+                startSliderLoop();
+                return;
+            }
+            sliderMode = "ease";
+            startSliderLoop();
+        }
+
+        function applySliderUsd(usd, fromPointer) {
+            if (!range || !amount) return;
+            var bounds = sliderBounds();
+            usd = Math.min(bounds.max, Math.max(bounds.min, usd));
+            var rounded = Math.round(usd);
+            var custom = donationUsd();
+            /* Right-side cutoff: slider stays at 100 while amount field may be higher */
+            if (rounded >= bounds.max && custom > 100) {
+                range.value = String(bounds.max);
+                syncLabel();
+                paintOverflowHeart();
+                return;
+            }
+            if (overflowActive) clearOverflowMode();
+            var prev = lastThanksUsd;
+            range.value = String(rounded);
+            amount.value = String(rounded);
+            syncLabel();
+            if (!Number.isNaN(prev)) spawnThanks(prev, rounded);
+            lastThanksUsd = rounded;
+            setVisualTarget(fromPointer ? usd : rounded, fromPointer ? "follow" : "ease");
+        }
+
+        function updateSliderKnob() {
+            if (!sliderWrap || !range) return;
+            if (!knobDragging && applyOverflowState()) return;
+            if (knobDragging || sliderMode === "coast" || sliderMode === "ease") {
+                paintSliderVisual(visualUsd);
+                return;
+            }
+            var usd = donationUsd();
+            visualUsd = usd;
+            targetVisualUsd = usd;
+            stopSliderAnim();
+            paintSliderVisual(usd);
+        }
+
+        function spawnThanks(fromUsd, toUsd) {
+            if (toUsd <= fromUsd) return;
+            if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            if (!sliderKnob) return;
+            var now = Date.now();
+            /* Fast slides need denser spawns — keep throttle short while dragging. */
+            var throttleMs = knobDragging ? 38 : 45;
+            if (now - lastThanksAt < throttleMs) return;
+            lastThanksAt = now;
+
+            /* Overflow mega tiers: $250 hearts+stars → $500 stars+fire → $750/+ all. */
+            if (toUsd > 100) {
+                var mix = megaParticleMix(toUsd);
+                var crosses = crossedMegaMarks(fromUsd, toUsd);
+                if (crosses.length) {
+                    mix = {
+                        heart: (mix.heart || 0) + 4 * crosses.length,
+                        star: (mix.star || 0) + 4 * crosses.length,
+                        fire: (mix.fire || 0) + 3 * crosses.length,
+                        radial: (mix.radial || 0) + 6 * crosses.length
+                    };
+                }
+                spawnParticleBurst(mix);
+                paintOverflowHeart();
+                return;
+            }
+
+            var kind = toUsd >= 50 ? "heart" : (toUsd > 20 ? "fire" : "star");
+            var delta = toUsd - fromUsd;
+            /* Knob stays circle until $50 heart; particles: star (<$20) → fire ($20–$50) → heart.
+               Scale count with delta so fast slides still look dense. */
+            var count;
+            if (knobDragging) {
+                count = Math.min(8, Math.max(2, Math.round(delta * 0.7) + 1));
+            } else if (kind === "heart") {
+                count = Math.min(6, Math.max(2, 2 + Math.floor(delta * 0.45)));
+            } else if (kind === "fire") {
+                count = Math.min(6, Math.max(2, 1 + Math.floor(delta * 0.4)));
+            } else {
+                count = Math.min(5, Math.max(2, 1 + Math.floor(delta * 0.35)));
+            }
+            var box = sliderKnob.getBoundingClientRect();
+            var x = box.left + box.width / 2;
+            var y = box.top + box.height / 2;
+            var minGap = knobDragging ? 14 : 12;
+            if (kind === "fire" && !Number.isNaN(lastFireSpawnX) && Math.abs(x - lastFireSpawnX) < minGap) {
+                x = lastFireSpawnX + (x >= lastFireSpawnX ? minGap : -minGap);
+            }
+            if (kind === "fire") lastFireSpawnX = x;
+            var burst = { heart: 0, star: 0, fire: 0, radial: 0 };
+            burst[kind] = count;
+            spawnParticleBurst(burst, { x: x, y: y });
+        }
+
+        function unlockDownloads(persist) {
             access.classList.remove("is-locked");
             if (card) card.classList.add("dl-survey-complete");
-            if (window.localStorage) localStorage.setItem("wawonaDownloadSurveyComplete", "true");
+            /* Only a real submit stays dismissed across refresh. Skip is session-only. */
+            if (persist && window.localStorage) {
+                localStorage.setItem("wawonaDownloadSurveyComplete", "true");
+            }
+        }
+
+        function surveyWasSubmitted() {
+            if (!window.localStorage) return false;
+            if (localStorage.getItem("wawonaDownloadSurveyComplete") !== "true") return false;
+            var raw = localStorage.getItem("wawonaDownloadSurveyLast");
+            if (!raw) {
+                /* Legacy skip set complete without a payload — ask again. */
+                localStorage.removeItem("wawonaDownloadSurveyComplete");
+                return false;
+            }
+            try {
+                var last = JSON.parse(raw);
+                if (!last || last.skipped) {
+                    localStorage.removeItem("wawonaDownloadSurveyComplete");
+                    return false;
+                }
+                return true;
+            } catch (ignore) {
+                localStorage.removeItem("wawonaDownloadSurveyComplete");
+                return false;
+            }
         }
 
         function getCheckedValues(formData, key) {
             return formData.getAll(key).filter(Boolean);
         }
 
-        function buildIssueUrl(formData) {
-            var useCases = getCheckedValues(formData, "useCase").join(", ") || "Not specified";
-            var body = [
-                "## Wawona beta survey",
-                "",
-                "- Primary platform: " + (formData.get("platform") || "Not specified"),
-                "- Device and version: " + (formData.get("device") || "Not specified"),
-                "- Intended use case: " + useCases,
-                "- Expected monthly value: " + (formData.get("price") || "Not specified"),
-                "- How they heard about Wawona: " + (formData.get("source") || "Not specified"),
-                "- Support amount: $" + donationUsd() + " / " + interval(),
-                "",
-                "## Notes",
-                "",
-                formData.get("notes") || "No additional notes."
-            ].join("\n");
-            var params = new URLSearchParams({
-                title: "Beta survey: " + (formData.get("platform") || "Wawona user"),
-                body: body,
-                labels: "beta-survey"
-            });
-            return "https://github.com/Wawona/wawona.io/issues/new?" + params.toString();
-        }
-
         function surveyPayload(skipped) {
             var formData = new FormData(form);
+            var deviceRaw = (formData.get("device") || "").toString();
+            var stored = (window.WawonaDeviceSuggest && WawonaDeviceSuggest.getDevices)
+                ? WawonaDeviceSuggest.getDevices(deviceInput)
+                : (window.WawonaDeviceSuggest && WawonaDeviceSuggest.normalizeDeviceField)
+                    ? WawonaDeviceSuggest.normalizeDeviceField(deviceRaw)
+                    : deviceRaw.split(",").map(function (part) { return part.trim(); }).filter(Boolean);
+            /* Human-readable line keeps "Other: …" custom text for issue review. */
+            var device = stored.join(", ");
+            if (deviceInput && device !== deviceInput.value) {
+                deviceInput.value = device;
+            }
+            var parted = (window.WawonaDeviceSuggest && WawonaDeviceSuggest.partitionForSurvey)
+                ? WawonaDeviceSuggest.partitionForSurvey(stored)
+                : { devices: stored, devices_other: [] };
             return {
                 skipped: !!skipped,
                 platform: formData.get("platform") || "",
-                device: formData.get("device") || "",
+                device: device,
+                devices: parted.devices,
+                devices_other: parted.devices_other,
                 use_cases: getCheckedValues(formData, "useCase"),
                 price: formData.get("price") || "",
                 source: formData.get("source") || "",
@@ -1312,30 +2402,97 @@
             };
         }
 
+        function snapshotForm() {
+            var p = surveyPayload(false);
+            return JSON.stringify({
+                platform: p.platform,
+                device: p.device,
+                use_cases: p.use_cases.slice().sort(),
+                price: p.price,
+                source: p.source,
+                notes: p.notes,
+                donation_usd: p.donation_usd,
+                interval: p.interval
+            });
+        }
+
+        function isDirty() {
+            return baseline != null && snapshotForm() !== baseline;
+        }
+
+        function showError(message, target) {
+            var el = target || err;
+            if (!el) return;
+            el.hidden = false;
+            el.textContent = message || "Could not submit the survey. Try again.";
+        }
+
+        function clearError(target) {
+            var el = target || err;
+            if (!el) return;
+            el.hidden = true;
+            el.textContent = "";
+        }
+
+        function validateRequired(payload) {
+            if (!payload.device) {
+                return "Enter your device and version.";
+            }
+            if (!payload.use_cases.length) {
+                return "Pick at least one intended use case.";
+            }
+            return "";
+        }
+
         function postSurvey(skipped) {
-            var api = checkoutApi();
             var payload = surveyPayload(skipped);
+            if (!skipped) {
+                var problem = validateRequired(payload);
+                if (problem) return Promise.reject(new Error(problem));
+            }
+            if (!surveyEndpoint) {
+                return Promise.reject(new Error("Survey endpoint is not configured."));
+            }
             if (window.localStorage) {
                 localStorage.setItem("wawonaDownloadSurveyLast", JSON.stringify(payload));
             }
-            if (issueLink) issueLink.href = buildIssueUrl(new FormData(form));
-            if (!api) {
-                return Promise.reject(new Error("Survey API is not configured. Start the local Stripe API, then try again."));
-            }
-            return fetch(api + "/survey", {
+            return fetch(surveyEndpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
-            }).then(function (response) {
-                return response.json().then(function (body) {
-                    if (!response.ok || !body || !body.id) {
-                        throw new Error((body && (body.detail || body.error)) || "Survey did not save.");
+            }).then(function (res) {
+                return res.json().catch(function () {
+                    return { ok: false, error: "bad_response" };
+                }).then(function (data) {
+                    if (!res.ok || !data || !data.ok) {
+                        var code = (data && data.error) || ("http_" + res.status);
+                        throw new Error("Could not submit the survey (" + code + "). Try again.");
                     }
-                    surveyId = body.id;
-                    if (window.localStorage) localStorage.setItem("wawonaDownloadSurveyId", surveyId);
-                    return body;
+                    if (data.id) {
+                        surveyId = String(data.id);
+                        if (window.localStorage) localStorage.setItem("wawonaDownloadSurveyId", surveyId);
+                    }
+                    return data;
                 });
             });
+        }
+
+        function openSkipModal() {
+            if (!skipModal) return;
+            clearError(skipErr);
+            skipModal.style.display = "block";
+        }
+
+        function closeSkipModal() {
+            if (!skipModal) return;
+            skipModal.style.display = "none";
+            clearError(skipErr);
+        }
+
+        function unlockAfterSkip() {
+            closeSkipModal();
+            unlockDownloads(false);
+            access.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
         function syncLabel() {
@@ -1343,41 +2500,133 @@
             var monthly = interval() === "month";
             if (oneTime) oneTime.setAttribute("aria-checked", oneTime.checked ? "true" : "false");
             if (hint) {
-                hint.textContent = usd === 0
-                    ? "No charge. Continue or skip to see downloads."
-                    : (monthly
-                        ? "Billed every month until you cancel."
-                        : "One-time payment: you will not be billed again.");
+                if (usd > 100) {
+                    hint.textContent = "Slider caps at $100. Keep typing for any higher amount.";
+                } else if (usd === 0) {
+                    hint.textContent = "No charge. Continue or skip to see downloads.";
+                } else {
+                    hint.textContent = monthly
+                        ? "Monthly on GitHub Sponsors until you cancel."
+                        : "One-time on GitHub Sponsors.";
+                }
             }
-            if (stripeBtn) {
-                stripeBtn.disabled = usd < 1;
-                stripeBtn.textContent = usd < 1
-                    ? "Stripe Checkout (enter $1+)"
-                    : (monthly
-                        ? ("Stripe Checkout: $" + usd + "/mo")
-                        : ("Stripe Checkout: $" + usd));
+            if (sponsorsLink) {
+                sponsorsLink.href = sponsorsHref(usd);
+                if (usd < 1) {
+                    sponsorsLink.setAttribute("aria-disabled", "true");
+                    sponsorsLink.textContent = "GitHub Sponsors (enter $1+)";
+                } else {
+                    sponsorsLink.removeAttribute("aria-disabled");
+                    sponsorsLink.textContent = monthly
+                        ? ("GitHub Sponsors: $" + usd + "/mo")
+                        : ("GitHub Sponsors: $" + usd);
+                }
             }
             if (kofiLink) {
+                kofiLink.href = kofiHref(usd);
                 kofiLink.textContent = usd > 0 ? ("Ko-fi: $" + usd) : "Ko-fi";
             }
+        }
+
+        function fitAmountInputWidth(input) {
+            if (!input) return;
+            var text = String(input.value != null && input.value !== "" ? input.value : "0");
+            var canvas = fitAmountInputWidth._canvas || (fitAmountInputWidth._canvas = document.createElement("canvas"));
+            var ctx = canvas.getContext("2d");
+            if (!ctx) {
+                input.style.width = Math.max(text.length, 1) + "ch";
+                return;
+            }
+            var cs = window.getComputedStyle(input);
+            ctx.font = cs.font || ((cs.fontWeight || "400") + " " + (cs.fontSize || "16px") + " " + (cs.fontFamily || "sans-serif"));
+            var textW = ctx.measureText(text).width;
+            var padL = parseFloat(cs.paddingLeft) || 0;
+            var padR = parseFloat(cs.paddingRight) || 0;
+            var border = (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
+            var fontSize = parseFloat(cs.fontSize) || 16;
+            /* Native spin buttons sit beside the digits. */
+            var steppers = Math.ceil(fontSize * 1.75);
+            input.style.width = Math.ceil(textW + padL + padR + border + steppers) + "px";
+        }
+
+        function softSyncLabelFromAmountDraft() {
+            if (!amount) return;
+            fitAmountInputWidth(amount);
+            var value = parseInt(amount.value, 10);
+            if (Number.isNaN(value) || value < 0) return;
+            var monthly = interval() === "month";
+            if (hint) {
+                if (value > 100) {
+                    hint.textContent = "Slider caps at $100. Keep typing for any higher amount.";
+                } else if (value === 0) {
+                    hint.textContent = "No charge. Continue or skip to see downloads.";
+                } else {
+                    hint.textContent = monthly
+                        ? "Monthly on GitHub Sponsors until you cancel."
+                        : "One-time on GitHub Sponsors.";
+                }
+            }
+            if (sponsorsLink) {
+                sponsorsLink.href = sponsorsHref(value);
+                if (value < 1) {
+                    sponsorsLink.setAttribute("aria-disabled", "true");
+                    sponsorsLink.textContent = "GitHub Sponsors (enter $1+)";
+                } else {
+                    sponsorsLink.removeAttribute("aria-disabled");
+                    sponsorsLink.textContent = monthly
+                        ? ("GitHub Sponsors: $" + value + "/mo")
+                        : ("GitHub Sponsors: $" + value);
+                }
+            }
+            if (kofiLink) {
+                kofiLink.href = kofiHref(value);
+                kofiLink.textContent = value > 0 ? ("Ko-fi: $" + value) : "Ko-fi";
+            }
+        }
+
+        function commitAmountField() {
+            if (!range || !amount) return;
+            var raw = String(amount.value || "").trim();
+            var value = parseInt(raw, 10);
+            if (raw === "" || Number.isNaN(value) || value < 0) value = 0;
+            amount.value = String(value);
+            fitAmountInputWidth(amount);
+            sync(false);
         }
 
         function sync(fromRange) {
             if (!range || !amount) return;
             var prev = lastThanksUsd;
             if (fromRange) {
+                /* Don't clobber the field while the user is typing a custom amount. */
+                if (amountEditing) return;
+                var rangeUsd = parseInt(range.value, 10);
+                if (donationUsd() > 100 && rangeUsd >= 100) {
+                    syncLabel();
+                    applyOverflowState();
+                    return;
+                }
                 amount.value = range.value;
+                fitAmountInputWidth(amount);
             } else {
                 var value = parseInt(amount.value, 10);
                 if (Number.isNaN(value)) return;
-                var max = parseInt(range.max || "100", 10);
-                range.value = String(Math.min(Math.max(value, 0), max));
+                if (value < 0) value = 0;
+                amount.value = String(value);
+                fitAmountInputWidth(amount);
+                var sliderMax = parseInt(range.max || "100", 10);
+                range.value = String(Math.min(value, sliderMax));
             }
             syncLabel();
-            updateSliderKnob();
             var next = donationUsd();
-            if (!Number.isNaN(prev)) spawnThanks(prev, next);
+            if (!Number.isNaN(prev) && next > prev) spawnThanks(prev, next);
             lastThanksUsd = next;
+            if (next > 100) {
+                applyOverflowState();
+                return;
+            }
+            if (overflowActive) clearOverflowMode();
+            setVisualTarget(next, knobDragging ? "follow" : "ease");
         }
 
         access.classList.add("is-locked");
@@ -1389,42 +2638,42 @@
             donated = /(?:^|[?&])donated=1(?:&|$)/.test(window.location.search || "");
         } catch (ignore) { /* ignore */ }
         if (donated) {
-            unlockDownloads();
+            unlockDownloads(true);
             var banner = document.getElementById("dl-donated-banner");
             if (banner) banner.hidden = false;
-            var sessionMatch = /(?:^|[?&])session_id=([^&]+)/.exec(window.location.search || "");
-            if (sessionMatch && checkoutApi()) {
-                fetch(checkoutApi() + "/checkout-session?session_id=" + encodeURIComponent(sessionMatch[1]))
-                    .then(function (response) { return response.json(); })
-                    .then(function (body) {
-                        if (body && body.customer) {
-                            try { localStorage.setItem("wawonaStripeCustomer", body.customer); } catch (ignore) { /* ignore */ }
-                        }
-                    })
-                    .catch(function () { /* ignore */ });
-                fetch(checkoutApi() + "/survey", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        id: surveyId || undefined,
-                        stripe_session_id: decodeURIComponent(sessionMatch[1]),
-                        skipped: false,
-                        donation_usd: donationUsd(),
-                        interval: interval()
-                    })
-                }).catch(function () { /* ignore */ });
-            }
-        } else if (window.localStorage && localStorage.getItem("wawonaDownloadSurveyComplete") === "true") {
-            unlockDownloads();
+        } else if (surveyWasSubmitted()) {
+            unlockDownloads(true);
         }
 
         if (range) range.addEventListener("input", function () { sync(true); });
-        if (amount) amount.addEventListener("input", function () { sync(false); });
+        if (amount) {
+            amount.addEventListener("focus", function () { amountEditing = true; });
+            amount.addEventListener("input", softSyncLabelFromAmountDraft);
+            /* Steppers and Enter commit immediately; typing waits for blur. */
+            amount.addEventListener("change", commitAmountField);
+            amount.addEventListener("blur", function () {
+                amountEditing = false;
+                commitAmountField();
+            });
+            amount.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    amount.blur();
+                }
+            });
+        }
         if (oneTime) oneTime.addEventListener("change", syncLabel);
         lastThanksUsd = donationUsd();
+        visualUsd = lastThanksUsd;
+        targetVisualUsd = lastThanksUsd;
+        fitAmountInputWidth(amount);
         syncLabel();
         updateSliderKnob();
-        window.addEventListener("resize", updateSliderKnob);
+        baseline = snapshotForm();
+        window.addEventListener("resize", function () {
+            fitAmountInputWidth(amount);
+            updateSliderKnob();
+        });
 
         if (sliderWrap && range) {
             var dragging = false;
@@ -1432,14 +2681,26 @@
                 if (event.button !== 0 && event.pointerType === "mouse") return;
                 dragging = true;
                 knobDragging = true;
+                if (sliderRaf) {
+                    cancelAnimationFrame(sliderRaf);
+                    sliderRaf = 0;
+                }
+                sliderMode = "idle";
+                velocityUsd = 0;
+                lastPointerSample = null;
+                lastTickAt = 0;
                 sliderWrap.classList.add("is-dragging");
                 sliderWrap.setPointerCapture(event.pointerId);
-                applySliderUsd(usdFromClientX(event.clientX), true);
+                var usd = usdFromClientX(event.clientX);
+                samplePointerVelocity(usd, performance.now());
+                applySliderUsd(usd, true);
                 event.preventDefault();
             });
             sliderWrap.addEventListener("pointermove", function (event) {
                 if (!dragging) return;
-                applySliderUsd(usdFromClientX(event.clientX), false);
+                var usd = usdFromClientX(event.clientX);
+                samplePointerVelocity(usd, performance.now());
+                applySliderUsd(usd, true);
             });
             function endDrag(event) {
                 if (!dragging) return;
@@ -1449,7 +2710,23 @@
                 if (event && sliderWrap.hasPointerCapture(event.pointerId)) {
                     sliderWrap.releasePointerCapture(event.pointerId);
                 }
-                updateSliderKnob();
+                if (donationUsd() > 100 && Math.round(visualUsd) >= 100) {
+                    velocityUsd = 0;
+                    paintOverflowHeart();
+                    return;
+                }
+                if (lastPointerSample && (performance.now() - lastPointerSample.t) > 80) {
+                    velocityUsd *= 0.25;
+                }
+                var maxSpeed = 320;
+                if (velocityUsd > maxSpeed) velocityUsd = maxSpeed;
+                if (velocityUsd < -maxSpeed) velocityUsd = -maxSpeed;
+                if (prefersReducedMotion() || Math.abs(velocityUsd) < 18) {
+                    velocityUsd = 0;
+                    setVisualTarget(Math.round(visualUsd), "ease");
+                    return;
+                }
+                setVisualTarget(visualUsd, "coast");
             }
             sliderWrap.addEventListener("pointerup", endDrag);
             sliderWrap.addEventListener("pointercancel", endDrag);
@@ -1457,97 +2734,85 @@
 
         if (skip) {
             skip.addEventListener("click", function () {
-                postSurvey(true).finally(function () {
-                    unlockDownloads();
+                if (isDirty()) {
+                    openSkipModal();
+                    return;
+                }
+                unlockDownloads(false);
+                access.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+
+        if (skipFinish) {
+            skipFinish.addEventListener("click", function () {
+                closeSkipModal();
+            });
+        }
+
+        if (skipAnyway) {
+            skipAnyway.addEventListener("click", function () {
+                unlockAfterSkip();
+            });
+        }
+
+        if (skipSave) {
+            skipSave.addEventListener("click", function () {
+                clearError(skipErr);
+                skipSave.disabled = true;
+                postSurvey(false).then(function () {
+                    if (result) result.classList.add("is-visible");
+                    closeSkipModal();
+                    unlockDownloads(true);
                     access.scrollIntoView({ behavior: "smooth", block: "start" });
+                }).catch(function (error) {
+                    showError((error && error.message) || "Could not submit the survey. Try again.", skipErr);
+                }).finally(function () {
+                    skipSave.disabled = false;
                 });
+            });
+        }
+
+        if (skipModal) {
+            skipModal.addEventListener("click", function (event) {
+                if (event.target === skipModal) closeSkipModal();
+            });
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && skipModal.style.display === "block") closeSkipModal();
             });
         }
 
         form.addEventListener("submit", function (event) {
             event.preventDefault();
             var submitBtn = form.querySelector('[type="submit"]');
-            if (err) {
-                err.hidden = true;
-                err.textContent = "";
-            }
+            clearError();
             if (submitBtn) submitBtn.disabled = true;
             postSurvey(false).then(function () {
                 if (result) result.classList.add("is-visible");
-                unlockDownloads();
+                unlockDownloads(true);
                 access.scrollIntoView({ behavior: "smooth", block: "start" });
             }).catch(function (error) {
-                if (err) {
-                    err.hidden = false;
-                    err.textContent = (error && error.message) || "Could not submit the survey. Try again.";
-                }
+                showError((error && error.message) || "Could not submit the survey. Try again.");
             }).finally(function () {
                 if (submitBtn) submitBtn.disabled = false;
             });
         });
 
-        if (stripeBtn) {
-            stripeBtn.addEventListener("click", function () {
-                if (err) {
-                    err.hidden = true;
-                    err.textContent = "";
-                }
-                var api = checkoutApi();
-                var usd = donationUsd();
-                if (usd < 1) {
-                    if (err) {
-                        err.hidden = false;
-                        err.textContent = "Enter at least $1 to use Stripe Checkout, or Continue / Skip for free.";
-                    }
+        if (sponsorsLink) {
+            sponsorsLink.addEventListener("click", function (event) {
+                if (donationUsd() < 1) {
+                    event.preventDefault();
+                    showError("Enter at least $1 for GitHub Sponsors, or Continue / Skip for free.");
                     return;
                 }
-                if (!api) {
-                    if (err) {
-                        err.hidden = false;
-                        err.textContent = "Stripe Checkout is not configured. Use Ko-fi, or set STRIPE_CHECKOUT_API.";
-                    }
+                var problem = validateRequired(surveyPayload(false));
+                if (problem) {
+                    event.preventDefault();
+                    showError(problem);
                     return;
                 }
-                stripeBtn.disabled = true;
                 postSurvey(false).then(function () {
-                    return fetch(api + "/create-checkout-session", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            amount_usd: usd,
-                            interval: interval(),
-                            site_url: window.location.origin,
-                            source: "download",
-                            survey_id: surveyId || undefined,
-                            success_url: window.location.origin + "/donate/thanks/?from=download&session_id={CHECKOUT_SESSION_ID}",
-                            cancel_url: window.location.origin + "/download/?donated=0"
-                        })
-                    });
-                }).then(function (response) {
-                    return response.json().then(function (body) {
-                        return { ok: response.ok, body: body };
-                    });
-                }).then(function (result) {
-                    if (result.body && result.body.url) {
-                        window.location.href = result.body.url;
-                        return;
-                    }
-                    var message = (result.body && (result.body.detail || result.body.error)) ||
-                        "Checkout is unavailable. Use Ko-fi, or start the local Stripe API.";
-                    if (err) {
-                        err.hidden = false;
-                        err.textContent = message;
-                    }
-                }).catch(function (error) {
-                    if (err) {
-                        err.hidden = false;
-                        err.textContent = (error && error.message) ||
-                            ("Could not reach the Stripe Checkout API at " + api +
-                            ". Run nix run .#stripe-checkout, or use Ko-fi.");
-                    }
-                }).finally(function () {
-                    syncLabel();
-                });
+                    unlockDownloads(true);
+                }).catch(function () { /* Sponsors tab still opens */ });
             });
         }
     })();
@@ -1670,7 +2935,8 @@
         }
 
         function applyMacosArch(arch, opts) {
-            if (arch !== "arm64" && arch !== "x86_64") return;
+            if (arch === "x86_64") arch = "arm64";
+            if (arch !== "arm64") return;
             macosArch = arch;
             if (opts && Object.prototype.hasOwnProperty.call(opts, "detected")) {
                 macosDetected = !!opts.detected;
@@ -1682,7 +2948,23 @@
             main.setAttribute("data-asset", key);
         }
 
+        function guessArchFromUA() {
+            var ua = navigator.userAgent || "";
+            if (/aarch64|arm64/i.test(ua)) return "arm";
+            if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return "arm";
+            if (/android/i.test(ua) && !/x86/i.test(ua)) return "arm";
+            if (/x86_64|Win64|WOW64|amd64/i.test(ua)) return "x86";
+            return null;
+        }
+
         function detectClientArch(onArm, onX86, onUnknown) {
+            function fromGuess() {
+                var guess = guessArchFromUA();
+                if (guess === "arm") onArm();
+                else if (guess === "x86") onX86();
+                else onUnknown();
+            }
+
             if (navigator.userAgentData &&
                 typeof navigator.userAgentData.getHighEntropyValues === "function") {
                 navigator.userAgentData.getHighEntropyValues(["architecture", "bitness"])
@@ -1690,12 +2972,37 @@
                         var a = (hints.architecture || "").toLowerCase();
                         if (a === "arm" || a === "arm64" || a === "aarch64") onArm();
                         else if (a === "x86" || a === "x86_64") onX86();
-                        else onUnknown();
+                        else fromGuess();
                     })
-                    .catch(onUnknown);
+                    .catch(fromGuess);
                 return;
             }
-            onUnknown();
+            fromGuess();
+        }
+
+        function markRecommendedArch(kind) {
+            document.querySelectorAll(".dl-split-menu [data-arch]").forEach(function (el) {
+                var arch = el.getAttribute("data-arch");
+                var match = kind === "arm"
+                    ? (arch === "arm64" || arch === "aarch64")
+                    : kind === "x86"
+                        ? (arch === "x86_64")
+                        : false;
+                el.classList.toggle("is-recommended", match);
+            });
+            document.querySelectorAll(".dl-detected").forEach(function (el) {
+                var platform = el.getAttribute("data-detected-for");
+                var label = "";
+                if (kind === "arm") label = platform === "linux" ? "aarch64" : "arm64";
+                else if (kind === "x86") label = "x86_64";
+                if (!label) {
+                    el.hidden = true;
+                    el.textContent = "";
+                    return;
+                }
+                el.textContent = "detected: " + label;
+                el.hidden = false;
+            });
         }
 
         function recommendedPlatform() {
@@ -1758,7 +3065,7 @@
                 if (isOpen()) close();
                 else open();
             });
-            menu.querySelectorAll("a[data-arch]").forEach(function (item) {
+            menu.querySelectorAll("a[data-arch]:not([aria-disabled='true'])").forEach(function (item) {
                 item.addEventListener("click", function () {
                     applyFn(item.getAttribute("data-arch"), { detected: false });
                     close();
@@ -1780,28 +3087,51 @@
         }
 
         var rec = recommendedPlatform();
-        if (rec === "linux") {
-            detectClientArch(
-                function () { applyLinuxArch("aarch64", { detected: true }); },
-                function () { applyLinuxArch("x86_64", { detected: true }); },
-                function () { applyLinuxArch("x86_64", { detected: false }); }
-            );
-        } else {
-            applyLinuxArch("x86_64", { detected: false });
-        }
-        if (rec === "macos") {
-            detectClientArch(
-                function () { applyMacosArch("arm64", { detected: true }); },
-                function () { applyMacosArch("x86_64", { detected: true }); },
-                function () { applyMacosArch("arm64", { detected: false }); }
-            );
-        } else {
-            applyMacosArch("arm64", { detected: false });
-        }
+        applyLinuxArch("x86_64", { detected: false });
+        applyMacosArch("arm64", { detected: false });
+        detectClientArch(
+            function () {
+                markRecommendedArch("arm");
+                if (rec === "linux") applyLinuxArch("aarch64", { detected: true });
+                if (rec === "macos") applyMacosArch("arm64", { detected: true });
+            },
+            function () {
+                markRecommendedArch("x86");
+                if (rec === "linux") applyLinuxArch("x86_64", { detected: true });
+                if (rec === "macos") applyMacosArch("x86_64", { detected: true });
+            },
+            function () {
+                markRecommendedArch(null);
+            }
+        );
 
         bindArchMenu("linux-arch-toggle", "linux-arch-menu", "dl-linux", applyLinuxArch);
         bindArchMenu("macos-arch-toggle", "macos-arch-menu", "dl-macos", applyMacosArch);
         fetchLatestRelease();
+
+        (function bindLinuxPkgModal() {
+            var modal = document.getElementById("linuxPkgModal");
+            var openBtn = document.getElementById("linux-pkg-open");
+            var closeBtn = document.getElementById("close-linux-pkg-modal");
+            if (!modal || !openBtn) return;
+
+            function open() {
+                modal.style.display = "block";
+            }
+
+            function close() {
+                modal.style.display = "none";
+            }
+
+            openBtn.addEventListener("click", open);
+            if (closeBtn) closeBtn.addEventListener("click", close);
+            modal.addEventListener("click", function (event) {
+                if (event.target === modal) close();
+            });
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && modal.style.display === "block") close();
+            });
+        })();
 
         if (rec) {
             var highlightId = "dl-" + rec;

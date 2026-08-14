@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-{% set current = "" %}
-<div class="docs-layout">
-    {% include "partials/docs_sidebar.html" %}
+<div class="docs-layout docs-layout-hub">
     <main class="docs-main">
         {{ post_macros::page_header(title=section.title) }}
         {% if section.content %}

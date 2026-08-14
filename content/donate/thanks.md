@@ -1,6 +1,6 @@
 +++
 title = "Thanks"
-description = "Stripe confirmed your donation"
+description = "Thanks for supporting Wawona"
 template = "donate_thanks_page.html"
 +++
 

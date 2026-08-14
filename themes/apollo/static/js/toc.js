@@ -39,10 +39,14 @@ window.initTOC = () => {
         // Find the anchor element within the list item
         let t = e.querySelector("a");
         if (t) {
-          t.scrollIntoView({
-            block: "nearest",
-            inline: "nearest",
-          });
+          const box = t.getBoundingClientRect();
+          const visible = box.top >= 0 && box.bottom <= window.innerHeight;
+          if (!visible) {
+            t.scrollIntoView({
+              block: "nearest",
+              inline: "nearest",
+            });
+          }
         }
         for (; e;) {
           e?.classList.add("parent"), (e = e.parentElement.closest("li"));

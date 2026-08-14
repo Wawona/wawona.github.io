@@ -78,6 +78,8 @@
     {% for social in config.extra.socials %}
     <link rel="preload" as="image" href="{{ get_url(path='icons/social/' ~ social.icon ~ '.svg') }}" />
     {% endfor %}
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ get_url(path='fonts/nerd/SymbolsNerdFont-Slider.woff2') }}" />
 
     {# Premium Fonts from Google Fonts CDN #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -266,7 +268,8 @@
             width: 100%;
             max-width: 100%;
             margin: 0;
-            padding: calc(var(--chrome-gap) + env(safe-area-inset-top)) 0 0;
+            /* Safe area only; banner margins own the equal chrome gaps. */
+            padding: env(safe-area-inset-top, 0px) 0 0;
             background-color: var(--bg-0, #121212);
             isolation: isolate;
         }
@@ -296,8 +299,15 @@
             position: relative;
             top: auto;
             z-index: auto;
-            margin-top: 0;
-            padding: 0 0 var(--chrome-gap);
+            margin-top: 0 !important;
+            padding: 0 0 var(--chrome-gap) !important;
+            background: var(--bg-0, #121212);
+        }
+
+        /* No banner: keep the same top chrome gap above the nav. */
+        html.donate-banner-off .site-top nav,
+        html.on-donate .site-top nav {
+            padding-top: var(--chrome-gap) !important;
         }
 
         .donate-banner {
@@ -306,12 +316,14 @@
             align-items: center;
             justify-content: space-between;
             gap: 0.6rem 0.8rem;
-            margin: 0 auto var(--chrome-gap);
+            margin-top: var(--chrome-gap);
+            margin-bottom: var(--chrome-gap);
             padding: 0.55rem 0.55rem 0.55rem 1.1rem;
             background: var(--bg-1, #1e1e23);
             border: 1px solid var(--border-color, #333);
             border-radius: 16px;
             color: var(--text-0, #eee);
+            overflow: visible;
         }
 
         html.donate-banner-off .donate-banner,
@@ -347,7 +359,7 @@
             font-weight: 700;
             line-height: 1.2;
             text-decoration: none !important;
-            border-bottom: none !important;
+            box-shadow: none;
             cursor: pointer;
             white-space: nowrap;
         }
@@ -364,10 +376,22 @@
             border: 1px solid var(--border-color, #333);
         }
 
-        .donate-banner a:hover,
-        .donate-banner a:focus {
+        .donate-banner-go:hover,
+        .donate-banner-go:focus-visible {
             color: #fff !important;
-            background: var(--primary-color, #ef5350);
+            background: var(--primary-color, #ef5350) !important;
+            border: 1px solid var(--primary-color, #ef5350);
+            filter: brightness(1.1);
+            text-decoration: none !important;
+            outline: none;
+        }
+
+        .donate-banner-dismiss:hover,
+        .donate-banner-dismiss:focus-visible {
+            color: var(--text-0, #eee) !important;
+            background: var(--bg-1, #1e1e23) !important;
+            border: 1px solid var(--primary-color, #ef5350);
+            outline: none;
         }
     </style>
 

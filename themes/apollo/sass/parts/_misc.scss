@@ -50,7 +50,7 @@ a {
 
 /* Inline text links: orange. Hover underlines. No fill. */
 main {
-  a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next) {
+  a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(.docs-card) {
     color: var(--primary-color);
     border-bottom: none;
 
@@ -66,20 +66,10 @@ main {
   .meta a,
   .talks-grid a,
   .cards a,
-  .docs-grid a,
-  .docs-card,
   .zola-anchor {
     color: inherit;
     border-bottom: none;
     text-decoration: none;
-  }
-
-  .docs-grid a:hover,
-  .docs-grid a:focus-visible,
-  .docs-card:hover,
-  .docs-card:focus-visible {
-    color: inherit !important;
-    text-decoration: none !important;
   }
 }
 
