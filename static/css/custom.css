@@ -22,7 +22,7 @@
    Do not set a:hover { background: transparent } globally: that
    wipes <a class="dl-btn"> and other filled button links. */
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card),
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link),
 .dn-copy a,
 .dn-note a,
 .dn-kofi-under a,
@@ -40,8 +40,8 @@ main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-
     color: var(--primary-color);
 }
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):hover,
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):focus-visible,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):hover,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):focus-visible,
 .dn-copy a:hover,
 .dn-note a:hover,
 .dn-kofi-under a:hover,
@@ -849,11 +849,104 @@ main .docs-card,
 .docs-prevnext {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
+    align-items: stretch;
+    gap: 0.75rem;
     margin-top: 2.5rem;
-    padding-top: 1rem;
+    padding-top: 1.25rem;
     border-top: 1px solid var(--border-color);
-    font-size: 0.9rem;
+}
+
+.docs-prevnext-spacer {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.docs-prevnext-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: calc(50% - 0.375rem);
+    box-sizing: border-box;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--r-inset, 8px);
+    background: var(--bg-1);
+    color: var(--text-1);
+    text-decoration: none;
+    line-height: 1.35;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.docs-prevnext-next {
+    margin-left: auto;
+    text-align: right;
+    justify-content: flex-end;
+}
+
+.docs-prevnext-arrow {
+    flex: 0 0 auto;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--primary-color);
+}
+
+.docs-prevnext-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.docs-prevnext-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-2);
+}
+
+.docs-prevnext-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.docs-prevnext-link:hover,
+.docs-prevnext-link:focus-visible {
+    border-color: var(--primary-color);
+    background: var(--bg-0);
+    color: var(--text-0);
+    outline: none;
+    text-decoration: none;
+}
+
+.docs-prevnext-link:hover .docs-prevnext-title,
+.docs-prevnext-link:focus-visible .docs-prevnext-title {
+    color: var(--primary-color);
+}
+
+@media (max-width: 560px) {
+    .docs-prevnext {
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .docs-prevnext-link,
+    .docs-prevnext-next {
+        max-width: none;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .docs-prevnext-spacer {
+        display: none;
+    }
 }
 
 @media (max-width: 1199px) {

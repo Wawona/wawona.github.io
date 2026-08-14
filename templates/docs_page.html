@@ -26,10 +26,24 @@
             </section>
             <nav class="docs-prevnext" aria-label="Nearby pages">
                 {% if page.higher %}
-                <a href="{{ page.higher.permalink }}">{{ page.higher.title }}</a>
+                <a class="docs-prevnext-link docs-prevnext-prev" href="{{ page.higher.permalink }}">
+                    <span class="docs-prevnext-arrow" aria-hidden="true">←</span>
+                    <span class="docs-prevnext-copy">
+                        <span class="docs-prevnext-label">Previous</span>
+                        <span class="docs-prevnext-title">{{ page.higher.title }}</span>
+                    </span>
+                </a>
+                {% else %}
+                <span class="docs-prevnext-spacer" aria-hidden="true"></span>
                 {% endif %}
                 {% if page.lower %}
-                <a href="{{ page.lower.permalink }}">{{ page.lower.title }}</a>
+                <a class="docs-prevnext-link docs-prevnext-next" href="{{ page.lower.permalink }}">
+                    <span class="docs-prevnext-copy">
+                        <span class="docs-prevnext-label">Next</span>
+                        <span class="docs-prevnext-title">{{ page.lower.title }}</span>
+                    </span>
+                    <span class="docs-prevnext-arrow" aria-hidden="true">→</span>
+                </a>
                 {% endif %}
             </nav>
         </article>
