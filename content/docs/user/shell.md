@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/shell"]
 title = "On-device shell"
 description = "Bundled zsh and Weston terminal. Not StoreKit apt."
 weight = 11
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Wawona ships a bundled **zsh** plus Weston `terminal.c` on Apple mobile (and a constrained zsh on watchOS). This is an App Store-compliant local shell: no jailbreak, no remote host required.

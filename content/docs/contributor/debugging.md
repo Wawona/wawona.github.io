@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/debugging"]
 title = "Debugging"
 description = "agent-device for UI. Opt-in LLDB. No osascript or screencapture."
 weight = 28
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 Launching Wawona, starting a machine, and capturing UI evidence is **agent-device** on every platform, including macOS.

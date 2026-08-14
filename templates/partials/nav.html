@@ -1,4 +1,4 @@
-<nav>
+<nav class="site-nav">
     <div class="left-nav">
         <a href="/" class="logo" data-hint="Home">
             {% if config.extra.logo %}
@@ -164,7 +164,7 @@
             let rightW = 0;
 
             function navRoot() {
-                return document.querySelector('.site-top nav') || document.querySelector('nav');
+                return document.querySelector('.site-top .site-nav');
             }
 
             function measureNavGroups() {
@@ -254,12 +254,34 @@
                 }
             };
 
+            window.openFeedModal = function (which) {
+                if (!feedModal) return;
+                syncAbsoluteFeedUrls();
+                feedModal.style.display = 'block';
+                const input = which === 'atom' ? atomFeedInput : which === 'rss' ? rssFeedInput : null;
+                if (input) {
+                    requestAnimationFrame(function () {
+                        input.focus();
+                        input.select();
+                    });
+                }
+            };
+
             if (feedButton && feedModal) {
                 feedButton.addEventListener('click', () => {
-                    syncAbsoluteFeedUrls();
-                    feedModal.style.display = 'block';
+                    window.openFeedModal();
                 });
             }
+
+            document.addEventListener('click', function (event) {
+                const trigger = event.target && event.target.closest
+                    ? event.target.closest('[data-open-feed]')
+                    : null;
+                if (!trigger) return;
+                event.preventDefault();
+                event.stopPropagation();
+                window.openFeedModal(trigger.getAttribute('data-open-feed'));
+            }, true);
 
             syncAbsoluteFeedUrls();
 

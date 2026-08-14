@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/platforms"]
 title = "Platforms"
 description = "Four gate states: available, planned, blocked, forbidden."
 weight = 5
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Never say "unsupported". Each cell is one of four states.
@@ -36,4 +35,4 @@ Never say "unsupported". Each cell is one of four states.
 - **visionOS** matches macOS product parity for bundled clients, VMs, and Machines UX.
 - **macOS** is never limited by App Store feature rules.
 
-More: [macOS](/docs/macos/), [Android](/docs/android/).
+More: [macOS](@/docs/user/macos.md), [Android](@/docs/user/android.md).

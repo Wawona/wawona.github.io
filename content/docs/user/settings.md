@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/settings"]
 title = "Settings"
 description = "Global prefs and per-machine overrides. Text Assist stays."
 weight = 4
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Canonical keys live in the [Wawona settings doc](https://github.com/Wawona/Wawona/blob/development/docs/settings.md). Machine overrides beat globals.
@@ -40,4 +39,4 @@ watchOS has no public Metal. GPU settings do not apply there.
 
 ## Desktop (macOS + Android only)
 
-Never shown on iOS, iPadOS, tvOS, watchOS, or visionOS. See [Desktop Replacement](/docs/desktop/).
+Never shown on iOS, iPadOS, tvOS, watchOS, or visionOS. See [Desktop Replacement](@/docs/user/desktop.md).

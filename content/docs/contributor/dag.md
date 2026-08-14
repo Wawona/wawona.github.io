@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/dag"]
 title = "Repo DAG"
 description = "Acyclic L0-L4 flake inputs. Never invert."
 weight = 21
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 Canonical: [wwn-repo-dag.md](https://github.com/Wawona/Wawona/blob/development/docs/wwn-repo-dag.md).

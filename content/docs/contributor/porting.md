@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/porting"]
 title = "Porting"
 description = "Substitute the platform under the client. Waypipe equivalence."
 weight = 27
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 A ported client must be indistinguishable from the same upstream client built on Linux and streamed to Wawona over waypipe. Same globals, same request order, same windowing path.

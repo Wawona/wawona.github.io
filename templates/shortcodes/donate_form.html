@@ -50,28 +50,40 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--dn-pad);
-        margin-top: 1rem;
+        margin-top: 0.25rem;
     }
 
     .dn-choice {
         appearance: none;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: center;
+        gap: 0.2rem;
         width: 100%;
-        min-height: 3.25rem;
+        min-height: 5.25rem;
         margin: 0;
-        text-align: center;
+        text-align: left;
         cursor: pointer;
         font: inherit;
-        font-size: 1.05rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
         color: var(--text-0);
         background: var(--bg-0);
         border: 1px solid var(--border-color);
         border-radius: var(--dn-r-in);
-        padding: 0.85rem 1rem;
+        padding: 0.95rem 1rem;
+    }
+
+    .dn-choice strong {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .dn-choice span {
+        font-size: 0.85rem;
+        font-weight: 500;
+        line-height: 1.35;
+        color: var(--text-1);
     }
 
     .dn-choice:hover,
@@ -79,6 +91,11 @@
         background: var(--primary-color);
         border-color: var(--primary-color);
         color: #fff !important;
+    }
+
+    .dn-choice:hover span,
+    .dn-choice:focus-visible span {
+        color: rgba(255, 255, 255, 0.88);
     }
 
     .dn-eyebrow {
@@ -136,10 +153,10 @@
 
     .dn-slider-wrap {
         --knob: 18px;
-        --knob-x: 9px;
+        --fill: 20%;
+        --knob-x: calc(var(--knob) / 2 + (100% - var(--knob)) * 0.20);
         --heart: 0;
         --knob-color: #ef5350;
-        --fill: 20%;
         position: relative;
         height: 40px;
         display: flex;
@@ -551,16 +568,21 @@
 
 <div class="donate-page" id="donate-page" data-checkout-api="{{ stripe_checkout_api }}" data-view="choose">
     <section class="dn-card" data-view-panel="choose">
-        <h2 class="dn-title">Are you already giving?</h2>
+        <p class="dn-copy">Start a gift, or manage one you already made.</p>
         <div class="dn-choices">
-            <button type="button" class="dn-choice" data-show-view="support">Support</button>
-            <button type="button" class="dn-choice" data-show-view="manage">Already giving</button>
+            <button type="button" class="dn-choice" data-show-view="support">
+                <strong>Give</strong>
+                <span>Monthly or one-time</span>
+            </button>
+            <button type="button" class="dn-choice" data-show-view="manage">
+                <strong>Manage</strong>
+                <span>Change, update, or cancel</span>
+            </button>
         </div>
     </section>
 
     <form class="dn-card" id="donate-form" data-view-panel="support" hidden novalidate>
         <button type="button" class="dn-back" data-show-view="choose">Back</button>
-        <p class="dn-eyebrow">Support</p>
         <h2 class="dn-title">Donate to Alex Spaulding</h2>
         <p class="dn-copy">Keeps Wawona in development.</p>
 
@@ -596,7 +618,6 @@
     <section class="dn-card" id="manage" data-view-panel="manage" hidden>
         <button type="button" class="dn-back" data-show-view="choose">Back</button>
         <p class="dn-thanks" id="donate-thanks" hidden>Thanks. Stripe confirmed your payment.</p>
-        <p class="dn-eyebrow">Already giving</p>
         <h2 class="dn-title">Manage or cancel</h2>
         <p class="dn-copy">Change the amount, update the card, or cancel.</p>
         <div class="dn-field">
@@ -642,6 +663,11 @@
             page.querySelectorAll("[data-view-panel]").forEach(function (el) {
                 el.hidden = el.getAttribute("data-view-panel") !== name;
             });
+            if (name === "support") {
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(updateSliderKnob);
+                });
+            }
             if (syncHash === false) return;
             var next = window.location.pathname + (window.location.search || "");
             if (name === "manage" || name === "support") next += "#" + name;
@@ -746,6 +772,7 @@
             sliderWrap.style.setProperty("--fill", (pct * 100).toFixed(2) + "%");
             var wrapRect = sliderWrap.getBoundingClientRect();
             var rangeRect = range.getBoundingClientRect();
+            if (wrapRect.width < 8 || rangeRect.width < 8) return;
             var travel = Math.max(0, rangeRect.width - knobPx);
             var x = (rangeRect.left - wrapRect.left) + pct * travel + knobPx / 2;
             sliderWrap.style.setProperty("--knob-x", x + "px");
@@ -892,6 +919,9 @@
         syncLabel();
         updateSliderKnob();
         window.addEventListener("resize", updateSliderKnob);
+        if (window.ResizeObserver && sliderWrap) {
+            new ResizeObserver(function () { updateSliderKnob(); }).observe(sliderWrap);
+        }
 
         if (sliderWrap && range) {
             var dragging = false;

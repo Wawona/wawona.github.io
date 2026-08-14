@@ -1,14 +1,13 @@
 +++
+aliases = ["docs/compilation"]
 title = "Compilation"
 description = "Flake product attributes, TEAM_ID, local proof before CI."
 weight = 25
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
-Nix flakes. Apple Silicon host. See [Nix build system](/docs/nix-build-system/) for layers.
+Nix flakes. Apple Silicon host. See [Nix build system](@/docs/contributor/nix-build-system.md) for layers.
 
 `--rebuild` is not a Wawona flag. Nix's own `nix build --rebuild` forces a derivation rebuild.
 

@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/ci"]
 title = "CI"
 description = "development vs master. Gate vs Ship. No secret procedures."
 weight = 29
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 Work lands on **`development`**. **`master`** is the green/release branch.

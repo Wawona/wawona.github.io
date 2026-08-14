@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/architecture"]
 title = "Architecture"
 description = "Rust compositor, native hosts, userspace DRM. Not UniFFI-only."
 weight = 20
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 Mission: **run any desktop software, on any platform, natively.** Canonical: [wawona-mission-and-architecture.md](https://github.com/Wawona/Wawona/blob/development/docs/wawona-mission-and-architecture.md).
@@ -29,4 +28,4 @@ Layout rules: [2026-SOURCE-LAYOUT-RULES.md](https://github.com/Wawona/Wawona/blo
 
 Clients arrive as **native ports**, **containers**, or **VM / remote over waypipe**. Graphics go through `wwn-iland` userspace DRM/KMS/GBM.
 
-Do not hand-count Wayland globals. See the generated [Protocols](/docs/protocols/) page.
+Do not hand-count Wayland globals. See the generated [Protocols](@/docs/contributor/protocols.md) page.

@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/protocols"]
 title = "Protocol Support"
 description = "Advertised Wayland globals from the live registry. Do not hand-edit this page."
 weight = 24
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 <!-- Generated from Wawona/docs/protocol-status.md. Run scripts/gen-protocol-status.sh then copy. -->

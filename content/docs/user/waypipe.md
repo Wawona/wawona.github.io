@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/waypipe"]
 title = "Waypipe"
 description = "Remote Wayland over SSH. Machines GUI, not env vars."
 weight = 8
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Waypipe streams a remote (or VM) Wayland client into Wawona. Configure the machine as `ssh_waypipe`. Do not rely on exported variables.

@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/nested-compositors"]
 title = "Nested compositors"
 description = "Weston and Niri are mandatory native bundles on every product target."
 weight = 22
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 Every Wawona product must compile and ship **real** Weston and Niri for that ABI. Fake entry points and compatibility stubs do not count.

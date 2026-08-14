@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/iland"]
 title = "iland"
 description = "Userspace DRM/KMS/GBM. Mode A archive. Mode B macOS dylib only."
 weight = 23
 date = 2026-08-13
 
-[extra]
-section = "dev"
 +++
 
 [`wwn-iland`](https://github.com/Wawona/wwn-iland) emulates KMS objects (connector, CRTC, plane, FB) over IOSurface+Metal (Apple) or AHardwareBuffer (Android). Runtime only. Never open real `/dev/dri` or `/dev/kgsl`. Never ship kernel code.

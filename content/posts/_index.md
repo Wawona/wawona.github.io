@@ -23,4 +23,4 @@ generate_feeds = true
 }
 </style>
 
-<p class="posts-intro">Notes, releases, and news about Wawona. Add the <a href="/posts/rss.xml">RSS</a> or <a href="/posts/atom.xml">Atom</a> feed to your reader.</p>
+<p class="posts-intro">Notes, releases, and news about Wawona. Add the <a href="/posts/rss.xml" data-open-feed="rss">RSS</a> or <a href="/posts/atom.xml" data-open-feed="atom">Atom</a> feed to your reader.</p>

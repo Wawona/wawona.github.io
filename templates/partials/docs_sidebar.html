@@ -1,0 +1,33 @@
+{% set docs = get_section(path="docs/_index.md") %}
+{% set current = current | default(value="") %}
+<aside class="docs-sidebar" aria-label="Documentation">
+    <div class="docs-nav-bar">
+        <span class="docs-nav-label">Docs</span>
+        <button type="button" class="docs-nav-menu-btn" aria-label="Documentation menu" aria-expanded="false" onclick="toggleDocsNav()">
+            <svg class="docs-book" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" overflow="visible">
+                <g class="docs-book-closed">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </g>
+                <g class="docs-book-open">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </g>
+            </svg>
+        </button>
+    </div>
+    <div class="docs-nav-links">
+        <a{% if current == "" %} class="current"{% endif %} href="{{ docs.permalink }}">Overview</a>
+        {% for subpath in docs.subsections %}
+        {% set sub = get_section(path=subpath) %}
+        <p class="docs-sidebar-heading">{{ sub.title }}</p>
+        <ul>
+            {% for p in sub.pages %}
+            <li{% if p.permalink == current %} class="current"{% endif %}>
+                <a href="{{ p.permalink }}">{{ p.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+</aside>

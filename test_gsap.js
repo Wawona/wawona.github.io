@@ -12,7 +12,7 @@ const fs = require('fs');
   
   // Scroll to feature wrapper
   await page.evaluate(() => {
-    document.getElementById('features-scroll-wrapper').scrollIntoView();
+    document.getElementById('inside').scrollIntoView();
   });
   await page.waitForTimeout(500);
 

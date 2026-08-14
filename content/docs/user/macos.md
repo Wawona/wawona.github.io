@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/macos"]
 title = "macOS"
 description = "Mode A in-window compositor. Optional SIP Mode B desktop-host only."
 weight = 6
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 macOS is a first-class host. It is **not** an App Store feature sandbox.
@@ -26,4 +25,4 @@ Host chrome is AppKit (zoom, fullscreen, miniaturize). CSD and forced SSD are bo
 
 SSH is regular **OpenSSH**. Waypipe can use IOSurface/Mach.
 
-See [Desktop Replacement](/docs/desktop/) and [iland](/docs/iland/).
+See [Desktop Replacement](@/docs/user/desktop.md) and [iland](@/docs/contributor/iland.md).

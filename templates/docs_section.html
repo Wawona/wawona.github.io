@@ -1,11 +1,26 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-{{ post_macros::page_header(title=section.title) }}
-
-{% if section.content %}
-<div class="section-content docs-intro">
-    {{ section.content | safe }}
+{% set current = "" %}
+<div class="docs-layout">
+    {% include "partials/docs_sidebar.html" %}
+    <main class="docs-main">
+        {{ post_macros::page_header(title=section.title) }}
+        {% if section.content %}
+        <div class="docs-intro">{{ section.content | safe }}</div>
+        {% endif %}
+        {% for subpath in section.subsections %}
+        {% set sub = get_section(path=subpath) %}
+        <h2 class="docs-section-title">{{ sub.title }}</h2>
+        <div class="docs-grid">
+            {% for p in sub.pages %}
+            <a class="docs-card" href="{{ p.permalink }}">
+                <strong>{{ p.title }}</strong>
+                {% if p.description %}<span>{{ p.description }}</span>{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </main>
 </div>
-{% endif %}
 {% endblock main_content %}

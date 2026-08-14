@@ -25,7 +25,7 @@ document.addEventListener('click', function (e) {
         if (url.pathname === '/' || url.pathname === '/index.html') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        var nav = document.querySelector('.right-nav');
+        var nav = document.querySelector('.site-nav .right-nav');
         if (nav && nav.classList.contains('active') && window.toggleMobileMenu) {
             window.toggleMobileMenu();
         }

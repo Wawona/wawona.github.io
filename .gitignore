@@ -9,6 +9,7 @@ public/
 # Survey SQLite (Checkout API host only)
 stripe/data/*.sqlite
 stripe/data/*.sqlite-*
+stripe/__pycache__/
 
 # IDE / Editor junk
 .vscode/

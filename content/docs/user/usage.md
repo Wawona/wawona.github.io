@@ -1,14 +1,13 @@
 +++
+aliases = ["docs/usage"]
 title = "Usage"
 description = "Nested Weston and Niri, bundled clients, Multi-Touch."
 weight = 3
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
-Use [Machines](/docs/machines/) to start a session. CLI toggles are not the product path.
+Use [Machines](@/docs/user/machines.md) to start a session. CLI toggles are not the product path.
 
 ## Nested compositors
 
@@ -18,7 +17,7 @@ Pick **Display Backend** `auto` / `wayland` / `drm` in Settings or on the machin
 
 ## Bundled clients
 
-Typical catalog: Weston terminal, foot, cubes, zsh. A ported client must match the same upstream client streamed over waypipe. See [Porting](/docs/porting/).
+Typical catalog: Weston terminal, foot, cubes, zsh. A ported client must match the same upstream client streamed over waypipe. See [Porting](@/docs/contributor/porting.md).
 
 ## Multi-Touch
 

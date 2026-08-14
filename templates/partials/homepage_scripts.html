@@ -187,16 +187,16 @@
 
 <style>
     /* ===== FULLWIDTH LAYOUT OVERRIDES ===== */
-    /* Keep body side padding so chrome matches inner pages. Only the
-       page body full-bleeds; .site-top stays in the padded column. */
-    body {
+    /* Scope to the landing page only. Unscoped body/.content rules
+       leak through SPA swaps and shove docs off-center. */
+    body:has(.lp-hero) {
         padding-top: 0 !important;
         margin-bottom: 0 !important;
         max-width: 100vw !important;
         overflow-x: hidden;
     }
 
-    body .content {
+    body:has(.lp-hero) .content {
         max-width: none !important;
         width: 100vw;
         margin-left: calc(50% - 50vw);

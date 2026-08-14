@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/desktop"]
 title = "Desktop Replacement"
 description = "macOS Mode B (SIP) and Android anowaW. Never the iOS family."
 weight = 10
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Desktop, LockScreen, and anowaW exist on **macOS and Android only**. They are forbidden on iOS, iPadOS, tvOS, watchOS, and visionOS. This is policy, not a missing checkbox.

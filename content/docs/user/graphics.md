@@ -1,14 +1,13 @@
 +++
+aliases = ["docs/graphics"]
 title = "Graphics"
 description = "Driver picker, SHM vs GPU, watchOS blocked, tvOS planned."
 weight = 9
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
-Pixels come from `wl_shm` (CPU) or GPU buffers imported through userspace DRM/KMS/GBM ([iland](/docs/iland/)).
+Pixels come from `wl_shm` (CPU) or GPU buffers imported through userspace DRM/KMS/GBM ([iland](@/docs/contributor/iland.md)).
 
 ## Drivers
 

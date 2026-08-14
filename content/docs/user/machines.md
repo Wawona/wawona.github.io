@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/machines"]
 title = "Machines"
 description = "Native, waypipe, terminal, VM, and container profiles. Start, Focus, minimize."
 weight = 2
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 A **Machine** is a saved session: how clients reach this compositor. Configure it in the Machines window. Do not export env vars to make it work.

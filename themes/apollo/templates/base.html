@@ -215,13 +215,19 @@
         const _spaCache = new Map();
         const _spaCacheMax = 10;
 
-        function _spaCacheSet(url, html, title) {
+        function _spaCacheSet(url, html, title, leftHtml, rightHtml) {
             if (!_spaCache.has(url) && _spaCache.size >= _spaCacheMax) {
                 // LRU eviction: remove oldest entry
                 _spaCache.delete(_spaCache.keys().next().value);
             }
             const existing = _spaCache.get(url) || {};
-            _spaCache.set(url, { html, title, scrollY: existing.scrollY || 0 });
+            _spaCache.set(url, {
+                html,
+                title,
+                leftHtml: leftHtml || '',
+                rightHtml: rightHtml || '',
+                scrollY: existing.scrollY || 0
+            });
         }
 
         function _spaCacheSaveScroll(url) {
@@ -234,7 +240,7 @@
         // Skipped for the homepage ('/') so only real section pages are highlighted.
         function updateActiveNavLink() {
             const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-            document.querySelectorAll('.right-nav a').forEach(link => {
+            document.querySelectorAll('.site-nav .right-nav a').forEach(link => {
                 const linkPath = new URL(link.href).pathname.replace(/\/$/, '') || '/';
                 if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
                     link.classList.add('nav-active');
@@ -250,15 +256,25 @@
             return normalized === '/' || normalized === '/index.html';
         }
 
-        // Restore a cached page into #spa-main and re-run all init hooks.
+        function _spaFillSlot(selector, html) {
+            const slot = document.querySelector(selector);
+            if (!slot) return;
+            slot.innerHTML = html || '';
+        }
+
+        // Restore a cached page into #spa-main and the side columns.
         function _spaRestoreFromCache(spaMain, entry, url, pushState) {
             spaMain.innerHTML = entry.html;
+            _spaFillSlot('.left-content', entry.leftHtml);
+            _spaFillSlot('.right-content', entry.rightHtml);
             document.title = entry.title;
             if (pushState) history.pushState({}, '', url);
             spaMain.style.opacity = '1';
             // Clear stale overflow locks from previous route UI (e.g. lightboxes/modals).
             document.body.style.overflow = '';
             document.documentElement.style.overflow = '';
+            document.body.style.transform = '';
+            document.documentElement.style.transform = '';
 
             window.scrollTo(0, entry.scrollY || 0);
             updateActiveNavLink();
@@ -269,6 +285,7 @@
             if (window.initMermaid) window.initMermaid();
             if (window.runCinematicSetup) window.runCinematicSetup();
             if (window.syncDonateBanner) window.syncDonateBanner();
+            if (window.syncNavCollapse) window.syncNavCollapse();
             // Re-execute inline <script> blocks so gallery/lightbox JS re-binds
             spaMain.querySelectorAll('script').forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -282,12 +299,28 @@
 
         // ── Mobile hamburger menu (global: works on every page) ──────────────
         let _menuInterlock = false;
+        function closeDocsNav() {
+            const links = document.querySelector('.docs-nav-links');
+            const btn = document.querySelector('.docs-nav-menu-btn');
+            if (links) links.classList.remove('active');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+
         window.toggleMobileMenu = function () {
             if (_menuInterlock) return;
             _menuInterlock = true;
-            const nav = document.querySelector('.right-nav');
+            const nav = document.querySelector('.site-nav .right-nav');
             if (nav) nav.classList.toggle('active');
+            closeDocsNav();
             setTimeout(() => { _menuInterlock = false; }, 400);
+        };
+
+        window.toggleDocsNav = function () {
+            const links = document.querySelector('.docs-nav-links');
+            const btn = document.querySelector('.docs-nav-menu-btn');
+            if (!links) return;
+            const open = links.classList.toggle('active');
+            if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         };
 
         // ── On-page search highlighter ────────────────────────────────────────
@@ -339,6 +372,7 @@
                 link.pathname.startsWith('/api/') ||
                 link.getAttribute('href') === '#' ||
                 link.hasAttribute('onclick') ||
+                link.hasAttribute('data-open-feed') ||
                 e.ctrlKey || e.metaKey || e.shiftKey
             ) return;
 
@@ -353,8 +387,9 @@
             }
 
             // Close mobile menu if open
-            const rightNav = document.querySelector('.right-nav');
+            const rightNav = document.querySelector('.site-nav .right-nav');
             if (rightNav) rightNav.classList.remove('active');
+            closeDocsNav();
 
             const spaMain = document.getElementById('spa-main');
 
@@ -380,8 +415,9 @@
                 const newContent = doc.getElementById('spa-main');
 
                 if (newContent) {
-                    // Store in cache before rendering
-                    _spaCacheSet(url, newContent.innerHTML, doc.title);
+                    const left = doc.querySelector('.left-content');
+                    const right = doc.querySelector('.right-content');
+                    _spaCacheSet(url, newContent.innerHTML, doc.title, left && left.innerHTML, right && right.innerHTML);
                     _spaRestoreFromCache(spaMain, _spaCache.get(url), url, true);
                 } else {
                     window.location.href = url;
@@ -419,7 +455,9 @@
                 const newContent = doc.getElementById('spa-main');
 
                 if (newContent) {
-                    _spaCacheSet(url, newContent.innerHTML, doc.title);
+                    const left = doc.querySelector('.left-content');
+                    const right = doc.querySelector('.right-content');
+                    _spaCacheSet(url, newContent.innerHTML, doc.title, left && left.innerHTML, right && right.innerHTML);
                     _spaRestoreFromCache(spaMain, _spaCache.get(url), url, false);
                 } else {
                     window.location.reload();
@@ -432,8 +470,16 @@
         // ── Seed cache with the initial page load ─────────────────────────────
         window.addEventListener('DOMContentLoaded', () => {
             const spaMain = document.getElementById('spa-main');
+            const left = document.querySelector('.left-content');
+            const right = document.querySelector('.right-content');
             if (spaMain) {
-                _spaCacheSet(window.location.href, spaMain.innerHTML, document.title);
+                _spaCacheSet(
+                    window.location.href,
+                    spaMain.innerHTML,
+                    document.title,
+                    left && left.innerHTML,
+                    right && right.innerHTML
+                );
             }
             updateActiveNavLink();
             highlightOnPage();

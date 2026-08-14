@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/android"]
 title = "Android"
 description = "Compose Machines, OpenSSH portable, anowaW Desktop."
 weight = 7
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Android is a first-class host: Jetpack Compose Machines UI, JNI to the Rust compositor, AHardwareBuffer present.
@@ -24,4 +23,4 @@ macOS + Android only. **anowaW**: rootless (MediaProjection) vs power (Shizuku/r
 
 VM and container machine types are allowed when the OS can host them.
 
-See [Desktop Replacement](/docs/desktop/) and [Platforms](/docs/platforms/).
+See [Desktop Replacement](@/docs/user/desktop.md) and [Platforms](@/docs/user/platforms.md).

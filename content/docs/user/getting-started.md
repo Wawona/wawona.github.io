@@ -1,11 +1,10 @@
 +++
+aliases = ["docs/getting-started"]
 title = "Getting Started"
 description = "Install Wawona from Download, TestFlight, or Discord. Build from source if you need to."
 weight = 1
 date = 2026-08-13
 
-[extra]
-section = "user"
 +++
 
 Wawona is a native Wayland compositor. You do not need Nix to run a binary.
@@ -24,11 +23,11 @@ macOS is not a store feature target. Do not wait for a Mac store listing.
 
 Open Wawona. Create or pick a **Machine**. Start it. Use **Focus** to show the compositor.
 
-Before tapping Weston panel icons or nested clients, set **Touch Input Type** to Multi-Touch (iOS family) or turn **Touchpad Mode** off (Android). See [Usage](/docs/usage/).
+Before tapping Weston panel icons or nested clients, set **Touch Input Type** to Multi-Touch (iOS family) or turn **Touchpad Mode** off (Android). See [Usage](@/docs/user/usage.md).
 
 ## Build from source
 
-Contributors: [Compilation](/docs/compilation/) and [Nix](/docs/nix-build-system/). You need Determinate Nix, Xcode on Apple, and `TEAM_ID` in `.envrc` for signed iOS family builds.
+Contributors: [Compilation](@/docs/contributor/compilation.md) and [Nix](@/docs/contributor/nix-build-system.md). You need Determinate Nix, Xcode on Apple, and `TEAM_ID` in `.envrc` for signed iOS family builds.
 
 ```bash
 nix run .#wawona-macos
