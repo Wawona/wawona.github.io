@@ -132,6 +132,16 @@ a.dl-btn:focus-visible {
     --r-round: 50%;
 }
 
+:root {
+    /* Nav-only chrome. Banner-open pages override below. JS scrollToHash measures live. */
+    --site-chrome-offset: calc(5.75rem + env(safe-area-inset-top, 0px));
+}
+
+html:not(.donate-banner-off):not(.on-donate) {
+    /* Donate banner + nav inside sticky .site-top */
+    --site-chrome-offset: calc(10rem + env(safe-area-inset-top, 0px));
+}
+
 html, body {
     /* Prefer clip for sticky; contain overscroll so iOS rubber-band does not chain. */
     overflow-x: clip;
@@ -139,7 +149,7 @@ html, body {
 }
 
 html {
-    scroll-padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+    scroll-padding-top: var(--site-chrome-offset);
     /* Stop scroll anchoring from yanking to top when sticky/TOC layout shifts. */
     overflow-anchor: none;
 }
@@ -149,8 +159,9 @@ html {
 }
 
 .docs-main :is(h1, h2, h3, h4, h5, h6),
-.body :is(h1, h2, h3, h4, h5, h6) {
-    scroll-margin-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+.body :is(h1, h2, h3, h4, h5, h6),
+.faq-content details {
+    scroll-margin-top: var(--site-chrome-offset);
 }
 
 body > .content {
@@ -600,9 +611,9 @@ nav .nav-search .nav-search-glass {
 
 .docs-toc-rail .toc {
     position: sticky;
-    top: calc(5.75rem + env(safe-area-inset-top, 0px));
-    max-height: calc(100vh - 6.5rem);
-    max-height: calc(100dvh - 6.5rem);
+    top: var(--site-chrome-offset);
+    max-height: calc(100vh - var(--site-chrome-offset) - 1rem);
+    max-height: calc(100dvh - var(--site-chrome-offset) - 1rem);
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 0.25rem 0 1rem;

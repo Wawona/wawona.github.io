@@ -13,7 +13,7 @@ template = "faq_section.html"
     background: var(--bg-1);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
-    scroll-margin-top: 100px;
+    scroll-margin-top: var(--site-chrome-offset, 100px);
 }
 
 .faq-content details:hover:not([open]) {

@@ -214,6 +214,7 @@
         // re-renders images: the DOM is restored instantly from the cache.
         const _spaCache = new Map();
         const _spaCacheMax = 10;
+        let _spaCurrentKey = null;
 
         function _spaCanonical(url) {
             const next = new URL(url, window.location.origin);
@@ -221,16 +222,35 @@
             return next.href;
         }
 
+        /* Sticky .site-top (nav + optional donate banner) covers the viewport top.
+           Measure it so TOC / FAQ / hash links land with the heading fully visible. */
+        function stickyChromeOffset() {
+            const chrome = document.querySelector('.site-top');
+            if (chrome) {
+                const h = chrome.getBoundingClientRect().height;
+                if (h > 0) return Math.ceil(h) + 12;
+            }
+            return 100;
+        }
+
         function scrollToHash(hash) {
             if (!hash) return false;
             let id = hash.charAt(0) === '#' ? hash.slice(1) : hash;
             try { id = decodeURIComponent(id); } catch (e) { /* keep raw */ }
             if (!id) return false;
-            const el = document.getElementById(id);
+            /* Prefer the in-article target so modal/search ids never win. */
+            const spa = document.getElementById('spa-main');
+            let el = null;
+            if (spa && window.CSS && CSS.escape) {
+                el = spa.querySelector('[id="' + CSS.escape(id) + '"]');
+            }
+            if (!el) el = document.getElementById(id);
             if (!el) return false;
-            el.scrollIntoView({ block: 'start' });
+            const y = el.getBoundingClientRect().top + window.scrollY - stickyChromeOffset();
+            window.scrollTo(0, Math.max(0, y));
             return true;
         }
+        window.scrollToHash = scrollToHash;
 
         function _spaCacheSet(url, html, title, leftHtml, rightHtml) {
             const key = _spaCanonical(url);
@@ -293,6 +313,7 @@
             document.documentElement.style.overflow = '';
             document.body.style.transform = '';
             document.documentElement.style.transform = '';
+            _spaCurrentKey = _spaCanonical(url);
 
             const dest = new URL(url, window.location.origin);
             requestAnimationFrame(() => {
@@ -413,11 +434,24 @@
                 e.ctrlKey || e.metaKey || e.shiftKey
             ) return;
 
-            // Same-page heading links (TOC, zola-anchor). Let the browser scroll.
+            // Same-page heading links (docs TOC, FAQ ids, zola-anchor).
+            // Native hash scroll ignores sticky chrome height when the donate
+            // banner is open; scroll with a measured offset instead.
             if (link.hash) {
                 const here = (window.location.pathname.replace(/\/$/, '') || '/');
                 const there = (link.pathname.replace(/\/$/, '') || '/');
-                if (here === there) return;
+                if (here === there) {
+                    e.preventDefault();
+                    const next = link.pathname + link.search + link.hash;
+                    if (window.location.hash !== link.hash) {
+                        history.pushState({}, '', next);
+                    } else {
+                        history.replaceState({}, '', next);
+                    }
+                    scrollToHash(link.hash);
+                    closeMobileMenu();
+                    return;
+                }
             }
 
             e.preventDefault();
@@ -474,17 +508,27 @@
         window.addEventListener('popstate', async () => {
             const url = window.location.href;
             const path = new URL(url).pathname;
+            const dest = new URL(url, window.location.origin);
 
             // Back/forward involving home should reload cleanly.
             if (isHomePath(path)) {
                 window.location.reload();
                 return;
             }
+
+            // Same document, hash-only history: scroll without re-rendering.
+            const key = _spaCanonical(url);
+            if (_spaCurrentKey && key === _spaCurrentKey) {
+                if (dest.hash) scrollToHash(dest.hash);
+                else window.scrollTo(0, (_spaCache.get(key) || {}).scrollY || 0);
+                return;
+            }
+
             const spaMain = document.getElementById('spa-main');
 
             // Cache hit
-            if (_spaCache.has(_spaCanonical(url))) {
-                _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, false);
+            if (_spaCache.has(key)) {
+                _spaRestoreFromCache(spaMain, _spaCache.get(key), url, false);
                 return;
             }
 
@@ -500,7 +544,7 @@
                     const left = doc.querySelector('.left-content');
                     const right = doc.querySelector('.right-content');
                     _spaCacheSet(url, newContent.innerHTML, doc.title, left && left.innerHTML, right && right.innerHTML);
-                    _spaRestoreFromCache(spaMain, _spaCache.get(_spaCanonical(url)), url, false);
+                    _spaRestoreFromCache(spaMain, _spaCache.get(key), url, false);
                 } else {
                     window.location.reload();
                 }
@@ -522,11 +566,16 @@
                     left && left.innerHTML,
                     right && right.innerHTML
                 );
+                _spaCurrentKey = _spaCanonical(window.location.href);
             }
             updateActiveNavLink();
             highlightOnPage();
             if (window.location.hash) {
-                requestAnimationFrame(() => scrollToHash(window.location.hash));
+                /* Layout (sticky chrome, fonts) may settle after first paint. */
+                requestAnimationFrame(() => {
+                    scrollToHash(window.location.hash);
+                    requestAnimationFrame(() => scrollToHash(window.location.hash));
+                });
             }
         });
     </script>
