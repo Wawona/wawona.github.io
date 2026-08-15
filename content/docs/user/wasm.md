@@ -25,21 +25,27 @@ wasm ./tool.wasm hello
 ./tool.wasm hello
 ```
 
-## Compile
+## Compile (no Nix)
 
 ```bash
-# Rust WASI P1
+# Rust — https://rustup.rs
 rustup target add wasm32-wasip1
 cargo build --target wasm32-wasip1 --release
 
-# Rust WASI P2
-rustup target add wasm32-wasip2
-cargo build --target wasm32-wasip2 --release
-
-# Go
+# Go 1.21+ — https://go.dev/dl/
 GOOS=wasip1 GOARCH=wasm go build -o tool.wasm
+
+# Swift 6.2+ wasm SDK (no Foundation)
+# see examples/wayland-shm/swift/build.sh
 ```
 
-Demos live in [`wwn-wasm/examples`](https://github.com/Wawona/wwn-wasm/tree/development/examples).
+**Wayland client** (Rust, Go, or Swift — same `wl_shm` + xdg window):
+
+```bash
+cd examples/wayland-shm
+./rust/build.sh    # or ./go/build.sh or ./swift/build.sh
+```
+
+Demos: [`wwn-wasm/examples`](https://github.com/Wawona/wwn-wasm/tree/development/examples).
 
 watchOS keeps the runtime off (size). macOS may use Cranelift. Native ports stay first-class.
