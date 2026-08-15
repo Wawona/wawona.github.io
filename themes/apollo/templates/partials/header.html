@@ -260,16 +260,19 @@
 
         .site-top {
             --chrome-gap: 0.5rem;
+            /* Match body gutters in themes/apollo/sass/main.scss so chrome
+               can cancel them and paint edge-to-edge over 100vw sections. */
+            --chrome-inline: calc(0.9rem + env(safe-area-inset-left, 0px));
+            --chrome-inline-end: calc(0.9rem + env(safe-area-inset-right, 0px));
             position: sticky;
             top: 0;
             z-index: 200;
             box-sizing: border-box;
             flex: 1 0 100%;
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            /* Safe area only; banner margins own the equal chrome gaps. */
-            padding: env(safe-area-inset-top, 0px) 0 0;
+            width: auto;
+            max-width: none;
+            margin: 0 calc(-1 * var(--chrome-inline-end)) 0 calc(-1 * var(--chrome-inline));
+            padding: env(safe-area-inset-top, 0px) var(--chrome-inline-end) 0 var(--chrome-inline);
             background-color: var(--bg-0, #121212);
             isolation: isolate;
             border-bottom: 1px solid var(--border-color);
@@ -278,11 +281,12 @@
         .site-top::before {
             content: "";
             position: absolute;
-            left: 0;
-            right: 0;
+            left: 50%;
+            width: 100vw;
+            transform: translateX(-50%);
             bottom: 0;
             top: -4rem;
-            background-color: inherit;
+            background-color: var(--bg-0, #121212);
             z-index: -1;
             pointer-events: none;
         }
@@ -468,7 +472,7 @@
 
         /**
          * Collect mermaid sources. Authors use either:
-         *   {% mermaid() %} → <pre class="mermaid"><code class="language-mermaid">
+         *   mermaid shortcode → <pre class="mermaid"><code class="language-mermaid">
          *   ```mermaid     → <pre><code class="language-mermaid"> or data-lang=mermaid
          */
         function collectMermaidBlocks() {

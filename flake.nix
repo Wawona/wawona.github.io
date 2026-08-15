@@ -42,7 +42,7 @@
             if [ -n "$LOCAL_IP" ]; then
               echo "Network Testing: http://$LOCAL_IP:1111"
               echo "==========================================================="
-              exec ${pkgs.zola}/bin/zola serve --interface 0.0.0.0 --base-url "$LOCAL_IP"
+              exec ${pkgs.zola}/bin/zola serve --interface 0.0.0.0 --port 1111 --base-url "http://$LOCAL_IP"
             fi
             echo "==========================================================="
             exec ${pkgs.zola}/bin/zola serve --interface 0.0.0.0

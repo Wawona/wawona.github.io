@@ -148,6 +148,14 @@ html {
     overflow-anchor: none;
 }
 
+/* Homepage .content is 100vw; keep that bleed from creating a side gutter
+   beside sticky .site-top without making html a scroll container (sticky). */
+body:has(.lp-hero),
+html.layout-home body,
+html.layout-docs body {
+    overflow-x: clip;
+}
+
 .site-top {
     overflow-anchor: none;
 }
@@ -747,6 +755,24 @@ main .docs-card,
     background: var(--bg-0);
 }
 
+/* Open hamburger panel paints edge-to-edge so page content cannot
+   show in the gutters beside the 920px nav measure. */
+.site-top nav.nav-collapsed .right-nav.active {
+    left: 50%;
+    right: auto;
+    width: 100vw;
+    max-width: 100vw;
+    transform: translateX(-50%) translateY(0);
+    padding-left: calc(0.9rem + env(safe-area-inset-left, 0px));
+    padding-right: calc(0.9rem + env(safe-area-inset-right, 0px));
+    padding-bottom: 0.85rem;
+    box-sizing: border-box;
+    background: var(--bg-0);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .docs-nav-bar {
     display: none;
     align-items: center;
@@ -955,6 +981,7 @@ main .docs-card,
     /* Book menu + inline TOC; same 1080px measure as the overview. */
     .docs-shell,
     .docs-shell:not(.has-toc) {
+        position: relative;
         grid-template-columns: minmax(0, 1fr) auto;
         grid-template-areas:
             "head navbtn"
@@ -965,6 +992,24 @@ main .docs-card,
         max-width: none;
         margin-inline: 0;
         padding-inline: 0;
+    }
+
+    /* Full-bleed paint in the links row only. Absolute so 100vw
+       cannot stretch the docs grid the way width/margin on the
+       in-flow menu did. */
+    .docs-shell:has(.docs-nav-links.active)::after {
+        content: "";
+        grid-area: links;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 100vw;
+        transform: translateX(-50%);
+        background: var(--bg-0);
+        border-bottom: 1px solid var(--border-color);
+        pointer-events: none;
+        z-index: 1;
     }
 
     .docs-shell > .docs-page-head {
@@ -999,12 +1044,16 @@ main .docs-card,
     }
 
     .docs-shell .docs-nav-links.active {
+        position: relative;
+        z-index: 2;
         max-height: min(70vh, 40rem);
         opacity: 1;
         visibility: visible;
         overflow-y: auto;
         transform: none;
         padding-top: 0.5rem;
+        padding-bottom: 0.85rem;
+        background: var(--bg-0);
     }
 
     .docs-shell .docs-nav-links a {
