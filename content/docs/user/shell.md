@@ -13,6 +13,19 @@ It is **not** a [VM or container](@/docs/user/vms-containers.md) machine. Those 
 
 Also bundled where the target allows: coreutils, foot, neovim.
 
+Type `help` in the shell for the catalog. `ls $WAWONA_ROOTFS/usr/bin` (or `ls ../usr/bin` from `HOME`) lists in-process names.
+
+## WASM / WASI
+
+Drop a `.wasm` (WASI P1 or P2) into the Wawona Documents folder (Files / File Sharing) and run:
+
+```text
+wasm ./tool.wasm hello
+./tool.wasm hello
+```
+
+The module is a document — Apple does not sign it. The interpreter (Wasmtime Pulley on iPhone) is inside the reviewed app. Native ports stay first-class. See [WASM / WASI](@/docs/user/wasm.md) and [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md). Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone/2).
+
 ## What is not shipping
 
 `wwn-apt` (StoreKit modules) is **not** a Wawona flake input. Do not expect Debian `apt install` on iPhone.
