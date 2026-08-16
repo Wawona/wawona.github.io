@@ -262,7 +262,7 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Planned engines include UTM-SE on iOS/iPadOS and Virtualization + Containerization on macOS. Forbidden on tvOS, watchOS, and visionOS. The local shell is separate. See [VMs and containers](/docs/vms/).
+**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Store iOS uses UTM-SE–class **jitless** engines (Mode A); jailbreak **Mode B IPA** from [repo.wawona.io](https://repo.wawona.io) may use JIT. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, and visionOS. See [Mode A/B](/docs/mode-a-b/) and [VMs and containers](/docs/vms/).
 
 </div>
 </details>

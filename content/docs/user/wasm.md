@@ -48,4 +48,8 @@ cd examples/wayland-shm
 
 Demos: [`wwn-wasm/examples`](https://github.com/Wawona/wwn-wasm/tree/development/examples).
 
+## Package manager (planned)
+
+Like an iSH-style package UX, but for **Wasm Runtime packages** (not `.deb`). Default registry: `repo.wawona.io/wasm` — store-safe Mode A. Jailbreak `.deb` APT stays a separate Mode B channel. See [Mode A and Mode B](@/docs/user/mode-a-b.md) and [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
+
 watchOS keeps the runtime off (size). macOS may use Cranelift. Native ports stay first-class.
