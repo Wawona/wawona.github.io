@@ -7,6 +7,8 @@ date = 2026-08-13
 
 +++
 
+AI contributors: wire [AI + MCP](@/docs/contributor/wwn-mcp.md) (`wwn-mcp`, and on macOS often `xcodebuild` + `lldb`) before debugging with an agent.
+
 Launching Wawona, starting a machine, and capturing UI evidence is **agent-device** on every platform, including macOS.
 
 ```text

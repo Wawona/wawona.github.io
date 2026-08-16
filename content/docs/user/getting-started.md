@@ -27,7 +27,7 @@ Before tapping Weston panel icons or nested clients, set **Touch Input Type** to
 
 ## Build from source
 
-Contributors: [Compilation](@/docs/contributor/compilation.md), [Nix](@/docs/contributor/nix-build-system.md), and [WWN-MCP](@/docs/contributor/wwn-mcp.md) (Cursor RAG). You need Determinate Nix, Xcode on Apple, and `TEAM_ID` in `.envrc` for signed iOS family builds.
+Contributors: [Compilation](@/docs/contributor/compilation.md), [Nix](@/docs/contributor/nix-build-system.md), and [AI + MCP](@/docs/contributor/wwn-mcp.md) (wire `wwn-mcp` so agents retrieve Wawona knowledge). You need Determinate Nix, Xcode on Apple, and `TEAM_ID` in `.envrc` for signed iOS family builds.
 
 ```bash
 nix run .#wawona-macos
