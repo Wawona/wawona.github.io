@@ -30,6 +30,9 @@ L0 never imports L1+. Graphics keys (ANGLE, SwiftShader, MoltenVK, KosmicKrisp) 
 
 ## Not flake-wired
 
-`wwn-apt` (not shipping), DE skeletons, [wwn-mcp](@/docs/contributor/wwn-mcp.md) (contributor Cursor RAG — stdio install), this site. Do not document them as product inputs.
+Retired `wwn-apt`, DE skeletons, [wwn-mcp](@/docs/contributor/wwn-mcp.md)
+(contributor Cursor RAG — stdio install), this site. Do not document them as
+product inputs. Optional software = Wawona Runtime Wasm packages, not StoreKit
+`apt`.
 
 Never treat [repo.wawona.io](https://github.com/Wawona/repo.wawona.io) (jailbreak Procursus APT) as Wawona docs.

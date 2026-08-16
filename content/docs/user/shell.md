@@ -28,7 +28,10 @@ The module is a document — Apple does not sign it. The interpreter (Wasmtime P
 
 ## What is not shipping
 
-`wwn-apt` (StoreKit modules) is **not** a Wawona flake input. Do not expect Debian `apt install` on iPhone.
+There is no Debian/`apt` or StoreKit ODR module catalog. Optional long-tail
+software is [WASM / WASI](@/docs/user/wasm.md) for Wawona Runtime (Files drop-in
+or the bundled Wasm package client). Linux containers are a separate planned
+[Machines kind](@/docs/user/vms-containers.md).
 
 ## watchOS
 
