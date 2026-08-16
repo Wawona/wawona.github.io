@@ -1,0 +1,24 @@
+---
+description: wawona.io docs voice — product map; store copy never pitches jailbreak
+alwaysApply: true
+---
+
+# This repo: `wawona.io` (public docs site)
+
+Document the product map accurately. Prefer `/docs/swinging-bridge/`,
+`/docs/desktop/`, `/docs/vms-containers/`, `/docs/mode-a-b/`, Wasm/Runtime pages.
+
+## Voice
+
+- Swinging Bridge ≠ Desktop/LockScreen ≠ VMs/containers ≠ Wasm packages.
+- Mode A/B: say which. Store/TestFlight/Play copy must **never** pitch jailbreak,
+  TrollStore, or JIT as the way to use Wawona.
+- Website **may** describe Mode B and `repo.wawona.io/jailbreak/` on dedicated
+  pages; keep Mode A product pages clean.
+- Formerly **anowaW** → always **Wawona Swinging Bridge** (alias `/docs/anowaw/` OK).
+- Wawona Runtime package manager is **App Store compliant** (Wasm only; no Mode B Runtime).
+
+Deploy note: Pages often ship from **`main`** — merge docs there when public
+URLs must update.
+
+See always-applied `wawona-product-map`.
