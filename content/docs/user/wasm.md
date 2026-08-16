@@ -7,15 +7,23 @@ date = 2026-08-15
 
 +++
 
-Wawona prefers **native in-process ports** (zsh, uutils, weston-terminal, foot, …). WASM is the long-tail escape hatch: compile a tool to WASI, copy the `.wasm` onto the device, run it.
+Wawona prefers **native in-process ports** when we can ship them (zsh, uutils, weston-terminal, foot, …). Those are real platform binaries inside the reviewed app.
 
-The module is a **document**. Apple does not sign it. The interpreter (Wasmtime Pulley on iPhone) is inside the reviewed app — no JIT, no unsigned Mach-O.
+**Wasm is not platform-native.** That is a real tradeoff: no Mach-O/`dlopen` modules, no Alpine `apk` into a guest Linux userspace, and performance sits behind an interpreter (Pulley on Apple mobile). It is a bummer next to a true native port.
 
-Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone/2). Full compile guide: [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md).
+What you get instead is a **portable Wawona Runtime** (`wwn-wasm`) that developers and users can target once and run across Wawona with **full App Store / Play compliance**:
+
+- Compile to **WASI P1 or P2** (`.wasm` bytecode as a document / package)
+- Install with **`wpm`** (or drop into Files) from the Mode A registry `repo.wawona.io/wasm`
+- The reviewed Runtime in the signed app interprets the module — Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
+
+There is **no Mode B flavor of the Runtime**. Jailbreak `.deb` APT is a separate channel.
+
+Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone/2). Engineering: [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md), [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
 
 ## On device
 
-1. Put `tool.wasm` in the Wawona Documents folder (Files.app, iTunes File Sharing, or `scp`).
+1. Put `tool.wasm` in the Wawona Documents folder (Files.app, iTunes File Sharing, or `scp`), **or** install with `wpm` from `repo.wawona.io/wasm`.
 2. In the on-device shell:
 
 ```text
@@ -48,8 +56,10 @@ cd examples/wayland-shm
 
 Demos: [`wwn-wasm/examples`](https://github.com/Wawona/wwn-wasm/tree/development/examples).
 
-## Package manager (planned)
+## Package manager (`wpm`)
 
-Like an iSH-style package UX, but for **Wasm Runtime packages** (not `.deb`). Default registry: `repo.wawona.io/wasm` — store-safe Mode A. Jailbreak `.deb` APT stays a separate Mode B channel. See [Mode A and Mode B](@/docs/user/mode-a-b.md) and [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
+**`wpm`** is Wawona Runtime’s dedicated package manager: iSH-like UX for **Wasm packages**, not `.deb` and not OCI containers. Default registry: `repo.wawona.io/wasm` (store-safe Mode A). Phase 1 ships the local store + CLI + registry client in `wwn-wasm`.
 
-watchOS keeps the runtime off (size). macOS may use Cranelift. Native ports stay first-class.
+See [Mode A and Mode B](@/docs/user/mode-a-b.md) and [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
+
+watchOS keeps the runtime off (size). macOS may use Cranelift. Native ports stay first-class whenever we have one.

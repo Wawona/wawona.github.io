@@ -19,7 +19,9 @@ Canonical: [mode-a-b.md](https://github.com/Wawona/Wawona/blob/development/docs/
 | iOS VMs & containers | [UTM-SE](https://github.com/utmapp/UTM)–class **jitless** interpreter | **JIT**-enabled UTM/QEMU |
 | iOS shell | Sandboxed `wwn-zsh` | Unsandboxed / NewTerm-class + host APT |
 | Desktop / LockScreen (iOS) | Not in the store app | [repo.wawona.io](https://repo.wawona.io) |
-| Packages | Wasm from `repo.wawona.io/wasm` + Files | Wasm **plus** jailbreak `.deb` APT |
+| Packages | Wasm from `repo.wawona.io/wasm` + Files + `wpm` | Wasm **plus** jailbreak `.deb` APT |
+
+Wasm is **not platform-native** (tradeoff vs a Mach-O port). The payoff is a portable **Wawona Runtime** with full App Store compliance via WASI P1/P2 and **`wpm`**. The Runtime has no Mode B flavor. See [WASM / WASI](@/docs/user/wasm.md).
 
 ## Mode B IPA (iOS)
 

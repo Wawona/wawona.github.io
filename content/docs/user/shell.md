@@ -17,14 +17,20 @@ Type `help` in the shell for the catalog. `ls $WAWONA_ROOTFS/usr/bin` (or `ls ..
 
 ## WASM / WASI
 
-Drop a `.wasm` (WASI P1 or P2) into the Wawona Documents folder (Files / File Sharing) and run:
+**Wasm is not platform-native** (tradeoff vs a true in-process port), but it
+gives a **portable Wawona Runtime** with full App Store compliance: WASI P1/P2
+modules plus **`wpm`**. Drop a `.wasm` into Documents (Files / File Sharing) or
+install from `repo.wawona.io/wasm`, then run:
 
 ```text
 wasm ./tool.wasm hello
 ./tool.wasm hello
 ```
 
-The module is a document — Apple does not sign it. The interpreter (Wasmtime Pulley on iPhone) is inside the reviewed app. Native ports stay first-class. See [WASM / WASI](@/docs/user/wasm.md) and [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md). Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone/2).
+The module is a document — Apple does not sign it. The interpreter (Wasmtime
+Pulley on iPhone) is inside the reviewed app. Native ports stay first-class.
+See [WASM / WASI](@/docs/user/wasm.md) and
+[wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md).
 
 ## What is not shipping
 
