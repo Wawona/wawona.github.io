@@ -192,7 +192,7 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only — not in the App Store app). [anowaW](/docs/anowaw/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux — forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
+Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only — not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux — forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
 
 </div>
 </details>
@@ -234,21 +234,21 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: partial SIP + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [anowaW](/docs/anowaw/). See [Desktop and LockScreen](/docs/desktop/).
+**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: partial SIP + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>
-<details id="anowaw">
+<details id="swinging-bridge">
 <summary>
-    What is anowaW?
-    <button class="faq-share" onclick="copyFaqLink(event, 'anowaw')" title="Copy link to this question">
+    What is Wawona Swinging Bridge?
+    <button class="faq-share" onclick="copyFaqLink(event, 'swinging-bridge')" title="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         Link
     </button>
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** anowaW is an app bridge: run macOS, Android, iOS, or iPadOS apps as Wayland clients inside Wawona (zero-copy surface bridge). It is **not** Desktop or LockScreen replacement and **not** MediaProjection-as-desktop. Mode A for store/Play-shaped builds; Mode B outside stores (macOS partial SIP; Android privileged paths; iOS/iPadOS via repo.wawona.io). See [anowaW](/docs/anowaw/).
+**Coming soon** (formerly anowaW). **Wawona Swinging Bridge** turns macOS and Android apps into Wayland clients and can forward them with waypipe-rs onto a Linux compositor (resize, placement, HID). Future: UIKit iOS apps. **Not** Desktop or LockScreen. Mode A (store/Play, stream-like) and Mode B (privileged) are planned; **iOS is Mode B only** (not in the App Store IPA). See [Wawona Swinging Bridge](/docs/swinging-bridge/).
 
 </div>
 </details>

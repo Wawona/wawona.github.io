@@ -13,7 +13,7 @@ date = 2026-08-14
 
 Make Wawona the **host desktop environment** and **lock screen**, with a Wawona **machine picker**. Machine profiles for these roles are **native ports only**.
 
-This is **not** [anowaW](@/docs/user/anowaw.md) (the app bridge). Do not confuse the two.
+This is **not** [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md) (the app bridge). Do not confuse the two.
 
 ## Platforms
 

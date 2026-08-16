@@ -31,5 +31,5 @@ App Store and TestFlight materials must **never** mention jailbreak, Sileo Mode 
 
 - [VMs and containers](@/docs/user/vms-containers.md)
 - [WASM / packages](@/docs/user/wasm.md)
-- [Desktop](@/docs/user/desktop.md) · [anowaW](@/docs/user/anowaw.md)
+- [Desktop](@/docs/user/desktop.md) · [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md)
 - Plans: [vms-mode-a-b](https://github.com/Wawona/Wawona/blob/development/docs/vms-mode-a-b.md), [containers-mode-a-b](https://github.com/Wawona/Wawona/blob/development/docs/containers-mode-a-b.md), [wasm-package-manager](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md)

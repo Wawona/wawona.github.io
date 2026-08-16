@@ -37,6 +37,6 @@ watchOS has no public Metal. GPU settings do not apply there.
 | Dictation | Android |
 | Shake / swipe / long-press Menu | Exit the active machine (platform-specific) |
 
-## Desktop and anowaW (macOS + Android planned)
+## Desktop and Wawona Swinging Bridge (macOS + Android planned)
 
-Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-mobile builds do not expose it. See [Desktop and LockScreen](@/docs/user/desktop.md) and [anowaW](@/docs/user/anowaw.md).
+Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-mobile builds do not expose it. See [Desktop and LockScreen](@/docs/user/desktop.md) and [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).

@@ -24,7 +24,7 @@ flowchart BT
 
 ## Wawona flake inputs today
 
-`wwn-toolchain`, `wwn-iland`, `wwn-kmscube`, `wwn-weston`, `wwn-zsh`, `wwn-ssh`, `wwn-waypipe`, `wwn-anowaW`, `wwn-coreutils`, `wwn-foot`, `wwn-fastfetch`, `wwn-phoon-rs`, `wwn-neovim`, `wwn-wasm`, `wwn-niri`, `wwn-vms`, `wwn-containers`, plus nixpkgs, rust-overlay, crate2nix, microvm, nix-appimage.
+`wwn-toolchain`, `wwn-iland`, `wwn-kmscube`, `wwn-weston`, `wwn-zsh`, `wwn-ssh`, `wwn-waypipe`, `Wawona-Swinging-Bridge`, `wwn-coreutils`, `wwn-foot`, `wwn-fastfetch`, `wwn-phoon-rs`, `wwn-neovim`, `wwn-wasm`, `wwn-niri`, `wwn-vms`, `wwn-containers`, plus nixpkgs, rust-overlay, crate2nix, microvm, nix-appimage.
 
 L0 never imports L1+. Graphics keys (ANGLE, SwiftShader, MoltenVK, KosmicKrisp) live in L1. cairo/pango/pixman stay L0.
 

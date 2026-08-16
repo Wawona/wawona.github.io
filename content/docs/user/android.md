@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/android"]
 title = "Android"
-description = "Compose Machines, OpenSSH portable, planned Desktop Home + anowaW."
+description = "Compose Machines, OpenSSH portable, planned Desktop Home + Wawona Swinging Bridge."
 weight = 7
 date = 2026-08-14
 
@@ -19,13 +19,13 @@ Runtime-only. System Vulkan or SwiftShader. Direct kernel DRM/KGSL ICDs are **fo
 
 ## Desktop / LockScreen (planned)
 
-Coming soon. Default Home App + LockScreen APIs — **no root required**, no fallback tier. Not the same as [anowaW](@/docs/user/anowaw.md).
+Coming soon. Default Home App + LockScreen APIs — **no root required**, no fallback tier. Not the same as [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 
 See [Desktop and LockScreen](@/docs/user/desktop.md).
 
-## anowaW (planned)
+## Wawona Swinging Bridge (planned)
 
-Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; Mode B only outside Play requirements. See [anowaW](@/docs/user/anowaw.md).
+Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; Mode B only outside Play requirements. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 
 ## VMs and containers (planned)
 

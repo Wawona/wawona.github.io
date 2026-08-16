@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/macos"]
 title = "macOS"
-description = "Mode A in-window compositor. Planned SIP Mode B desktop-host. Planned anowaW."
+description = "Mode A in-window compositor. Planned SIP Mode B desktop-host. Planned Wawona Swinging Bridge."
 weight = 6
 date = 2026-08-14
 
@@ -25,9 +25,9 @@ Host chrome is AppKit (zoom, fullscreen, miniaturize). CSD and forced SSD are bo
 
 SSH is regular **OpenSSH**. Waypipe can use IOSurface/Mach.
 
-## anowaW (planned)
+## Wawona Swinging Bridge (planned)
 
-Separate app bridge for macOS apps on Wayland. Mode A in notarized builds as available; Mode B bundled on 3rd-party macOS under the same partial-SIP bar as Desktop. See [anowaW](@/docs/user/anowaw.md).
+Separate app bridge for macOS apps on Wayland. Mode A in notarized builds as available; Mode B bundled on 3rd-party macOS under the same partial-SIP bar as Desktop. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 
 ## VMs and containers (planned)
 
