@@ -15,7 +15,7 @@ What you get instead is a **portable Wawona Runtime** (`wwn-wasm`) that develope
 
 - Compile to **WASI P1 or P2** (`.wasm` bytecode as a document / package)
 - Install with **`wpm`** (or drop into Files) from the Mode A registry `repo.wawona.io/wasm`
-- The reviewed Runtime in the signed app interprets the module — Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
+- The reviewed Runtime in the signed app interprets the module. Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
 
 There is **no Mode B flavor of the Runtime**. Jailbreak `.deb` APT is a separate channel.
 
@@ -36,18 +36,18 @@ wasm ./tool.wasm hello
 ## Compile (no Nix)
 
 ```bash
-# Rust — https://rustup.rs
+# Rust. Https://rustup.rs
 rustup target add wasm32-wasip1
 cargo build --target wasm32-wasip1 --release
 
-# Go 1.21+ — https://go.dev/dl/
+# Go 1.21+. Https://go.dev/dl/
 GOOS=wasip1 GOARCH=wasm go build -o tool.wasm
 
 # Swift 6.2+ wasm SDK (no Foundation)
 # see examples/wayland-shm/swift/build.sh
 ```
 
-**Wayland client** (Rust, Go, or Swift — same `wl_shm` + xdg window):
+**Wayland client** (Rust, Go, or Swift. Same `wl_shm` + xdg window):
 
 ```bash
 cd examples/wayland-shm

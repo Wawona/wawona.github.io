@@ -50,7 +50,7 @@ window.initTOC = () => {
    * Keep the active TOC row visible inside the sticky rail only.
    * - Element.closest() must use a compound selector (no descendant combinator)
    *   or Safari throws and the IntersectionObserver callback aborts.
-   * - Never call scrollIntoView — that scrolls the window (jump-to-top on iOS).
+   * - Never call scrollIntoView. That scrolls the window (jump-to-top on iOS).
    * - Skip entirely on touch / coarse pointers; rail auto-scroll fights rubber-banding.
    */
   const allowRailAutoscroll =

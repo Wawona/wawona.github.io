@@ -367,7 +367,7 @@
             const nav = document.querySelector('.site-nav .right-nav');
             const menuBtn = document.querySelector('.mobile-menu-btn');
             if (nav) nav.classList.remove('active');
-            /* Icon X vs hamburger is driven by aria-expanded — must clear both. */
+            /* Icon X vs hamburger is driven by aria-expanded. Must clear both. */
             if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
             closeDocsNav();
         }

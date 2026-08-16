@@ -11,7 +11,7 @@ date = 2026-08-16
 
 ## What it is
 
-**Wawona Swinging Bridge** makes **macOS (Cocoa/AppKit)** and **Android** applications speak **Wayland** so they can be forwarded with **waypipe-rs** (`wwn-waypipe`) onto a **Linux** machine and render inside a real Wayland compositor (niri, weston, …) with proper resize, placement, text entry, mouse, and other HID — not a dumb whole-screen mirror.
+**Wawona Swinging Bridge** makes **macOS (Cocoa/AppKit)** and **Android** applications speak **Wayland** so they can be forwarded with **waypipe-rs** (`wwn-waypipe`) onto a **Linux** machine and render inside a real Wayland compositor (niri, weston, …) with proper resize, placement, text entry, mouse, and other HID. Not a dumb whole-screen mirror.
 
 The same bridge can attach **locally** to a nested compositor inside Wawona so host apps tile beside Linux clients on-device.
 
@@ -23,7 +23,7 @@ The same bridge can attach **locally** to a nested compositor inside Wawona so h
 - Not MediaProjection “mirror the device as the desktop”
 - Not a [VM or container](@/docs/user/vms-containers.md)
 
-It *helps* Desktop replacement later (e.g. Wawona as Android home app while Android apps still appear as Wayland surfaces inside niri). That home/DE path remains Desktop/LockScreen — separate product.
+It *helps* Desktop replacement later (e.g. Wawona as Android home app while Android apps still appear as Wayland surfaces inside niri). That home/DE path remains Desktop/LockScreen. Separate product.
 
 ## Platforms
 
@@ -31,7 +31,7 @@ It *helps* Desktop replacement later (e.g. Wawona as Android home app while Andr
 |----------|------|
 | macOS | planned (Mode A + Mode B) |
 | Android | planned (Mode A + Mode B) |
-| iOS / iPadOS | planned **Mode B only** (jailbreak / [repo.wawona.io](https://repo.wawona.io)) — not in the App Store IPA |
+| iOS / iPadOS | planned **Mode B only** (jailbreak / [repo.wawona.io](https://repo.wawona.io)). Not in the App Store IPA |
 | tvOS / watchOS / visionOS / Linux | forbidden |
 
 ## Mode A vs Mode B
@@ -40,10 +40,10 @@ It *helps* Desktop replacement later (e.g. Wawona as Android home app while Andr
 
 | | Mode A | Mode B |
 |--|--------|--------|
-| Intent | App Store / Play–compliant path (stream-like bridge) | Privileged full surface bridge |
+| Intent | App Store / Play-compliant path (stream-like bridge) | Privileged full surface bridge |
 | macOS | Store-safe / notarized methods | Partial SIP (system debugging), same bar as Desktop `.dylib` |
 | Android | Play-approved methods | Root / privileged paths outside Play |
-| iOS / iPadOS | Not in the store app | Jailbreak / Sileo — UIKit apps as Wayland clients |
+| iOS / iPadOS | Not in the store app | Jailbreak / Sileo. UIKit apps as Wayland clients |
 
 App Store and TestFlight copy must **never mention jailbreak**. This page and repo.wawona.io may describe Mode B.
 

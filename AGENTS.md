@@ -6,7 +6,7 @@ Static site (Zola) for https://wawona.io. This file is for agents working in `wa
 
 Public copy, docs, templates, UI strings, and comments that ship in HTML must sound like a person wrote them.
 
-- No em dash (Unicode U+2014) and no `&mdash;` / `&#8212;`. No en dash between words. Use a period, comma, colon, or parentheses. Ranges use a hyphen: `5-15 GB`.
+- No em dash (Unicode U+2014) and no `&mdash;` / `&#8212;`. No en dash between words. Use a period, comma, colon, or parentheses. Ranges use a hyphen: `5-15 GB`. Org-wide: `.cursor/rules/wawona-no-em-dash.mdc`.
 - No AI cadence. Do not use: seamless, robust, leverage, utilize, delve, empower, cutting-edge, next-generation, from the ground up, designed from day one, simply, effortlessly, revolutionary, catalyst, frontier, orchestrate, first-class citizen, unlock (metaphor), monolithic, the future of.
 - Short sentences. Concrete nouns. Name the thing (GitHub, Discord, Support). Do not rebrand buttons ("Forge the Source").
 - Do not sell. Say what it is and how to use it.

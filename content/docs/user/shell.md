@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/shell"]
 title = "On-device shell"
-description = "Bundled zsh and Weston terminal — not a VM or container."
+description = "Bundled zsh and Weston terminal. Not a VM or container."
 weight = 12
 date = 2026-08-14
 
@@ -27,7 +27,7 @@ wasm ./tool.wasm hello
 ./tool.wasm hello
 ```
 
-The module is a document — Apple does not sign it. The interpreter (Wasmtime
+The module is a document. Apple does not sign it. The interpreter (Wasmtime
 Pulley on iPhone) is inside the reviewed app. Native ports stay first-class.
 See [WASM / WASI](@/docs/user/wasm.md) and
 [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md).

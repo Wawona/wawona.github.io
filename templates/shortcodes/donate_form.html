@@ -1391,7 +1391,7 @@
             if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
             if (!sliderKnob) return;
             var now = Date.now();
-            /* Fast slides need denser spawns — keep throttle short while dragging. */
+            /* Fast slides need denser spawns. Keep throttle short while dragging. */
             var throttleMs = knobDragging ? 38 : 45;
             if (now - lastThanksAt < throttleMs) return;
             lastThanksAt = now;
@@ -1415,7 +1415,7 @@
 
             var kind = toUsd >= 50 ? "heart" : (toUsd > 20 ? "fire" : "star");
             var delta = toUsd - fromUsd;
-            /* Knob stays circle until $50 heart; particles: star (<$20) → fire ($20–$50) → heart.
+            /* Knob stays circle until $50 heart; particles: star (<$20) → fire ($20-$50) → heart.
                Scale count with delta so fast slides still look dense. */
             var count;
             if (knobDragging) {

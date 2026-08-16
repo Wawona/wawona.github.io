@@ -143,7 +143,7 @@ html.theme-preparing {
   animation: implode-pull 1.2s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
-/* Radial vignette — slow darken, focuses eye on button */
+/* Radial vignette. Slow darken, focuses eye on button */
 html.theme-preparing::before {
   content: '';
   position: fixed;
@@ -176,7 +176,7 @@ html.theme-preparing::after {
 
 @keyframes implode-pull {
 
-  /* Slow creep — barely perceptible tension */
+  /* Slow creep. Barely perceptible tension */
   0% {
     transform: scale(1);
     filter: none;
@@ -192,7 +192,7 @@ html.theme-preparing::after {
     filter: saturate(1.6) brightness(0.95);
   }
 
-  /* Acceleration — it's pulling harder */
+  /* Acceleration. It's pulling harder */
   65% {
     transform: scale(0.98);
     filter: saturate(2) brightness(0.85);
@@ -220,7 +220,7 @@ html.theme-preparing::after {
     transform: scale(0.975) translate3d(-2px, 0, 0);
   }
 
-  /* Snap back — release into ripple */
+  /* Snap back. Release into ripple */
   100% {
     transform: scale(1);
     filter: brightness(1.5);
@@ -290,7 +290,7 @@ html.theme-preparing::after {
   filter: drop-shadow(1px 0 0 rgba(255, 0, 0, 0.5)) drop-shadow(-1px 0 0 rgba(0, 255, 255, 0.5)) drop-shadow(0 0 10px var(--hdr-red));
 }
 
-/* Concentric water ripple rings — injected by JS */
+/* Concentric water ripple rings. Injected by JS */
 .ripple-ring {
   position: fixed;
   border-radius: 50%;

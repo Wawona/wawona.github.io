@@ -34,11 +34,11 @@ Linux: native + remote available; VM/containers planned; Desktop/LockScreen and 
 ## Notes
 
 - **iOS and iPadOS** share the same Desktop/LockScreen and Wawona Swinging Bridge story (store Mode A vs `repo.wawona.io` Mode B). See [Mode A and Mode B](@/docs/user/mode-a-b.md).
-- **VM / containers** — Mode A on store iOS uses UTM-SE–class **jitless** engines; Mode B Sileo IPA uses **JIT**. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, visionOS. See [VMs and containers](@/docs/user/vms-containers.md).
-- **On-device shell** — bundled zsh (Mode A); Mode B may use unsandboxed jailbreak shell. See [On-device shell](@/docs/user/shell.md).
-- **Desktop / LockScreen** — coming soon on macOS and Android; iOS/iPadOS via [repo.wawona.io](https://repo.wawona.io) (website only). See [Desktop and LockScreen](@/docs/user/desktop.md).
-- **Wawona Swinging Bridge** — separate host-app → Wayland bridge. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
-- **Wasm packages** — Mode A–safe Runtime packages from `repo.wawona.io/wasm`. See [WASM](@/docs/user/wasm.md).
+- **VM / containers**. Mode A on store iOS uses UTM-SE-class **jitless** engines; Mode B Sileo IPA uses **JIT**. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, visionOS. See [VMs and containers](@/docs/user/vms-containers.md).
+- **On-device shell**. Bundled zsh (Mode A); Mode B may use unsandboxed jailbreak shell. See [On-device shell](@/docs/user/shell.md).
+- **Desktop / LockScreen**. Coming soon on macOS and Android; iOS/iPadOS via [repo.wawona.io](https://repo.wawona.io) (website only). See [Desktop and LockScreen](@/docs/user/desktop.md).
+- **Wawona Swinging Bridge**. Separate host-app → Wayland bridge. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
+- **Wasm packages**. Mode A-safe Runtime packages from `repo.wawona.io/wasm`. See [WASM](@/docs/user/wasm.md).
 - **watchOS GPU** is blocked: no `Metal.framework`. **tvOS GPU** is planned.
 - **visionOS** matches macOS product parity for bundled clients and Machines UX, except VM/container kinds (forbidden).
 - **macOS** is never limited by App Store feature rules.

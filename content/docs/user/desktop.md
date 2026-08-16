@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/desktop"]
 title = "Desktop and LockScreen"
-description = "Host DE and greeter — coming soon on macOS and Android; iOS/iPadOS via repo.wawona.io."
+description = "Host DE and greeter. Coming soon on macOS and Android; iOS/iPadOS via repo.wawona.io."
 weight = 10
 date = 2026-08-14
 
@@ -20,7 +20,7 @@ This is **not** [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md) (the ap
 | Platform | Gate | Mechanism |
 |----------|------|-----------|
 | macOS | planned | Partial SIP (system debugging enabled) + `.dylib` tweak (`wawona-macos-desktop-host`) |
-| Android | planned | Default Home App + LockScreen APIs — **no root**, no fallback tier |
+| Android | planned | Default Home App + LockScreen APIs. **no root**, no fallback tier |
 | iOS / iPadOS | website only | Jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (Sileo source). Still in development. Same story on iPhone and iPad. |
 | App Store iOS / iPadOS / tvOS / watchOS / visionOS | forbidden | Not offered in store builds |
 | Linux | forbidden | Not supported |

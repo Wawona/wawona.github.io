@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/vms", "docs/containers"]
 title = "VMs and containers"
-description = "Planned Machines kinds — Mode A jitless on store iOS; Mode B JIT via Sileo IPA."
+description = "Planned Machines kinds. Mode A jitless on store iOS; Mode B JIT via Sileo IPA."
 weight = 3
 date = 2026-08-16
 
@@ -15,7 +15,7 @@ Read [Mode A and Mode B](@/docs/user/mode-a-b.md) first.
 
 | Build | Engine |
 |-------|--------|
-| **Mode A** (App Store) | UTM-SE–class **jitless** interpreter for VMs; containers run **inside** that VM after OCI pull |
+| **Mode A** (App Store) | UTM-SE-class **jitless** interpreter for VMs; containers run **inside** that VM after OCI pull |
 | **Mode B** (Sileo IPA from [repo.wawona.io](https://repo.wawona.io)) | **JIT**-enabled UTM/QEMU for VMs and containers |
 
 Mode B is never shipped inside the App Store app. Store / TestFlight copy must not mention jailbreak, TrollStore, or JIT. This page may.

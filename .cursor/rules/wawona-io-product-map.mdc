@@ -1,5 +1,5 @@
 ---
-description: wawona.io docs voice — product map; store copy never pitches jailbreak
+description: wawona.io docs voice. Product map; store copy never pitches jailbreak
 alwaysApply: true
 ---
 
@@ -18,7 +18,7 @@ Document the product map accurately. Prefer `/docs/swinging-bridge/`,
 - Formerly **anowaW** → always **Wawona Swinging Bridge** (alias `/docs/anowaw/` OK).
 - Wawona Runtime package manager is **App Store compliant** (Wasm only; no Mode B Runtime).
 
-Deploy note: Pages often ship from **`main`** — merge docs there when public
+Deploy note: Pages often ship from **`main`**. Merge docs there when public
 URLs must update.
 
 See always-applied `wawona-product-map`.

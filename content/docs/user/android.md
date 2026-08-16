@@ -19,7 +19,7 @@ Runtime-only. System Vulkan or SwiftShader. Direct kernel DRM/KGSL ICDs are **fo
 
 ## Desktop / LockScreen (planned)
 
-Coming soon. Default Home App + LockScreen APIs — **no root required**, no fallback tier. Not the same as [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
+Coming soon. Default Home App + LockScreen APIs. **no root required**, no fallback tier. Not the same as [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 
 See [Desktop and LockScreen](@/docs/user/desktop.md).
 

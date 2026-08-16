@@ -1,13 +1,13 @@
 +++
 aliases = ["docs/mode-a-b", "docs/mode-b"]
 title = "Mode A and Mode B"
-description = "Store-compliant Mode A vs jailbreak/SIP/root Mode B — VMs, containers, packages, Desktop."
+description = "Store-compliant Mode A vs jailbreak/SIP/root Mode B: VMs, containers, packages, Desktop."
 weight = 4
 date = 2026-08-16
 
 +++
 
-Wawona has two privilege classes. **App Store / Play builds are always Mode A.** Mode B is for jailbreak, SIP-disabled macOS, and privileged Android — never inside the store binary.
+Wawona has two privilege classes. **App Store / Play builds are always Mode A.** Mode B is for jailbreak, SIP-disabled macOS, and privileged Android. Never inside the store binary.
 
 Canonical: [mode-a-b.md](https://github.com/Wawona/Wawona/blob/development/docs/mode-a-b.md).
 
@@ -16,7 +16,7 @@ Canonical: [mode-a-b.md](https://github.com/Wawona/Wawona/blob/development/docs/
 | | Mode A | Mode B |
 |--|--------|--------|
 | Who | App Store, TestFlight, Play | Jailbreak / SIP / root |
-| iOS VMs & containers | [UTM-SE](https://github.com/utmapp/UTM)–class **jitless** interpreter | **JIT**-enabled UTM/QEMU |
+| iOS VMs & containers | [UTM-SE](https://github.com/utmapp/UTM)-class **jitless** interpreter | **JIT**-enabled UTM/QEMU |
 | iOS shell | Sandboxed `wwn-zsh` | Unsandboxed / NewTerm-class + host APT |
 | Desktop / LockScreen (iOS) | Not in the store app | [repo.wawona.io](https://repo.wawona.io) |
 | Packages | Wasm from `repo.wawona.io/wasm` + Files + `wpm` | Wasm **plus** jailbreak `.deb` APT |

@@ -7,6 +7,7 @@ alwaysApply: true
 # wawona.io voice
 
 Applies to all public copy, docs, templates, and UI strings in this repo.
+Org-wide twin: `wawona-no-em-dash.mdc` (Wawona product code and docs too).
 
 ## Dashes
 

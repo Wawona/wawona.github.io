@@ -192,7 +192,7 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only — not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux — forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
+Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux. Forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
 
 </div>
 </details>
@@ -262,7 +262,7 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Store iOS uses UTM-SE–class **jitless** engines (Mode A); jailbreak **Mode B IPA** from [repo.wawona.io](https://repo.wawona.io) may use JIT. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, and visionOS. See [Mode A/B](/docs/mode-a-b/) and [VMs and containers](/docs/vms/).
+**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Store iOS uses UTM-SE-class **jitless** engines (Mode A); jailbreak **Mode B IPA** from [repo.wawona.io](https://repo.wawona.io) may use JIT. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, and visionOS. See [Mode A/B](/docs/mode-a-b/) and [VMs and containers](/docs/vms/).
 
 </div>
 </details>
