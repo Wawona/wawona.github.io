@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/reporting-bugs"]
 title = "Report a bug"
-description = "Copy logs from Settings, paste them into a GitHub issue. Sideload IPAs included."
+description = "TestFlight feedback, copied logs, and the GitHub bug form."
 weight = 6
 date = 2026-08-22
 
@@ -22,6 +22,16 @@ Canonical write-up in the repo: [reporting-bugs.md](https://github.com/Wawona/Wa
 Sideloaded iOS IPAs do not send TestFlight crash mail. Copied logs are how we debug those builds.
 
 Do not paste SSH passwords or key passphrases.
+
+## TestFlight (Apple beta)
+
+If Settings → About → **Install** is TestFlight, use both of these when you can.
+
+**TestFlight feedback.** Crashes from a TestFlight build go to App Store Connect automatically. For a hang or a blank session: screenshot in Wawona, or open the **TestFlight** app, pick Wawona, and send **Beta Feedback**. Say what you tapped and what you saw. That is the Apple beta path. It does not include Wawona's in-app logs.
+
+**GitHub with copied logs.** TestFlight mail is not a substitute for diagnostics. **Settings → About → Copy Recent Logs** (or **Copy Active Machine Logs**), then the [bug form](https://github.com/Wawona/Wawona/issues/new?template=bug.yml). Set install channel to TestFlight and paste the clipboard. If you already sent TestFlight feedback, mention that in the issue. We cannot see TestFlight comments from GitHub.
+
+TestFlight invites: [Wawona Discord](https://discord.gg/wHVSV52uw5).
 
 ## Apple (iOS, iPadOS, macOS, visionOS)
 
