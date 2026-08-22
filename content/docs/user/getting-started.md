@@ -43,3 +43,7 @@ nix run .#wawona-linux
 ```
 
 Other attributes: `wawona-macos-desktop-host`, `wawona-watchos-app-sim`, `wawona-tvos-sim`, `wawona-visionos-sim`.
+
+## Report a bug
+
+If a machine does nothing after Start, copy logs from **Settings → About** and open a GitHub issue. See [Report a bug](@/docs/user/reporting-bugs.md).

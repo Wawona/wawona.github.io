@@ -6,15 +6,28 @@
   text-align: left;
 }
 
-/* 404 header */
+/* 404 header. Stay in flow so the site footer cannot paint through it. */
 .not-found-header {
   font-family: var(--header-font);
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-size: 3em;
+  font-size: 1rem;
+  min-height: calc(100dvh - var(--site-chrome-offset, 5.75rem) - 8rem);
+  margin: 0;
+  z-index: 1;
+
+  .page-header {
+    font-size: 3rem;
+    text-align: center;
+    margin: 0 0 0.35rem;
+  }
 }
 
 .site-top nav {

@@ -36,6 +36,10 @@ nix run .#wawona-linux
 
 GTK UI. The compositor is the same Rust core.
 
+## Report a bug
+
+Copied logs and the GitHub form: [Report a bug](@/docs/user/reporting-bugs.md).
+
 ## Local Wayland socket (macOS)
 
 Settings → Connection shows `XDG_RUNTIME_DIR` and `WAYLAND_DISPLAY`. Point a local client at that socket while Wawona is running.

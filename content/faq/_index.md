@@ -290,6 +290,23 @@ Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub
 </div>
 </details>
 
+<h3 class="faq-category">Help</h3>
+
+<details id="report-a-bug">
+<summary>
+    How do I report a bug?
+    <button type="button" class="faq-share" data-faq-id="report-a-bug" title="Copy link to this question" aria-label="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span class="faq-share-label">Link</span>
+    </button>
+</summary>
+<div class="faq-answer">
+
+On Apple: Settings → About → Copy Recent Logs (or Copy Active Machine Logs), then Report a Bug on GitHub. Paste the clipboard into the form. Sideloaded IPAs have no TestFlight crash mail. Those copied logs are the report. Android and Linux: fill the same GitHub form with version and host OS; attach logcat or a terminal capture if you have one. Full steps: [Report a bug](/docs/reporting-bugs/). Discord: [Wawona Discord](https://discord.gg/wHVSV52uw5).
+
+</div>
+</details>
+
 <h3 class="faq-category">Building</h3>
 
 <details id="nix-build-time">

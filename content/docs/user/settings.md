@@ -40,3 +40,7 @@ watchOS has no public Metal. GPU settings do not apply there.
 ## Desktop and Wawona Swinging Bridge (macOS + Android planned)
 
 Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-mobile builds do not expose it. See [Desktop and LockScreen](@/docs/user/desktop.md) and [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
+
+## About and diagnostics
+
+**Settings → About** shows version, host OS, and install channel. **Copy Recent Logs** and **Copy Active Machine Logs** build a GitHub-ready report. **Report a Bug on GitHub** opens the issue form. Steps: [Report a bug](@/docs/user/reporting-bugs.md).

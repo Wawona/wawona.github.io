@@ -250,6 +250,7 @@
     <style>
         body {
             flex-wrap: wrap;
+            margin: 0;
             padding-top: 0;
         }
 
@@ -305,14 +306,13 @@
             top: auto;
             z-index: auto;
             margin-top: 0 !important;
-            padding: 0 0 var(--chrome-gap) !important;
+            padding: var(--chrome-gap) 0 var(--chrome-gap) !important;
             background: var(--bg-0, #121212);
         }
 
-        /* No banner: keep the same top chrome gap above the nav. */
-        html.donate-banner-off .site-top nav,
-        html.on-donate .site-top nav {
-            padding-top: var(--chrome-gap) !important;
+        /* Banner already has margin-bottom = chrome-gap. Do not double it. */
+        html:not(.donate-banner-off):not(.on-donate) .site-top nav {
+            padding-top: 0 !important;
         }
 
         .donate-banner {
@@ -323,7 +323,7 @@
             gap: 0.6rem 0.8rem;
             margin-top: var(--chrome-gap);
             margin-bottom: var(--chrome-gap);
-            padding: 0.55rem 0.55rem 0.55rem 1.1rem;
+            padding: var(--chrome-gap) 0.55rem var(--chrome-gap) 1.1rem;
             background: var(--bg-1, #1e1e23);
             border: 1px solid var(--border-color, #333);
             border-radius: 16px;

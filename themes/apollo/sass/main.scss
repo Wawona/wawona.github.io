@@ -62,6 +62,7 @@ body {
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
+  margin: 0;
   padding: 0 0.9rem 0.9rem;
   padding-left: calc(0.9rem + env(safe-area-inset-left));
   padding-right: calc(0.9rem + env(safe-area-inset-right));
@@ -82,6 +83,13 @@ body {
     padding-bottom: 0;
     margin-bottom: 0;
     word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - var(--site-chrome-offset, 5.75rem));
+
+    &:has(.not-found-header) {
+      min-height: calc(100dvh - var(--site-chrome-offset, 5.75rem));
+    }
 
     // Body text in articles/docs should be smaller than headings
     section.body {
