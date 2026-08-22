@@ -29,7 +29,7 @@ If Settings → About → **Install** is TestFlight, use both of these when you 
 
 **TestFlight feedback.** Crashes from a TestFlight build go to App Store Connect automatically. For a hang or a blank session: screenshot in Wawona, or open the **TestFlight** app, pick Wawona, and send **Beta Feedback**. Say what you tapped and what you saw. That is the Apple beta path. It does not include Wawona's in-app logs.
 
-**GitHub with copied logs.** TestFlight mail is not a substitute for diagnostics. **Settings → About → Copy Recent Logs** (or **Copy Active Machine Logs**), then the [bug form](https://github.com/Wawona/Wawona/issues/new?template=bug.yml). Set install channel to TestFlight and paste the clipboard. If you already sent TestFlight feedback, mention that in the issue. We cannot see TestFlight comments from GitHub.
+**GitHub with copied logs.** TestFlight mail is not a substitute for diagnostics. **Settings → About → Copy Recent Logs** (or **Copy Active Machine Logs**), then the [bug form](https://github.com/Wawona/Wawona/issues/new?template=bug.yml). Set install channel to TestFlight and paste the clipboard. A scheduled importer also opens a GitHub issue from App Store Connect screenshot/crash feedback (tester identity and EXIF stripped). Paste copied logs on that issue if you have them.
 
 TestFlight invites: [Wawona Discord](https://discord.gg/wHVSV52uw5).
 
