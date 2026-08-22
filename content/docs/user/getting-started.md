@@ -13,11 +13,17 @@ Versioning is CalVer `YY.M.D` (see GitHub tags like `v26.8.12`). Older 0.x marke
 
 macOS is not a store feature target. Do not wait for a Mac store listing.
 
+{{ screenshot(id="machines-macos", margin_top="1.25rem") }}
+
 ## Get a build
 
 1. **[Download](/download/)** for GitHub assets (`Wawona-{calver}-{platform}-{arch}.{ext}`: dmg, ipa, apk, AppImage) when a `v*` tag ships. See [Prebuilt binary naming](@/docs/contributor/prebuilt-naming.md).
 2. **TestFlight / Play internal**. Find beta testing links on the [Wawona Discord](https://discord.gg/wHVSV52uw5). Store builds ship from [Ship: beta (stores)](https://github.com/Wawona/Wawona) on `master` (filenames include the build number; see the same naming doc).
 3. Apple family schemes exist for iOS, iPadOS, tvOS, watchOS, and visionOS. Android and Linux too.
+
+{{ screenshot(id="machines-ipados", margin_top="1.25rem") }}
+
+{{ screenshot(id="machines-visionos", margin_top="1.25rem") }}
 
 ## First run
 

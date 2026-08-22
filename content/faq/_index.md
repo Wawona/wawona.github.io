@@ -80,7 +80,7 @@ template = "faq_section.html"
     background: var(--bg-2);
     border: 1px solid var(--border-color);
     border-radius: var(--r-control);
-    padding: 4px 8px;
+    padding: 6px 10px;
     font-size: 0.75rem;
     color: var(--text-2);
     cursor: pointer;
@@ -89,6 +89,12 @@ template = "faq_section.html"
     gap: 4px;
     transition: all 0.2s ease;
     opacity: 0;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .faq-content details summary:hover .faq-share {
@@ -112,9 +118,12 @@ template = "faq_section.html"
     height: 12px;
 }
 
-.faq-content .faq-share.copied {
-    color: #4CAF50;
+.faq-content .faq-share.copied,
+.faq-content .faq-share.copied:hover,
+.faq-content .faq-share.copied:focus-visible {
+    color: #4CAF50 !important;
     border-color: #4CAF50;
+    background: var(--bg-1);
 }
 
 .faq-content details .faq-answer {
@@ -169,9 +178,9 @@ template = "faq_section.html"
 <details id="what-is-a-machine">
 <summary>
     What is a Machine?
-    <button class="faq-share" onclick="copyFaqLink(event, 'what-is-a-machine')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="what-is-a-machine" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -183,9 +192,9 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 <details id="platforms-gates">
 <summary>
     Which platforms, and what is forbidden vs planned vs blocked?
-    <button class="faq-share" onclick="copyFaqLink(event, 'platforms-gates')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="platforms-gates" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -199,9 +208,9 @@ Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desk
 <details id="weston-and-niri">
 <summary>
     Do Weston and Niri both ship?
-    <button class="faq-share" onclick="copyFaqLink(event, 'weston-and-niri')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="weston-and-niri" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -213,9 +222,9 @@ Yes. Both are mandatory native bundles on every product target. Display backend 
 <details id="local-shell">
 <summary>
     Is there a local shell on iPhone?
-    <button class="faq-share" onclick="copyFaqLink(event, 'local-shell')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="local-shell" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -227,9 +236,9 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 <details id="desktop-replacement">
 <summary>
     How does Desktop Replacement work?
-    <button class="faq-share" onclick="copyFaqLink(event, 'desktop-replacement')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="desktop-replacement" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -241,9 +250,9 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 <details id="swinging-bridge">
 <summary>
     What is Wawona Swinging Bridge?
-    <button class="faq-share" onclick="copyFaqLink(event, 'swinging-bridge')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="swinging-bridge" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -255,9 +264,9 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 <details id="vms-containers">
 <summary>
     Do VMs and containers work in Machines?
-    <button class="faq-share" onclick="copyFaqLink(event, 'vms-containers')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="vms-containers" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -269,9 +278,9 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 <details id="pre-built-binaries">
 <summary>
     Are there pre-built binaries? How do I get a build without Nix?
-    <button class="faq-share" onclick="copyFaqLink(event, 'pre-built-binaries')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="pre-built-binaries" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -286,9 +295,9 @@ Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub
 <details id="nix-build-time">
 <summary>
     Why does the Nix build take so long?
-    <button class="faq-share" onclick="copyFaqLink(event, 'nix-build-time')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="nix-build-time" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -300,9 +309,9 @@ Cold builds compile C/C++ substrate in `wwn-toolchain` and graphics in `wwn-ilan
 <details id="storage-space">
 <summary>
     How much disk space does a build need?
-    <button class="faq-share" onclick="copyFaqLink(event, 'storage-space')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="storage-space" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -314,9 +323,9 @@ Plan tens of gigabytes for a full Apple-family plus Android tree (Xcode SDKs dom
 <details id="why-nix">
 <summary>
     Why Nix? Do users need it?
-    <button class="faq-share" onclick="copyFaqLink(event, 'why-nix')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="why-nix" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -328,9 +337,9 @@ Users do not need Nix to run a downloaded binary. Nix is how we cross-compile he
 <details id="intel-macs">
 <summary>
     Does Wawona support Intel Macs?
-    <button class="faq-share" onclick="copyFaqLink(event, 'intel-macs')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="intel-macs" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -342,9 +351,9 @@ The flake dropped `x86_64-darwin` (nixpkgs 26.11 throws). Apple Silicon only for
 <details id="ios-signing">
 <summary>
     How do I sign Apple-family builds?
-    <button class="faq-share" onclick="copyFaqLink(event, 'ios-signing')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="ios-signing" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -359,9 +368,9 @@ Set `TEAM_ID` in `.envrc`. Schemes exist for iOS, iPadOS, tvOS, watchOS, and vis
 <details id="protocol-support">
 <summary>
     What Wayland protocols are supported?
-    <button class="faq-share" onclick="copyFaqLink(event, 'protocol-support')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="protocol-support" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -373,9 +382,9 @@ See the generated matrix: [Protocol Support](/docs/protocols/). The live registr
 <details id="port-linux-software">
 <summary>
     How do I port Linux software?
-    <button class="faq-share" onclick="copyFaqLink(event, 'port-linux-software')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="port-linux-software" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">
@@ -387,9 +396,9 @@ Three delivery paths: native port, container, or VM/remote over waypipe. A nativ
 <details id="contribute-protocols">
 <summary>
     How do I contribute protocol implementations?
-    <button class="faq-share" onclick="copyFaqLink(event, 'contribute-protocols')" title="Copy link to this question">
+    <button type="button" class="faq-share" data-faq-id="contribute-protocols" title="Copy link to this question" aria-label="Copy link to this question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Link
+        <span class="faq-share-label">Link</span>
     </button>
 </summary>
 <div class="faq-answer">

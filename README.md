@@ -1,6 +1,6 @@
 # Wawona.io
 
-![Wawona Preview](static/images/wawona-screenshots/SplitPreviewWawonaio.png)
+![Wawona Preview](static/images/wawona-screenshots/SplitPreviewWawonaio.jpg)
 
 Uses [Zola](https://www.getzola.org/) to generate the static site.
 

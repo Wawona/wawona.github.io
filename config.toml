@@ -29,8 +29,8 @@ index_format = "elasticlunr_javascript"
 
 author = "Wawona Team"
 theme = "toggle" # dark, light, auto, toggle
-favicon = "images/logo/Wawona-iOS-Default-1024x1024@1x.png"
-logo = "images/logo/Wawona-iOS-Default-1024x1024@1x.png"
+favicon = "images/logo/Wawona-iOS-Default-1024x1024@1x.jpg"
+logo = "images/logo/Wawona-iOS-Default-1024x1024@1x.jpg"
 fancy_code = true
 stylesheets = ["css/custom.css"]
 
@@ -55,4 +55,5 @@ kofi_url = "https://ko-fi.com/aspauldingcode"
 
 # Download beta survey POST (Vercel). Token: pass secretspec/shared/default/SURVEY_GITHUB_TOKEN
 # Inbox: private github.com/Wawona/beta-survey
+# Gallery image catalog is generated at data/gallery.toml (scripts/check-gallery-refs.py).
 survey_endpoint = "https://wawona-beta-survey.vercel.app/api/survey"

@@ -13,6 +13,10 @@ Public copy, docs, templates, UI strings, and comments that ship in HTML must so
 
 See `.cursor/rules/wawona-io-voice.mdc`.
 
+## Gallery images
+
+Content screenshots have one catalog: `content/gallery/<id>.md` (title, description, `extra.local_image` pointing at a `.jpg`). Landing, docs, FAQ, and posts use `{{ screenshot(id="…") }}` only. Store shots as JPEG. Never hotlink `static/images/wawona-screenshots/`. After adding a Gallery page, run `python3 scripts/check-gallery-refs.py`. Nav mark and favicon stay under `static/images/logo/`. See `.cursor/rules/wawona-io-gallery.mdc`.
+
 ## Selection and hover
 
 Orange fill plus white text is for **text selection only**. Text links

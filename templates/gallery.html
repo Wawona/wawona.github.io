@@ -439,8 +439,9 @@
     <div class="gallery-item" data-index="{{ loop.index0 }}" data-src="{{ get_url(path=page.extra.local_image) }}"
         data-title="{{ page.title }}" data-desc="{{ page.description | default(value='') }}">
         {% if page.extra.local_image %}
+        {% set gpath = page.extra.local_image | trim_start_matches(pat="/") %}
         {{ img::optimized_image(
-        path=page.extra.local_image,
+        path=gpath,
         alt=page.title,
         widths=[400, 800, 1200],
         quality=80,

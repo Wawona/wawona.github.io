@@ -42,6 +42,11 @@
 
 <!-- SHOWCASE -->
 <section class="lp-section lp-showcase-wrap lp-reveal" data-parallax="0.1">
+    {% set catalog = load_data(path="data/gallery.toml") %}
+    {% set slide_plasma = catalog.entries | get(key="nested-plasma") %}
+    {% set slide_xfce = catalog.entries | get(key="nested-xfce") %}
+    {% set slide_cosmic = catalog.entries | get(key="native-compositing") %}
+    {% set slide_weston = catalog.entries | get(key="nested-weston") %}
     <div class="container">
         <div class="lp-showcase-frame">
             <div class="lp-showcase-bar">
@@ -50,35 +55,27 @@
                     <span class="lp-dot-y"></span>
                     <span class="lp-dot-g"></span>
                 </div>
-                <span class="lp-showcase-bar-title" id="showcaseBarTitle">KDE Plasma nested in Wawona</span>
+                <span class="lp-showcase-bar-title" id="showcaseBarTitle">{{ slide_plasma.title }}</span>
             </div>
             <div class="lp-showcase-track" id="showcaseTrack">
-                <div class="lp-showcase-slide active" data-title="KDE Plasma nested in Wawona">
+                <div class="lp-showcase-slide active" data-title="{{ slide_plasma.title }}">
                     <div class="lp-showcase-img-container">
-                        {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_plasma.png", alt="KDE
-                        Plasma
-                        nested in Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+                        {{ img::optimized_image(path=slide_plasma.local_image | trim_start_matches(pat="/"), alt=slide_plasma.alt, widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="XFCE desktop on macOS">
+                <div class="lp-showcase-slide" data-title="{{ slide_xfce.title }}">
                     <div class="lp-showcase-img-container">
-                        {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_xfce.png", alt="XFCE
-                        nested in
-                        Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+                        {{ img::optimized_image(path=slide_xfce.local_image | trim_start_matches(pat="/"), alt=slide_xfce.alt, widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="COSMIC desktop in Wawona">
+                <div class="lp-showcase-slide" data-title="{{ slide_cosmic.title }}">
                     <div class="lp-showcase-img-container">
-                        {{ img::optimized_image(path="images/wawona-screenshots/wawona_nested_cosmic.png", alt="COSMIC
-                        nested in
-                        Wawona", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+                        {{ img::optimized_image(path=slide_cosmic.local_image | trim_start_matches(pat="/"), alt=slide_cosmic.alt, widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
-                <div class="lp-showcase-slide" data-title="Wayland compositing on macOS">
+                <div class="lp-showcase-slide" data-title="{{ slide_weston.title }}">
                     <div class="lp-showcase-img-container">
-                        {{ img::optimized_image(path="images/wawona-screenshots/wawona-screenshot-1.png", alt="Wawona
-                        native
-                        compositing", widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
+                        {{ img::optimized_image(path=slide_weston.local_image | trim_start_matches(pat="/"), alt=slide_weston.alt, widths=[400, 800, 1600], quality=80, aspect_ratio="16/9") }}
                     </div>
                 </div>
             </div>
@@ -97,9 +94,9 @@
     <div class="lp-section-inner">
         <div class="lp-section-header lp-reveal">
             <div class="lp-bd-logo-wrap">
-                <img src="/images/logo/Wawona-iOS-Default-1024x1024@1x.png" alt="Wawona"
+                <img src="/images/logo/Wawona-iOS-Default-1024x1024@1x.jpg" alt="Wawona"
                     class="lp-bd-logo lp-bd-logo-light" />
-                <img src="/images/logo/Wawona-iOS-Dark-1024x1024@1x.png" alt="Wawona"
+                <img src="/images/logo/Wawona-iOS-Dark-1024x1024@1x.jpg" alt="Wawona"
                     class="lp-bd-logo lp-bd-logo-dark" />
             </div>
             <h2 class="lp-bd-title">A real compositor.</h2>

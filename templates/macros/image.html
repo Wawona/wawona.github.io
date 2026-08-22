@@ -25,7 +25,7 @@
         <source type="image/webp" srcset="{{ webp_srcset }}" sizes="(max-width: 768px) 100vw, 50vw">
 
         {# Fallback IMG + Load Handler #}
-        {% set fallback = resize_image(path=path, width=target_widths | last, op="fit_width", quality=quality) %}
+        {% set fallback = resize_image(path=path, width=target_widths | last, op="fit_width", format="jpeg", quality=quality) %}
 
         <img src="{{ fallback.url }}" alt="{{ alt }}" class="next-image-target" {% if priority %} fetchpriority="high"
             loading="eager" decoding="sync" {% else %} loading="lazy" decoding="async" {% endif %}>

@@ -47,7 +47,7 @@
         <style>
             .site-footer {
                 text-align: center;
-                padding: 2rem 1rem 0.45rem;
+                padding: 0.5rem 1rem;
                 border-top: 1px solid var(--border-color);
                 width: 100%;
                 max-width: var(--page-width, 920px);
@@ -246,6 +246,7 @@
             }
             if (!el) el = document.getElementById(id);
             if (!el) return false;
+            if (el.tagName === 'DETAILS') el.open = true;
             const y = el.getBoundingClientRect().top + window.scrollY - stickyChromeOffset();
             window.scrollTo(0, Math.max(0, y));
             return true;
@@ -592,6 +593,67 @@
                 });
             }
         });
+
+        window.copyFaqLink = async function (event, id, button) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            if (!id) return;
+            const url = new URL(window.location.href);
+            url.hash = id;
+            const text = url.origin + url.pathname.replace(/\/?$/, '/') + '#' + id;
+            let ok = false;
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    ok = true;
+                }
+            } catch (ignore) { /* fall through */ }
+            if (!ok) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                try { ok = document.execCommand('copy'); } catch (ignore) { ok = false; }
+                document.body.removeChild(ta);
+            }
+            history.replaceState({}, '', url.pathname + url.search + '#' + id);
+            const details = document.getElementById(id);
+            if (details && details.tagName === 'DETAILS') details.open = true;
+            const btn = button || (event && event.currentTarget);
+            if (btn && ok) {
+                btn.classList.add('copied');
+                const label = btn.querySelector('.faq-share-label');
+                const prev = label ? label.textContent : '';
+                if (label) label.textContent = 'Copied';
+                btn.setAttribute('aria-label', 'Link copied');
+                setTimeout(function () {
+                    btn.classList.remove('copied');
+                    if (label) label.textContent = prev || 'Link';
+                    btn.setAttribute('aria-label', 'Copy link to this question');
+                }, 1600);
+            }
+        };
+
+        function faqShareHit(el) {
+            return el && el.closest ? el.closest('button.faq-share') : null;
+        }
+        document.addEventListener('pointerdown', function (e) {
+            if (faqShareHit(e.target)) e.stopPropagation();
+        }, true);
+        document.addEventListener('click', function (e) {
+            const btn = faqShareHit(e.target);
+            if (!btn) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const details = btn.closest('details');
+            const id = btn.getAttribute('data-faq-id') || (details && details.id);
+            window.copyFaqLink(e, id, btn);
+        }, true);
     </script>
 
     <script src="/js/hints.js" defer></script>

@@ -1,0 +1,106 @@
+# Generated from content/gallery/*.md by scripts/check-gallery-refs.py
+# Do not edit by hand. Gallery markdown is the source of truth.
+
+[entries."android-emu"]
+title = "Android"
+description = "Wawona on Android: Machines, a terminal, and a browser as independent windows."
+local_image = "/images/wawona-screenshots/android-emu-screenshot.jpg"
+alt = "Android"
+permalink = "/gallery/android-emu/"
+
+[entries."linux"]
+title = "Linux"
+description = "Wawona running natively on Linux: Machines UI nested inside KDE Plasma."
+local_image = "/images/wawona-screenshots/linux-screenshot.jpg"
+alt = "Linux"
+permalink = "/gallery/linux/"
+
+[entries."machines-ipados"]
+title = "Machines on iPadOS"
+description = "Same Machines flow on iPadOS. One window per Wayland client, plus the in-app modifier keyboard."
+local_image = "/images/wawona-screenshots/getting-started-ipados.jpg"
+alt = "Wawona Machines and nested clients on iPad"
+permalink = "/gallery/machines-ipados/"
+width = 2064
+height = 2752
+
+[entries."machines-macos"]
+title = "Machines on macOS"
+description = "Machines on macOS. Start a profile, then Focus to show the compositor. Nested Weston and Niri clients sit beside the catalog."
+local_image = "/images/wawona-screenshots/getting-started-macos.jpg"
+alt = "Wawona Machines on macOS with nested Weston and Niri clients"
+permalink = "/gallery/machines-macos/"
+width = 3360
+height = 2100
+
+[entries."machines-visionos"]
+title = "Machines on visionOS"
+description = "visionOS matches macOS for nested compositors and multi-window Machines. Weston terminal in spatial windows."
+local_image = "/images/wawona-screenshots/getting-started-visionos.jpg"
+alt = "Wawona Machines and Weston terminal on Apple Vision Pro"
+permalink = "/gallery/machines-visionos/"
+width = 3840
+height = 2160
+
+[entries."multi-window"]
+title = "Multi-Window on macOS"
+description = "One native macOS window per Wayland client: terminal, simple-shm, and Safari side by side."
+local_image = "/images/wawona-screenshots/sidebyside_screenshot.jpg"
+alt = "Multi-Window on macOS"
+permalink = "/gallery/multi-window/"
+
+[entries."native-compositing"]
+title = "Nested COSMIC"
+description = "System76 COSMIC nested in Wawona. A full desktop as a Wayland client."
+local_image = "/images/wawona-screenshots/wawona_nested_cosmic.jpg"
+alt = "Nested COSMIC"
+permalink = "/gallery/native-compositing/"
+
+[entries."nested-plasma"]
+title = "Nested KDE Plasma"
+description = "A full KDE Plasma desktop nested inside Wawona on macOS."
+local_image = "/images/wawona-screenshots/wawona_nested_plasma.jpg"
+alt = "Nested KDE Plasma"
+permalink = "/gallery/nested-plasma/"
+
+[entries."nested-weston"]
+title = "Nested Weston"
+description = "Weston itself nested in Wawona, with terminals and simple-shm as child clients."
+local_image = "/images/wawona-screenshots/wawona-screenshot-1.jpg"
+alt = "Nested Weston"
+permalink = "/gallery/nested-weston/"
+
+[entries."nested-xfce"]
+title = "Nested XFCE"
+description = "XFCE nested inside Wawona on macOS. A full Linux desktop as a Wayland client."
+local_image = "/images/wawona-screenshots/wawona_nested_xfce.jpg"
+alt = "XFCE nested in Wawona on macOS"
+permalink = "/gallery/nested-xfce/"
+
+[entries."tv-os"]
+title = "tvOS"
+description = "Machines on Apple TV: native tvOS, the same compositor catalog."
+local_image = "/images/wawona-screenshots/tvos-screenshot.jpg"
+alt = "tvOS"
+permalink = "/gallery/tv-os/"
+
+[entries."vision-os"]
+title = "visionOS"
+description = "Wawona as a spatial window on Apple Vision Pro."
+local_image = "/images/wawona-screenshots/visionos-screenshot.jpg"
+alt = "visionOS"
+permalink = "/gallery/vision-os/"
+
+[entries."vision-os-machines"]
+title = "visionOS Machines"
+description = "Start, edit, and focus nested Wayland clients from a spatial Machines window."
+local_image = "/images/wawona-screenshots/visionos-screenshot-2.jpg"
+alt = "visionOS Machines"
+permalink = "/gallery/vision-os-machines/"
+
+[entries."watch-os"]
+title = "watchOS"
+description = "A real Wayland client on Apple Watch: weston-simple-shm on the wrist."
+local_image = "/images/wawona-screenshots/watchos-screenshot.jpg"
+alt = "watchOS"
+permalink = "/gallery/watch-os/"

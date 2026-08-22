@@ -1,28 +1,83 @@
+{# Images are hosted only as Gallery pages (`content/gallery/<id>.md`).
+   Required on that page: title, description, extra.local_image.
+   Usage: {{ screenshot(id="nested-plasma") }}
+   Optional: margin_top. Caption and alt come from the gallery entry. #}
+{% if not id %}
+{% set _missing_gallery_id = true %}
+{% endif %}
+{% set catalog = load_data(path="data/gallery.toml") %}
+{% set entry = catalog.entries | get(key=id) %}
+{% if not entry or not entry.local_image %}
+{% set _missing_gallery_image = true %}
+{% endif %}
+{% set src = get_url(path=entry.local_image) %}
+{% set alt = entry.alt | default(value=entry.title) %}
+{% set caption = entry.description %}
+{% set width = entry.width | default(value=0) %}
+{% set height = entry.height | default(value=0) %}
+
 <div class="screenshot-wrapper" style="margin-top: {{ margin_top | default(value='2rem') }};">
     <figure style="margin: 0; animation: fadeIn 1s ease-out;">
         <div class="screenshot-container" onmouseover="this.style.transform='scale(1.02)'"
             onmouseout="this.style.transform='scale(1)'">
-            <img src="{{ src }}" alt="{{ alt | default(value='Wawona Screenshot') }}"
-                style="width: 100%; height: auto; display: block;">
+            <img src="{{ src }}" alt="{{ alt }}"
+                {% if width and width != 0 %}width="{{ width }}"{% endif %}
+                {% if height and height != 0 %}height="{{ height }}"{% endif %}
+                style="width: 100%; height: auto; max-height: none; object-fit: contain; display: block;">
         </div>
-        {% if caption %}
         <figcaption
             style="margin-top: 1.5rem; text-align: center; color: var(--text-2); font-family: var(--header-font); font-size: 1rem; letter-spacing: 0.02em;">
             {{ caption }}
+            {% if not page or page.slug != id %}
+            <a class="screenshot-gallery-link" href="{{ entry.permalink }}">Gallery</a>
+            {% endif %}
         </figcaption>
-        {% endif %}
     </figure>
 </div>
 
 <style>
+    .screenshot-wrapper figure {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+    }
+
     .screenshot-container {
         border-radius: 12px;
         overflow: hidden;
         position: relative;
+        width: 100%;
         transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         box-shadow: var(--premium-shadow);
         border: 1px solid var(--border-color);
         background-color: var(--bg-1);
+    }
+
+    .screenshot-container img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: contain !important;
+        object-position: top center;
+        display: block;
+        border-radius: 0;
+    }
+
+    .screenshot-gallery-link {
+        display: inline-block;
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .screenshot-gallery-link:hover,
+    .screenshot-gallery-link:focus-visible {
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
     }
 
     :root.dark {

@@ -1,0 +1,38 @@
+---
+description: wawona.io images must come from Gallery entries with metadata.
+globs: "**/{content,templates,static/images,data}/**"
+alwaysApply: true
+---
+
+# wawona.io Gallery catalog
+
+Content images on wawona.io have **one** host: Gallery (`content/gallery/<id>.md`). Landing, docs, FAQ, and posts must not hotlink `static/images/wawona-screenshots/` or pass `src=` into `screenshot`.
+
+## Add an image
+
+1. Put a `.jpg` in `static/images/wawona-screenshots/`.
+2. Add `content/gallery/<id>.md` with **title**, **description** (required), and `extra.local_image`. Optional: `alt`, `width`, `height`.
+3. Run `python3 scripts/check-gallery-refs.py` (writes `data/gallery.toml`).
+4. Render with the gallery id only.
+
+```text
+Bad:  {{ screenshot(src="/images/wawona-screenshots/foo.jpg", caption="…") }}
+Bad:  {{ img::optimized_image(path="images/wawona-screenshots/foo.jpg", alt="…") }}
+Good: {{ screenshot(id="machines-macos") }}
+```
+
+Homepage carousel: `load_data(path="data/gallery.toml")`, then `catalog.entries | get(key="nested-plasma")` (same for other ids). Titles, alts, and paths come from that entry.
+
+## Hard rejects
+
+- `screenshot(src=…)` or markdown `![](/images/wawona-screenshots/…)` in docs, FAQ, posts, or templates
+- Gallery page missing `description` or `extra.local_image`
+- Editing `data/gallery.toml` by hand (regenerate it)
+- Stretching shots: `object-fit: contain`, native width/height, no `max-height` plus `width: 100%` warp
+- New screenshots as PNG (convert to `.jpg` before adding the Gallery page)
+
+## Exception
+
+Site chrome only: nav mark and favicon under `static/images/logo/`. Not Gallery.
+
+See `content/gallery/_index.md` and `templates/shortcodes/screenshot.html`.

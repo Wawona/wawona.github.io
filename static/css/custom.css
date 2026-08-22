@@ -574,7 +574,7 @@ html.layout-docs body > .right-content {
 }
 
 .docs-shell > .docs-page-head .page-header {
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
 }
 
 .docs-shell > .docs-sidebar {
@@ -874,8 +874,8 @@ main .docs-card,
     align-items: stretch;
     gap: 0.75rem;
     margin-top: 2.5rem;
-    padding-top: 1.25rem;
-    padding-bottom: 2px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     overflow: visible;
     border-top: 1px solid var(--border-color);
 }
@@ -1015,7 +1015,7 @@ main .docs-card,
     }
 
     .docs-shell > .docs-page-head .page-header {
-        margin: 0.35rem 0;
+        margin: 0.5rem 0;
     }
 
     .docs-shell > .docs-sidebar {
