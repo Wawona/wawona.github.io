@@ -27,15 +27,11 @@ const N = [
 ];
 const UV4 = [0, 0, 1, 0, 0, 1, 1, 1];
 
-function cssColor(name, fallback) {
-  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return v || fallback;
-}
-
 function paintFace(ctx, size, faceImg) {
   ctx.clearRect(0, 0, size, size);
-  const text = cssColor("--text-0", "#eee");
-  const shadow = cssColor("--bg-0", "#121212");
+  /* Cube sits on kmscube gray. Do not follow site light/dark tokens. */
+  const text = "#ffffff";
+  const shadow = "#121212";
   if (faceImg && faceImg.width) {
     const maxW = size * 0.86;
     const maxH = size * 0.58;
@@ -227,23 +223,12 @@ function init(root, faceImg) {
 
   window.addEventListener("resize", sizeToCanvas);
 
-  const themeWatch = new MutationObserver(() => {
-    texture.dispose();
-    texture = makeTexture(faceImg);
-    uniforms.map.value = texture;
-  });
-  themeWatch.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
-
   sizeToCanvas();
   pose(0);
   frame = requestAnimationFrame(tick);
 
   root._notFoundTeardown = function () {
     cancelAnimationFrame(frame);
-    themeWatch.disconnect();
     window.removeEventListener("resize", sizeToCanvas);
     material.dispose();
     texture.dispose();
