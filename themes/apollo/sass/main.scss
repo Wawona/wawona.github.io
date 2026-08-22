@@ -65,8 +65,8 @@ body {
   padding: 0 0.9rem 0.9rem;
   padding-left: calc(0.9rem + env(safe-area-inset-left));
   padding-right: calc(0.9rem + env(safe-area-inset-right));
-  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-  margin-bottom: 1.5rem;
+  padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
+  margin-bottom: 0;
   min-height: calc(100vh - 150px);
 
   @media (min-width: 992px) {
@@ -79,8 +79,8 @@ body {
     width: 100%;
     max-width: var(--page-width);
     flex-shrink: 0;
-    padding-bottom: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding-bottom: 0;
+    margin-bottom: 0;
     word-wrap: break-word;
 
     // Body text in articles/docs should be smaller than headings

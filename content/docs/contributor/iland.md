@@ -19,6 +19,8 @@ date = 2026-08-13
 
 Mode B ships only in `.#wawona-macos-desktop-host`. Default `.#wawona-macos` and all mobile/Android artifacts omit the dylib.
 
+After you change this dylib or `wwn-igetty`, restage the live helper. Default `nix run .#install` does not. See [Compilation: restage Mode B](@/docs/contributor/compilation.md#restage-mode-b-helper-and-dylib).
+
 L1 owns ANGLE, SwiftShader, MoltenVK, KosmicKrisp. Substrate 2D (cairo, pango, pixman) stays in `wwn-toolchain`.
 
 Canonical: [iland-mode-a-b-desktop.md](https://github.com/Wawona/Wawona/blob/development/docs/iland-mode-a-b-desktop.md).

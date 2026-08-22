@@ -168,10 +168,6 @@ html.layout-docs body {
 
 /* Do not set max-width here. Apollo's body .content uses --page-width (920px).
    Docs/home full-bleed is opt-in via html.layout-docs / :has(.docs-shell) / lp-hero. */
-body > .content {
-    min-width: 0;
-}
-
 /* ===== THEME-AWARE NAVIGATION LOGO ===== */
 
 /* Default state (before JS runs): show the light logo */

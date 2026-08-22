@@ -41,7 +41,7 @@ It *helps* Desktop replacement later (e.g. Wawona as Android home app while Andr
 | | Mode A | Mode B |
 |--|--------|--------|
 | Intent | App Store / Play-compliant path (stream-like bridge) | Privileged full surface bridge |
-| macOS | Store-safe / notarized methods | Partial SIP (system debugging), same bar as Desktop `.dylib` |
+| macOS | Store-safe / notarized methods | Privileged / SIP-gated. Not Desktop WindowServer replacement (Desktop Mode B needs SIP fully disabled) |
 | Android | Play-approved methods | Root / privileged paths outside Play |
 | iOS / iPadOS | Not in the store app | Jailbreak / Sileo. UIKit apps as Wayland clients |
 

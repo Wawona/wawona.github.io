@@ -234,7 +234,7 @@ Yes. Bundled zsh plus Weston terminal. watchOS gets a constrained zsh. That is t
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: partial SIP + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
+**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: SIP fully disabled (`csrutil disable`) + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>
