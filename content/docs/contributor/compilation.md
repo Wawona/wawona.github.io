@@ -1,9 +1,9 @@
 +++
 aliases = ["docs/compilation"]
 title = "Compilation"
-description = "Flake product attributes, TEAM_ID, local proof before CI."
+description = "Flake product attributes, TEAM_ID, local proof before CI. Xcode script-phase notes."
 weight = 25
-date = 2026-08-13
+date = 2026-08-23
 
 +++
 
@@ -25,6 +25,36 @@ nix run .#wawona-linux
 ```
 
 iOS family signing: `TEAM_ID` in `.envrc`.
+
+## Xcode script phases always run
+
+`nix run .#wawona-macos` (and other Apple product builds) drive `xcodebuild`.
+Xcode may print notes like:
+
+```text
+note: Run script build phase 'Build Rust Backend via Nix' will be run during
+every build because the option to run the script phase "Based on dependency
+analysis" is unchecked.
+```
+
+Those are notes, not errors. The project generator
+(`dependencies/generators/xcodegen.nix`) sets `basedOnDependencyAnalysis = false`
+on purpose. Xcode then cannot skip the phase from declared inputs and outputs.
+
+On `Wawona-macOS` that includes:
+
+| Phase | Why it always runs |
+|---|---|
+| Stamp Build Number | Fresh `CURRENT_PROJECT_VERSION` every build |
+| Build Rust Backend via Nix | Real graph is the Nix closure. Xcode only sees a few files |
+| Bundle Executables | Copy and sign helpers from the Nix store into the app |
+| Strip iOS-only keys from Info.plist (#138) | Drop iOS keys after plist processing so a macOS archive is not treated as iOS |
+
+Swift and ObjC compile can still be incremental. These shell phases still fire.
+Nix cache (and `WAWONA_BACKEND_OUT*` copy, or `WAWONA_SKIP_NIX_PREBUILD=1` for
+UI-only iteration) is what keeps the Rust step cheap when the store is warm.
+
+Repo: [compilation.md](https://github.com/Wawona/Wawona/blob/development/docs/compilation.md).
 
 ## Local before CI
 
