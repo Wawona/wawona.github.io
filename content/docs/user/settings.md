@@ -9,6 +9,13 @@ date = 2026-08-13
 
 Canonical keys live in the [Wawona settings doc](https://github.com/Wawona/Wawona/blob/development/docs/settings.md). Machine overrides beat globals.
 
+A Settings row is a one-line title plus On/Off, a title plus the current
+choice, or a title plus the current value (short values on the trailing
+edge, longer copy wraps). Never a placeholder ellipsis. Never two helper
+paragraphs on one row. On iPhone, iPad, Apple TV, and Vision Pro, a
+choice row uses a chevron into a list page. On macOS, a choice row is a
+Cocoa popup switcher in the row. No second page.
+
 ## Display and windowing
 
 | Setting | Notes |
@@ -29,8 +36,9 @@ watchOS has no public Metal. GPU settings do not apply there.
 
 ## Machines
 
-Shake, swipe-back, and tvOS long-press Menu live under Settings → Machines.
-Not the Machines window.
+Shake, swipe-back, tvOS long-press Menu, session thumbnails, and
+VM/container prefs share **Settings → Machines**. One section. Not the
+Machines window.
 
 ## iCloud Sync
 
