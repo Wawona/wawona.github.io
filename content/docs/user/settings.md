@@ -62,4 +62,9 @@ Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-
 
 ## About and diagnostics
 
-**Settings → About** shows version, host OS, and install channel. **Report a Bug on GitHub** opens the Wawona `bug.yml` form with this platform, version, and recent logs filled, and copies the full report. **Copy Recent Logs** / **Copy Active Machine Logs** are clipboard-only. Steps: [Report a bug](@/docs/user/reporting-bugs.md).
+**Settings → About** always lists **https://wawona.io**. Author subtext is
+Alex Spaulding; tapping that row opens the portfolio. There is no separate
+Portfolio row. Version, host OS, and install channel stay on the page.
+**Report a Bug on GitHub** opens the Wawona `bug.yml` form with this platform,
+version, and recent logs filled, and copies the full report. **Copy Recent Logs**
+/ **Copy Active Machine Logs** are clipboard-only. Steps: [Report a bug](@/docs/user/reporting-bugs.md).
