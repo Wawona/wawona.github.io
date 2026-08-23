@@ -302,7 +302,7 @@ Yes. CalVer `YY.M.D` (for example `v26.8.12`). [Download](/download/) for GitHub
 </summary>
 <div class="faq-answer">
 
-On Apple: Settings → About → Copy Recent Logs (or Copy Active Machine Logs), then Report a Bug on GitHub. Paste the clipboard into the form. **TestFlight:** crashes go to App Store Connect; for hangs, send Beta Feedback from the TestFlight app *and* paste copied logs on GitHub (install channel TestFlight). Sideloaded IPAs have no TestFlight crash mail. Those copied logs are the report. Android and Linux: fill the same GitHub form with version and host OS; attach logcat or a terminal capture if you have one. Full steps: [Report a bug](/docs/reporting-bugs/). Discord: [Wawona Discord](https://discord.gg/wHVSV52uw5).
+On Apple, Android, and Linux: Settings → About → Report a Bug on GitHub. That copies recent Wawona logs and opens the GitHub bug form with this platform, version, and host OS filled. **TestFlight:** crashes go to App Store Connect; for hangs, send Beta Feedback from the TestFlight app *and* use Report a Bug on GitHub (install channel TestFlight (Beta)). Sideloaded IPAs have no TestFlight crash mail. Those copied logs are the report. Full steps: [Report a bug](/docs/reporting-bugs/). Discord: [Wawona Discord](https://discord.gg/wHVSV52uw5).
 
 </div>
 </details>

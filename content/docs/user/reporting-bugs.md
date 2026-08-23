@@ -29,7 +29,7 @@ If Settings → About → **Install** is TestFlight, use both of these when you 
 
 **TestFlight feedback.** Crashes from a TestFlight build go to App Store Connect automatically. For a hang or a blank session: screenshot in Wawona, or open the **TestFlight** app, pick Wawona, and send **Beta Feedback**. Say what you tapped and what you saw. That is the Apple beta path. It does not include Wawona's in-app logs.
 
-**GitHub with copied logs.** TestFlight mail is not a substitute for diagnostics. **Settings → About → Copy Recent Logs** (or **Copy Active Machine Logs**), then the [bug form](https://github.com/Wawona/Wawona/issues/new?template=bug.yml). Set install channel to TestFlight and paste the clipboard. A scheduled importer also opens a GitHub issue from App Store Connect screenshot/crash feedback (tester identity and EXIF stripped). Paste copied logs on that issue if you have them.
+**GitHub with copied logs.** TestFlight mail is not a substitute for diagnostics. **Settings → About → Report a Bug on GitHub** copies logs and fills platform, version, and install channel. A scheduled importer also opens a GitHub issue from App Store Connect screenshot/crash feedback (tester identity and EXIF stripped). Paste copied logs on that issue if you have them.
 
 TestFlight invites: [Wawona Discord](https://discord.gg/wHVSV52uw5).
 
@@ -38,15 +38,13 @@ TestFlight invites: [Wawona Discord](https://discord.gg/wHVSV52uw5).
 1. Reproduce once (Start the machine, wait a few seconds).
 2. **Settings → About**.
 3. Check **Version**, **Platform**, and **Install**.
-4. **Copy Recent Logs**. If the failing session is still the active machine, use **Copy Active Machine Logs**.
-5. **Report a Bug on GitHub**, or open the form linked above.
-6. Paste into **Copied diagnostics**. Copy version, host OS, platform, and install channel from that same text.
+4. **Report a Bug on GitHub**. The form opens with this platform, version, host OS, and recent logs filled. Write what happened.
 
-On tvOS and watchOS there is no clipboard. The copy action shows an alert. Type Version / Platform / Install into the form, or photograph the alert.
+On tvOS there is no clipboard. Report a Bug still fills platform. On watchOS it opens the form on the paired iPhone.
 
 ## Android and Linux
 
-Copy Logs is not on those UIs yet. Use the same GitHub form. Fill platform, install channel, Wawona version (About, or the CalVer in the filename), and host OS. Describe Start / Focus. Attach `adb logcat` or a terminal capture if you have one.
+**Settings → About → Report a Bug on GitHub** copies the in-app log ring and opens the same form with Android or Linux filled. Attach `adb logcat` or a terminal capture if the ring is empty.
 
 ## Discord
 
