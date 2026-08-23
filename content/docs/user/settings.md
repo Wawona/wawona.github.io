@@ -13,7 +13,8 @@ Canonical keys live in the [Wawona settings doc](https://github.com/Wawona/Wawon
 
 | Setting | Notes |
 |---------|--------|
-| Force SSD | Android and the iOS family force server-side decorations. macOS can do CSD or forced SSD. |
+| Enable HDR | On by default. Color profiles / EDR present path |
+| Force SSD | Toggle on macOS only (default off). Android and the iOS family always use SSD |
 | Display Backend | `auto` / `wayland` / `drm` for nested Weston and Niri |
 | Nested compositors | Weston and Niri |
 
@@ -23,9 +24,27 @@ Canonical keys live in the [Wawona settings doc](https://github.com/Wawona/Wawon
 |---------|--------|
 | Vulkan | KosmicKrisp default on Apple Silicon + macOS 26+. Else MoltenVK on Apple. Android: system or SwiftShader. No kernel DRM/KGSL ICDs. No `/dev/kgsl`. |
 | OpenGL | ANGLE on Apple GPU targets. |
-| DmaBuf | IOSurface / AHardwareBuffer import |
 
 watchOS has no public Metal. GPU settings do not apply there.
+
+## Machines
+
+Shake, swipe-back, and tvOS long-press Menu live under Settings → Machines.
+Not the Machines window.
+
+## iCloud Sync
+
+Apple family only. Toggle on Mac / iPhone / iPad / Vision Pro. Status-only on
+tvOS and watchOS.
+
+## Local Shell
+
+Reset Shell Dotfiles, Reset System Tree, Import File to Home.
+
+## Dependencies
+
+Packages linked into **this** build. Generated per product. Not another
+platform's list.
 
 ## Input
 
