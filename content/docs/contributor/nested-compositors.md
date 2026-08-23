@@ -15,6 +15,6 @@ tvOS and watchOS use the allowed non-GL fallback. Do not drop either compositor 
 
 ## Port fidelity
 
-A nested compositor, like any ported client, is judged by **waypipe equivalence**: same protocols and windowing path as upstream on Linux, streamed to Wawona. Substitute libc, EGL→ANGLE, DRM→iland. Do not re-host a Wayland compositor onto KMS because the winsys is unfinished.
+A nested compositor, like any ported client, is judged by **waypipe equivalence**: same protocols and windowing path as upstream on Linux, streamed to Wawona. Substitute libc, EGL→ANGLE, DRM→iland. Do not re-host a Wayland compositor onto KMS. iland already has a Wayland-EGL winsys (`wl_egl_window`); DRM/KMS is the path for upstream DRM clients, not a fallback when Wayland is inconvenient.
 
 Display backend is a user setting (`auto` / `wayland` / `drm`), not a hardcoded nested-only path.
