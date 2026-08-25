@@ -28,6 +28,7 @@ Never say "unsupported". Each cell is one of four states.
 | Vulkan / GLES | available | available | available | available | available | planned | blocked |
 | Desktop + LockScreen | planned | planned | forbidden (App Store) | forbidden | forbidden (App Store) | forbidden | forbidden |
 | Wawona Swinging Bridge | planned | planned | planned | forbidden | planned | forbidden | forbidden |
+| iCloud Drive (shell HOME) | available | omitted | available | available | available | blocked | blocked |
 
 Linux: native + remote available; VM/containers planned; Desktop/LockScreen and Wawona Swinging Bridge forbidden.
 
@@ -40,6 +41,10 @@ Linux: native + remote available; VM/containers planned; Desktop/LockScreen and 
 - **Wawona Swinging Bridge**. Separate host-app → Wayland bridge. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 - **Wasm packages**. Mode A-safe Runtime packages from `repo.wawona.io/wasm`. See [WASM](@/docs/user/wasm.md).
 - **watchOS GPU** is blocked: no `Metal.framework`. **tvOS GPU** is planned.
+- **iCloud Drive** (Settings → iCloud Sync for shell HOME) is blocked on tvOS
+  and watchOS. Apple QA1935: Drive is unavailable; `ubiquityIdentityToken` is
+  always nil. CloudKit and iCloud Key-Value Store exist on tvOS; they are not
+  this Settings section. Omit the section on tvOS. See [Settings](@/docs/user/settings.md).
 - **visionOS** matches macOS product parity for bundled clients and Machines UX, including planned VM/container kinds (same class as iOS/iPadOS).
 - **macOS** is never limited by App Store feature rules.
 

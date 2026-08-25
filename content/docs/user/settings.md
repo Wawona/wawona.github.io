@@ -42,8 +42,10 @@ Machines window.
 
 ## iCloud Sync
 
-Apple family only. Toggle on Mac / iPhone / iPad / Vision Pro. Status-only on
-tvOS and watchOS.
+Apple family only. Toggle on Mac / iPhone / iPad / Vision Pro. Omitted on tvOS:
+iCloud Drive is unavailable (Apple QA1935). Wawona syncs shell HOME via Drive
+ubiquity, not CloudKit. watchOS may show a status page that Drive is unavailable.
+Omitted on Android and Linux.
 
 ## Local Shell
 
