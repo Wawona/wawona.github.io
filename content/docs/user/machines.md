@@ -19,7 +19,7 @@ A **Machine** is a saved session: how clients reach this compositor. Configure i
 | `virtual_machine` | Guest VM (`wwn-vms`) | **planned**. See [VMs and containers](@/docs/user/vms-containers.md) |
 | `container` | OCI / platform container (`wwn-containers`) | **planned**. See [VMs and containers](@/docs/user/vms-containers.md) |
 
-VM and container kinds are **forbidden** on tvOS, watchOS, and visionOS. They are planned on macOS, iOS, iPadOS, Android, and Linux.
+VM and container kinds are **forbidden** on tvOS and watchOS. They are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux.
 
 The [on-device shell](@/docs/user/shell.md) is bundled zsh on native machines. Not a VM.
 

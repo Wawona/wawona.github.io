@@ -16,7 +16,7 @@ Canonical: [mode-a-b.md](https://github.com/Wawona/Wawona/blob/development/docs/
 | | Mode A | Mode B |
 |--|--------|--------|
 | Who | App Store, TestFlight, Play | Jailbreak / SIP / root |
-| iOS VMs & containers | [UTM-SE](https://github.com/utmapp/UTM)-class **jitless** interpreter | **JIT**-enabled UTM/QEMU |
+| iOS / iPadOS / visionOS VMs & containers | [UTM-SE](https://github.com/utmapp/UTM)-class **jitless** interpreter | **JIT**-enabled UTM/QEMU |
 | iOS shell | Sandboxed `wwn-zsh` | Unsandboxed / NewTerm-class + host APT |
 | Desktop / LockScreen (iOS) | Not in the store app | [repo.wawona.io](https://repo.wawona.io) |
 | Packages | Wasm from `repo.wawona.io/wasm` + Files + `wpm` | Wasm **plus** jailbreak `.deb` APT |

@@ -29,7 +29,7 @@ Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; 
 
 ## VMs and containers (planned)
 
-Coming soon as Machine kinds on Android (and macOS / iOS / iPadOS / Linux). Forbidden on tvOS, watchOS, and visionOS. See [VMs and containers](@/docs/user/vms-containers.md).
+Coming soon as Machine kinds on Android (and macOS / iOS / iPadOS / visionOS / Linux). Forbidden on tvOS and watchOS. See [VMs and containers](@/docs/user/vms-containers.md).
 
 See [Platforms](@/docs/user/platforms.md).
 

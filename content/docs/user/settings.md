@@ -64,9 +64,9 @@ platform's list.
 | Dictation | Android |
 | Shake / swipe / long-press Menu | Exit the active machine (platform-specific) |
 
-## Desktop and Wawona Swinging Bridge (macOS + Android planned)
+## Desktop and Wawona Swinging Bridge
 
-Desktop / LockScreen UI is for macOS and Android when it ships. App Store Apple-mobile builds do not expose it. See [Desktop and LockScreen](@/docs/user/desktop.md) and [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
+macOS desktop-host Settings → Desktop: **Enable Desktop Replacement** arms Path B (never Take Over). **Replace now** (or the menubar) is Classic Take Over. Android Home/LockScreen UI is still planned. App Store Apple-mobile builds do not expose Desktop. See [Desktop and LockScreen](@/docs/user/desktop.md) and [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 
 ## About and diagnostics
 

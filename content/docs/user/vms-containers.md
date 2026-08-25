@@ -11,7 +11,7 @@ date = 2026-08-16
 
 Read [Mode A and Mode B](@/docs/user/mode-a-b.md) first.
 
-## iOS / iPadOS
+## iOS / iPadOS / visionOS
 
 | Build | Engine |
 |-------|--------|
@@ -25,10 +25,10 @@ Mode B is never shipped inside the App Store app. Store / TestFlight copy must n
 | Platform | Gate | Path |
 |----------|------|------|
 | macOS | planned | `Virtualization.framework` + Apple [Containerization](https://github.com/apple/container) |
-| iOS / iPadOS | planned | Mode A jitless / Mode B JIT (above) |
+| iOS / iPadOS / visionOS | planned | Mode A jitless / Mode B JIT (above) |
 | Android | planned | Machine profiles (`wwn-vms` / `wwn-containers`) |
 | Linux | planned | Same |
-| tvOS / watchOS / visionOS | forbidden | Native + remote only |
+| tvOS / watchOS | forbidden | Native + remote only |
 
 ## Machine kinds
 

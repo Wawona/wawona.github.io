@@ -87,6 +87,8 @@ Trust retrieved docs over model priors. Port fidelity: a ported client must matc
 - “Use `where_to_edit` for ‘zsh iOS patch’, then `get_patch` on that software.”
 - “`get_capability` for watchos + gpu and visionos + vm before proposing UI.”
 - “`search_docs` Mode A vs Mode B vs Wawona Swinging Bridge. Do not conflate.”
+- “`search_docs` Classic Desktop Replacement Path B claim-ok. Enable is not Take Over.”
+- “`where_to_edit` for igettyd / iowatchdog / libwayland-mac.”
 - “`list_repos` then edit only the layer that owns this change.”
 
 ## Companion MCPs (not served by wwn-mcp)

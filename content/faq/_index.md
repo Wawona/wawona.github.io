@@ -232,7 +232,7 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-Desktop and LockScreen are **coming soon** on macOS and Android. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge (macOS / Android / iOS / iPadOS). [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, Android, and Linux. Forbidden on tvOS, watchOS, and visionOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/).
+macOS **Classic Desktop Replacement** exists on the desktop-host build (SIP fully disabled; Enable then Replace now). LockScreen greeter and Android Home/LockScreen are still coming soon. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge. [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux. Forbidden on tvOS and watchOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/) and [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>
@@ -277,7 +277,7 @@ See the generated matrix: [Protocol Support](/docs/protocols/). The live registr
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** In development on macOS and Android. No public date. iOS and iPadOS stay on [repo.wawona.io](https://repo.wawona.io) (website docs only), not the App Store app. See [Desktop and LockScreen](/docs/desktop/). How the engage path works is under How.
+macOS Classic Take Over is implemented on `wawona-macos-desktop-host`. LockScreen greeter and Android Home/LockScreen have no public date. iOS and iPadOS stay on [repo.wawona.io](https://repo.wawona.io) (website docs only), not the App Store app. See [Desktop and LockScreen](/docs/desktop/). How the engage path works is under How.
 
 </div>
 </details>
@@ -291,7 +291,7 @@ See the generated matrix: [Protocol Support](/docs/protocols/). The live registr
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, Android, and Linux. Store iOS uses UTM-SE-class **jitless** engines (Mode A); jailbreak **Mode B IPA** from [repo.wawona.io](https://repo.wawona.io) may use JIT. macOS: Virtualization + Containerization. Forbidden on tvOS, watchOS, and visionOS. See [Mode A/B](/docs/mode-a-b/) and [VMs and containers](/docs/vms/).
+**Coming soon.** Machines will gain `virtual_machine` and `container` profiles on macOS, iOS, iPadOS, visionOS, Android, and Linux. Store iOS family uses UTM-SE-class **jitless** engines (Mode A); jailbreak **Mode B IPA** from [repo.wawona.io](https://repo.wawona.io) may use JIT. macOS: Virtualization + Containerization. Forbidden on tvOS and watchOS. See [Mode A/B](/docs/mode-a-b/) and [VMs and containers](/docs/vms/).
 
 </div>
 </details>
@@ -440,7 +440,7 @@ Users do not need Nix to run a downloaded binary. Nix is how we cross-compile he
 </summary>
 <div class="faq-answer">
 
-**Coming soon.** Desktop and LockScreen make Wawona the host DE and greeter (native-port machine profiles only). macOS: SIP fully disabled (`csrutil disable`) + `.dylib` on `wawona-macos-desktop-host`. Android: Default Home App + LockScreen APIs, no root. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
+On macOS desktop-host: Settings → Desktop → **Enable Desktop Replacement** (Path B; Restart; no screen takeover), then **Replace now**. SIP must be fully disabled (`csrutil disable` in Recovery). Logout or Ctrl+Option+Backspace returns Aqua. Restage with `WAWONA_MODEB_STAGE=1 nix run .#install`. LockScreen greeter and Android Default Home + LockScreen APIs are still planned. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>

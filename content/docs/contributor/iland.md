@@ -17,7 +17,7 @@ date = 2026-08-13
 | Platforms | All product targets (tvOS/watchOS stubs / fallback) | macOS desktop-host only |
 | App Store | Yes | No |
 
-Mode B ships only in `.#wawona-macos-desktop-host`. Default `.#wawona-macos` and all mobile/Android artifacts omit the dylib.
+Mode B ships only in `.#wawona-macos-desktop-host`. Default `.#wawona-macos` and all mobile/Android artifacts omit the dylib. Classic Take Over (unload WindowServer after Path B ACK) is the implemented Desktop path. LockScreen greeter is still planned. Friends how-to: [Desktop and LockScreen](@/docs/user/desktop.md).
 
 After you change this dylib or `wwn-igetty`, restage the live helper. Default `nix run .#install` does not. See [Compilation: restage Mode B](@/docs/contributor/compilation.md#restage-mode-b-helper-and-dylib).
 
