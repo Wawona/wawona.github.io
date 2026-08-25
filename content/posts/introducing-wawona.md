@@ -5,7 +5,7 @@ date = 2026-02-22
 author = "The Wawona Team"
 +++
 
-**Correction (2026-08-24).** This post is the Feb 2026 intro. Product facts now: CalVer (not older 0.x tags). The full Apple family plus Android and Linux. VMs and containers are planned Machine types (forbidden on tvOS/watchOS). macOS Classic Desktop Replacement exists on the desktop-host build; LockScreen greeter and Android Home are still coming soon. iOS/iPadOS Desktop via repo.wawona.io (not the App Store app). Wawona Swinging Bridge is a separate planned app bridge. Graphics libs live in `wwn-*` flake inputs. See [docs](/docs/) and [FAQ](/faq/).
+**Correction (2026-08-25).** This post is the Feb 2026 intro. Product facts now: CalVer (not older 0.x tags). The full Apple family plus Android and Linux. VMs and containers are planned Machine types (forbidden on tvOS/watchOS). macOS Classic Desktop Replacement exists on the desktop-host build; LockScreen greeter and Android Home are still coming soon. iOS/iPadOS Desktop via repo.wawona.io (not the App Store app). Wawona Swinging Bridge is a separate planned app bridge. tvOS GPU is available (OpenGL ES via ANGLE and Vulkan via MoltenVK, both to Metal). Graphics libs live in `wwn-*` flake inputs. See [docs](/docs/) and [FAQ](/faq/).
 
 Wawona is a native Wayland compositor for Mac, iPhone, iPad, Apple Watch, Apple TV, visionOS, Android, and Linux. The compositor talks Wayland. The pixels go out through Metal, Vulkan, or a CPU/SHM fallback.
 
@@ -21,7 +21,7 @@ One backend owns protocol state, surfaces, and input. Host UI is SwiftUI/ObjC, J
 
 ### Native graphics
 
-Userspace DRM/KMS/GBM is `wwn-iland`. Apple GPU targets use Metal (IOSurface). Android uses AHardwareBuffer. watchOS has no public Metal (GPU blocked). tvOS GPU is planned.
+Userspace DRM/KMS/GBM is `wwn-iland`. Apple GPU targets use Metal (IOSurface). Android uses AHardwareBuffer. watchOS has no public Metal (GPU blocked). tvOS GPU is available: OpenGL ES via ANGLE and Vulkan via MoltenVK, both to Metal.
 
 ### Nix
 

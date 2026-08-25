@@ -3,7 +3,7 @@ aliases = ["docs/platforms"]
 title = "Platforms"
 description = "Four gate states: available, planned, blocked, forbidden."
 weight = 5
-date = 2026-08-14
+date = 2026-08-25
 
 +++
 
@@ -24,8 +24,8 @@ Never say "unsupported". Each cell is one of four states.
 | Remote (SSH/waypipe) | available | available | available | available | available | available | available |
 | VM / containers | planned | planned | planned | planned | planned | forbidden | forbidden |
 | Multi-window | available | if OS allows | required | required | single primary | forbidden | forbidden |
-| Nested Weston + Niri | available | available | available | available | available | available (non-GL fallback) | available (non-GL fallback) |
-| Vulkan / GLES | available | available | available | available | available | planned | blocked |
+| Nested Weston + Niri | available | available | available | available | available | available | available (non-GL fallback) |
+| Vulkan / GLES | available | available | available | available | available | available | blocked |
 | Desktop + LockScreen | planned | planned | forbidden (App Store) | forbidden | forbidden (App Store) | forbidden | forbidden |
 | Wawona Swinging Bridge | planned | planned | planned | forbidden | planned | forbidden | forbidden |
 | iCloud Drive (shell HOME) | available | omitted | available | available | available | blocked | blocked |
@@ -40,7 +40,7 @@ Linux: native + remote available; VM/containers planned; Desktop/LockScreen and 
 - **Desktop / LockScreen**. macOS Classic Take Over is implemented on desktop-host; LockScreen greeter and Android Home still planned. iOS/iPadOS via [repo.wawona.io](https://repo.wawona.io) (website only). See [Desktop and LockScreen](@/docs/user/desktop.md).
 - **Wawona Swinging Bridge**. Separate host-app → Wayland bridge. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
 - **Wasm packages**. Mode A-safe Runtime packages from `repo.wawona.io/wasm`. See [WASM](@/docs/user/wasm.md).
-- **watchOS GPU** is blocked: no `Metal.framework`. **tvOS GPU** is planned.
+- **tvOS GPU** is available: OpenGL ES (ANGLE to Metal) and Vulkan (MoltenVK to Metal). Direct ICD dispatch; the Vulkan loader is not used. **watchOS GPU** is blocked: no `Metal.framework`.
 - **iCloud Drive** (Settings → iCloud Sync for shell HOME) is blocked on tvOS
   and watchOS. Apple QA1935: Drive is unavailable; `ubiquityIdentityToken` is
   always nil. CloudKit and iCloud Key-Value Store exist on tvOS; they are not

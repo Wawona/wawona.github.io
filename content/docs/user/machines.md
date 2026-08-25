@@ -3,7 +3,7 @@ aliases = ["docs/machines"]
 title = "Machines"
 description = "Native, waypipe, terminal, VM, and container profiles. Start, Focus, minimize."
 weight = 2
-date = 2026-08-14
+date = 2026-08-25
 
 +++
 
@@ -14,7 +14,7 @@ A **Machine** is a saved session: how clients reach this compositor. Configure i
 | `type` | What it is | Status |
 |--------|------------|--------|
 | `native` | Clients on this device against Wawona's socket | available |
-| `ssh_waypipe` | Remote Wayland over SSH + waypipe | available |
+| `ssh_waypipe` | Remote Wayland over SSH + **waypipe-rs 0.11.0** | available. [Fedora VM tutorial](@/docs/user/waypipe.md#tutorial-fedora-vm) |
 | `ssh_terminal` | SSH shell only | available |
 | `virtual_machine` | Guest VM (`wwn-vms`) | **planned**. See [VMs and containers](@/docs/user/vms-containers.md) |
 | `container` | OCI / platform container (`wwn-containers`) | **planned**. See [VMs and containers](@/docs/user/vms-containers.md) |

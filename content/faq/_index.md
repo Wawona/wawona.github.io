@@ -232,7 +232,21 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-macOS **Classic Desktop Replacement** exists on the desktop-host build (SIP fully disabled; Enable then Replace now). LockScreen greeter and Android Home/LockScreen are still coming soon. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge. [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux. Forbidden on tvOS and watchOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is planned (SDK has Metal). See [Platforms](/docs/platforms/) and [Desktop and LockScreen](/docs/desktop/).
+macOS **Classic Desktop Replacement** exists on the desktop-host build (SIP fully disabled; Enable then Replace now). LockScreen greeter and Android Home/LockScreen are still coming soon. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge. [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux. Forbidden on tvOS and watchOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is available: OpenGL ES via ANGLE and Vulkan via MoltenVK, both to Metal. See [Platforms](/docs/platforms/), [Graphics](/docs/graphics/), and [Desktop and LockScreen](/docs/desktop/).
+
+</div>
+</details>
+<details id="what-is-iland">
+<summary>
+    What is iland?
+    <button type="button" class="faq-share" data-faq-id="what-is-iland" title="Copy link to this question" aria-label="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span class="faq-share-label">Link</span>
+    </button>
+</summary>
+<div class="faq-answer">
+
+Userspace DRM/KMS/GBM ([wwn-iland](https://github.com/Wawona/wwn-iland)). Compositors and clients see connector, CRTC, plane, GBM. Present is Metal or AHardwareBuffer. Wawona never opens `/dev/dri`. **Mode A** draws inside a Wawona window (Aqua stays). **Classic Desktop Replacement** (Mode B `libwayland-mac.dylib` + `wwn-igetty`) unloads WindowServer and presents fullscreen Metal, so Aqua is not in that session. Not [Wawona Swinging Bridge](/docs/swinging-bridge/). See [iland](/docs/iland/).
 
 </div>
 </details>
@@ -440,7 +454,29 @@ Users do not need Nix to run a downloaded binary. Nix is how we cross-compile he
 </summary>
 <div class="faq-answer">
 
-On macOS desktop-host: Settings → Desktop → **Enable Desktop Replacement** (Path B; Restart; no screen takeover), then **Replace now**. SIP must be fully disabled (`csrutil disable` in Recovery). Logout or Ctrl+Option+Backspace returns Aqua. Restage with `WAWONA_MODEB_STAGE=1 nix run .#install`. LockScreen greeter and Android Default Home + LockScreen APIs are still planned. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/).
+On macOS desktop-host: Settings → Desktop → **Enable Desktop Replacement** (Path B; Restart; no screen takeover), then **Replace now**. SIP must be fully disabled (`csrutil disable` in Recovery). Classic unloads WindowServer. iland userspace DRM/KMS/GBM presents fullscreen Metal (`libwayland-mac.dylib`, `wwn-igetty` VTs). Aqua is not drawn. Still never `/dev/dri`. Logout or Ctrl+Option+Backspace returns Aqua. Restage with `WAWONA_MODEB_STAGE=1 nix run .#install`. LockScreen greeter and Android Default Home + LockScreen APIs are still planned. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/) and [iland](/docs/iland/).
+
+</div>
+</details>
+<details id="fedora-waypipe">
+<summary>
+    How do I connect Wawona to a Fedora VM with SSH and waypipe?
+    <button type="button" class="faq-share" data-faq-id="fedora-waypipe" title="Copy link to this question" aria-label="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span class="faq-share-label">Link</span>
+    </button>
+</summary>
+<div class="faq-answer">
+
+Use a **SSH + Waypipe** machine. The in-app VM kind is still planned; a Fedora guest you already run (UTM, VirtualBox, virt-manager) is this path. The guest must run **waypipe-rs v0.11.0**, not an older C `waypipe`.
+
+**On Fedora:** enable `sshd`. Install waypipe-rs 0.11.0 (`waypipe --version`). Cargo: `cargo install --git https://gitlab.freedesktop.org/mstoeckl/waypipe.git --tag v0.11.0 --locked`. Put it on `PATH` for the SSH user.
+
+**IP and port:** if the guest is bridged, `hostname -I` (or `ip -4 addr`) is **Host**, port **22**. If the hypervisor NATs, forward a host port (for example `2222`) to guest 22, then Host `127.0.0.1` and Port `2222`.
+
+**In Wawona:** Machines → **Add** (or **Edit**). Type **SSH + Waypipe**. Fill **Host**, **User**, **Port**, auth, and **Remote Command** (a Wayland client on Fedora, for example `weston-simple-shm`). **Save**, then **Start**. **Machine Settings** is for display/graphics/input overrides, not the SSH address. If the surface never appears, enable **Disable GPU** on that machine.
+
+Full walkthrough: [Waypipe](/docs/waypipe/#tutorial-fedora-vm).
 
 </div>
 </details>

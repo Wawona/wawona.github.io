@@ -3,11 +3,13 @@ aliases = ["docs/desktop"]
 title = "Desktop and LockScreen"
 description = "macOS Classic Take Over is implemented. LockScreen greeter and Android Home still planned. Not Wawona Swinging Bridge."
 weight = 10
-date = 2026-08-24
+date = 2026-08-25
 
 +++
 
-**macOS Classic Desktop Replacement exists** on `wawona-macos-desktop-host`. For one login session Wawona unloads Apple WindowServer (after IOWatchdog coverage) and presents a native compositor or kmscube on iland userspace DRM/KMS/GBM. Logout returns Aqua. **LockScreen** (the greeter) and **Android** Default Home + LockScreen APIs are still in development.
+**macOS Classic Desktop Replacement exists** on `wawona-macos-desktop-host`. For one login session Wawona unloads Apple WindowServer (after IOWatchdog coverage) and presents a native compositor or kmscube on **iland userspace DRM/KMS/GBM**. That is a custom framebuffer: Linux-shaped KMS/GBM in process, mapped to a **fullscreen Metal** view. Wawona does not open `/dev/dri`. With WindowServer gone, this session does **not** composite Aqua (no Dock, menu bar, or Finder under the compositor). Logout returns Aqua. **LockScreen** (the greeter) and **Android** Default Home + LockScreen APIs are still in development.
+
+How iland, Mode B `libwayland-mac.dylib`, and `wwn-igetty` fit together: [iland](@/docs/contributor/iland.md).
 
 This is **not** [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md) (the app bridge). Do not confuse the two.
 

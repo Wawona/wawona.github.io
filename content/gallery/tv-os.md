@@ -7,6 +7,6 @@ description = "Machines on Apple TV: native tvOS, the same compositor catalog."
 local_image = "/images/wawona-screenshots/tvos-screenshot.jpg"
 +++
 
-Wawona ships as a native tvOS app. The Machines UI is the same catalog used on every other target. Local nested clients are native ports. VM and container machine kinds are **forbidden** on tvOS (native + remote only).
+Wawona ships as a native tvOS app. The Machines UI is the same catalog used on every other target. Local nested clients are native ports. OpenGL ES (ANGLE) and Vulkan (MoltenVK) present through Metal. VM and container machine kinds are **forbidden** on tvOS (native + remote only).
 
 {{ screenshot(id="tv-os") }}

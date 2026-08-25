@@ -29,10 +29,10 @@ Cocoa popup switcher in the row. No second page.
 
 | Setting | Notes |
 |---------|--------|
-| Vulkan | KosmicKrisp default on Apple Silicon + macOS 26+. Else MoltenVK on Apple. Android: system or SwiftShader. No kernel DRM/KGSL ICDs. No `/dev/kgsl`. |
-| OpenGL | ANGLE on Apple GPU targets. |
+| Vulkan | KosmicKrisp default on Apple Silicon + macOS 26+. Else MoltenVK on Apple, including tvOS. Android: system or SwiftShader. No kernel DRM/KGSL ICDs. No `/dev/kgsl`. |
+| OpenGL | ANGLE on Apple GPU targets, including tvOS. |
 
-watchOS has no public Metal. GPU settings do not apply there.
+watchOS has no public Metal. GPU settings do not apply there. tvOS uses ANGLE and MoltenVK to Metal (no KosmicKrisp, no Vulkan loader).
 
 ## Machines
 

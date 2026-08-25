@@ -3,7 +3,7 @@ aliases = ["docs/architecture"]
 title = "Architecture"
 description = "Rust compositor, native hosts, userspace DRM. Not UniFFI-only."
 weight = 20
-date = 2026-08-13
+date = 2026-08-25
 
 +++
 
@@ -26,6 +26,6 @@ Layout rules: [2026-SOURCE-LAYOUT-RULES.md](https://github.com/Wawona/Wawona/blo
 
 ## Delivery
 
-Clients arrive as **native ports**, **containers**, or **VM / remote over waypipe**. Graphics go through `wwn-iland` userspace DRM/KMS/GBM.
+Clients arrive as **native ports**, **containers**, or **VM / remote over waypipe-rs 0.11.0**. Graphics go through `wwn-iland` userspace DRM/KMS/GBM ([iland](@/docs/contributor/iland.md)): never a real `/dev/dri`. Classic Desktop Replacement maps that KMS path to fullscreen Metal with WindowServer down.
 
 Do not hand-count Wayland globals. See the generated [Protocols](@/docs/contributor/protocols.md) page.

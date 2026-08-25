@@ -3,7 +3,7 @@ aliases = ["docs/nested-compositors"]
 title = "Nested compositors"
 description = "Weston and Niri are mandatory native bundles on every product target."
 weight = 22
-date = 2026-08-13
+date = 2026-08-25
 
 +++
 
@@ -11,7 +11,7 @@ Every Wawona product must compile and ship **real** Weston and Niri for that ABI
 
 Apple mobile links in-process static libraries. macOS may spawn processes. Android uses native artifacts.
 
-tvOS and watchOS use the allowed non-GL fallback. Do not drop either compositor to make CI green.
+tvOS ships ANGLE (OpenGL ES to Metal) and MoltenVK (Vulkan to Metal), same Mode A drivers as iOS. watchOS uses the allowed non-GL fallback (no public Metal). Do not drop either compositor to make CI green.
 
 ## Port fidelity
 
