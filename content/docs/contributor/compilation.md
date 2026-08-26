@@ -62,16 +62,10 @@ Gate queues are long. For link flags, second Rust staticlibs, flake bumps, or `C
 
 FlakeHub cache: `determinate-nixd login`. Details in the repo `docs/flakehub-cache.md`.
 
-## Restage Mode B helper and dylib
+## Install and updates (desktop-host)
 
-`nix run .#install` from the Wawona repo installs the macOS app and LaunchAgents. That is Mode A. It **skips** rewriting `/Library/Application Support/Wawona` (helper script, `libwayland-mac.dylib`, sudoers) unless you set the opt-in flag.
+`nix run .#install` from the Wawona repo installs the macOS app, LaunchAgents, **and** the Mode B helper + dylib + sudoers for this build. Administrator authorization once. No environment variables or extra CLI flags. Does **not** Take Over. Does **not** run `wwn-iowatchdog disable`/`enable`. Does **not** attach lldb to `watchdogd`.
 
-Classic Desktop Replacement (not [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md)) executes that helper. A new `nix build` of `wwn-iland` or `wwn-igetty` does nothing for Take Over until restage:
+Opening a desktop-host `Wawona.app` also syncs the helper when it is stale. Classic Desktop Replacement (not [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md)) executes that helper. A new `nix build` of `wwn-iland` or `wwn-igetty` does nothing for Take Over until you install or open the new app.
 
-```bash
-WAWONA_MODEB_STAGE=1 nix run .#install
-```
-
-Or `Wawona --mode-b-stage` from the binary you just installed. Administrator once. Does **not** Take Over. Does **not** run `wwn-iowatchdog disable`/`enable`. Does **not** attach lldb to `watchdogd`.
-
-User-facing notes: [Desktop and LockScreen](@/docs/user/desktop.md#restage-helper-and-dylib).
+User-facing notes: [Desktop and LockScreen](@/docs/user/desktop.md#install-and-updates-helper--dylib).

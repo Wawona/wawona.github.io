@@ -74,7 +74,7 @@ KEEP_WS (`Wawona --mode-b-probe`) leaves WindowServer up on purpose. That is a p
 | Session weston DRM | [`wwn-weston`](https://github.com/Wawona/wwn-weston) | `--backend=drm` over iland |
 | Session niri DRM | [`wwn-niri`](https://github.com/Wawona/wwn-niri) | `NIRI_BACKEND=tty` after Classic |
 
-Friends how-to, restage, and safety forbids: [Desktop and LockScreen](@/docs/user/desktop.md). After you change this dylib or `wwn-igetty`, restage the live helper. Default `nix run .#install` does not. See [Compilation: restage Mode B](@/docs/contributor/compilation.md#restage-mode-b-helper-and-dylib).
+Friends how-to, install sync, and safety forbids: [Desktop and LockScreen](@/docs/user/desktop.md). After you change this dylib or `wwn-igetty`, run `nix run .#install` or open the new desktop-host app once. See [Compilation: install and updates](@/docs/contributor/compilation.md#install-and-updates-desktop-host).
 
 Inner weston/niri started **inside** a Classic session are ordinary Wayland clients of that session's socket. Do not nest the **session** compositor on Wawona (there is no host Wayland after Classic). Do not `sudo niri` / `sudo weston`.
 

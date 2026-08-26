@@ -46,14 +46,13 @@ Default `.#wawona-macos` never ships the Mode B dylib. Mode A must keep working 
 
 ## How to use Classic (friends path)
 
-Needs the **desktop-host** build, SIP fully disabled, and administrator once for Path B / restage.
+Needs the **desktop-host** build, SIP fully disabled, and administrator once for Path B on first Enable or install.
 
-1. Settings → Desktop → **Enable Desktop Replacement**. That runs doctor, heal, and Path B (`claim-install --path-b`), then the native Restart sheet. It does **not** take over the screen.
+1. Settings → Desktop → **Enable Desktop Replacement**. That runs doctor, heal, Path B (`claim-install --path-b`), and syncs the helper + dylib for this build, then the native Restart sheet. It does **not** take over the screen.
 2. Reboot. Confirm `/var/db/wwn-iowatchdog/claim-ok` shows `path=b sticky=1` **and** live Disable (marker or Path B sock `done=1`). `claim-ok` alone can be stale.
-3. Restage the helper so it matches this nix store (opt-in; see below).
-4. Choose a Desktop machine: **weston** or **niri**. Demo clients (`kmscube`, `weston-terminal`, `foot`) are not eligible as the Desktop machine. F7 still overlays kmscube **inside** a Classic session.
-5. Settings or the menubar → **Replace now**. Classic unloads WindowServer only after IOWatchdog Disable ACK.
-6. Logout, or Ctrl+Option+Backspace (Fn+Ctrl+Option+Backspace on a MacBook), to return Aqua. Next login does not auto-engage.
+3. Choose a Desktop machine: **weston** or **niri**. Demo clients (`kmscube`, `weston-terminal`, `foot`) are not eligible as the Desktop machine. F7 still overlays kmscube **inside** a Classic session.
+4. Settings or the menubar → **Replace now**. Classic unloads WindowServer only after IOWatchdog Disable ACK.
+5. Logout, or Ctrl+Option+Backspace (Fn+Ctrl+Option+Backspace on a MacBook), to return Aqua. Next login does not auto-engage.
 
 CLI equivalents:
 
@@ -62,7 +61,6 @@ Wawona --mode-b-prepare    # same as Enable
 Wawona --mode-b-ready
 Wawona --mode-b-engage     # Replace now
 Wawona --mode-b-probe      # KEEP_WS, WindowServer stays up
-Wawona --mode-b-stage      # copy helper + dylib for this store
 ```
 
 ### After Take Over
@@ -78,30 +76,19 @@ Inner weston/niri started **inside** that session stay nested Wayland clients. D
 
 While Aqua is up, honour Display Backend: `auto` is nested Wayland. Leaked `WWN_MODEB_TTY` in Aqua is a bug.
 
-### Restage helper and dylib
+### Install and updates (helper + dylib)
 
-Classic Take Over runs `/Library/Application Support/Wawona/run-modeb.sh` and the copied `libwayland-mac.dylib`, not the app you just built in the nix store. `nix run .#install` updates the app and LaunchAgents only. It **does not** rewrite the helper unless you opt in.
+Classic Take Over runs `/Library/Application Support/Wawona/run-modeb.sh` and the copied `libwayland-mac.dylib`, not the app bundle alone. Wawona keeps these in sync automatically:
 
-After you change the helper, the Mode B dylib (`wwn-iland`), or `igettyd` (`wwn-igetty`):
+- **`nix run .#install`** copies the app, LaunchAgents, **and** the Mode B helper + dylib + sudoers for this build (administrator once). No extra flags.
+- **Opening Wawona** (desktop-host) syncs the helper when it is missing or points at an older build.
+- **Settings → Desktop → Enable** also syncs before arming Path B.
 
-```bash
-# From the Wawona repo. Administrator once.
-# Copies helper + dylib + sudoers for this build.
-# Does not take over the screen. Does not unload WindowServer or watchdogd.
-WAWONA_MODEB_STAGE=1 nix run .#install
-```
+After you change the helper, the Mode B dylib (`wwn-iland`), or `igettyd` (`wwn-igetty`), run `nix run .#install` or open the new build once. Install does **not** Take Over, unload WindowServer, or touch `watchdogd` beyond re-enabling a job that a prior session left disabled.
 
-Same restage without a full install, once that build is already the live `Wawona` binary:
+If the helper still points at a previous `/nix/store/…-wawona-macos` path, Classic Take Over uses the old `igettyd` and old dylib. Wawona fails closed in that case: sync the helper, do not Take Over with a mixed store.
 
-```bash
-Wawona --mode-b-stage
-```
-
-If the helper still points at a previous `/nix/store/…-wawona-macos` path, Classic Take Over uses the old `igettyd` and old dylib. Stage fails closed in that case: fix the helper, do not Take Over with a mixed store.
-
-Restage does not enable Desktop Replacement. Settings and Path B coverage still apply.
-
-Contributor compile notes: [Compilation](@/docs/contributor/compilation.md#restage-mode-b-helper-and-dylib).
+Contributor compile notes: [Compilation](@/docs/contributor/compilation.md#install-and-updates-desktop-host).
 
 ### Safety (macOS 26)
 

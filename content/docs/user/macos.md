@@ -31,7 +31,7 @@ On the desktop-host build: Enable arms Path B; Replace now unloads WindowServer 
 
 KEEP_WS probe: `Wawona --mode-b-probe` (WindowServer stays up). Path C (parked WindowServer) is planned.
 
-How to restage the helper, Path B checks, and safety forbids: [Desktop and LockScreen](@/docs/user/desktop.md).
+Install, helper sync, Path B checks, and safety forbids: [Desktop and LockScreen](@/docs/user/desktop.md).
 
 ## Wawona Swinging Bridge (planned)
 
