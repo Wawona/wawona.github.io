@@ -1,5 +1,6 @@
 +++
 title = "FAQ"
+description = "Frequently asked questions about Wawona: Machines, Mode A and Mode B, Desktop, Swinging Bridge, platforms, and how to get started."
 render = true
 sort_by = "none"
 template = "faq_section.html"
@@ -232,7 +233,7 @@ A Machine is a saved session in the Machines window. Kinds: `native`, `ssh_waypi
 
 The full Apple family plus Android and Linux. Four states: available, planned, blocked, forbidden. Never "unsupported".
 
-macOS **Classic Desktop Replacement** exists on the desktop-host build (SIP fully disabled; Enable then Replace now). LockScreen greeter and Android Home/LockScreen are still coming soon. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge. [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux. Forbidden on tvOS and watchOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS GPU is blocked (no public Metal). tvOS GPU is available: OpenGL ES via ANGLE and Vulkan via MoltenVK, both to Metal. See [Platforms](/docs/platforms/), [Graphics](/docs/graphics/), and [Desktop and LockScreen](/docs/desktop/).
+macOS **Classic Desktop Replacement** exists on the desktop-host build (SIP fully disabled; Enable then Replace now). LockScreen greeter and Android Home/LockScreen are still coming soon. iOS/iPadOS Desktop/LockScreen will be a jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (website docs only. Not in the App Store app). [Wawona Swinging Bridge](/docs/swinging-bridge/) is a separate planned app bridge. [VMs and containers](/docs/vms/) are planned on macOS, iOS, iPadOS, visionOS, Android, and Linux. Forbidden on tvOS and watchOS. The [on-device shell](/docs/shell/) is bundled zsh, not a VM. watchOS present is SpriteKit; watchOS GL/VK is blocked (no public Metal). tvOS GPU is available: OpenGL ES via ANGLE and Vulkan via MoltenVK, both to Metal. See [Platforms](/docs/platforms/), [Graphics](/docs/graphics/), and [Desktop and LockScreen](/docs/desktop/).
 
 </div>
 </details>
@@ -454,7 +455,7 @@ Users do not need Nix to run a downloaded binary. Nix is how we cross-compile he
 </summary>
 <div class="faq-answer">
 
-On macOS desktop-host: Settings → Desktop → **Enable Desktop Replacement** (Path B; Restart; no screen takeover), then **Replace now**. SIP must be fully disabled (`csrutil disable` in Recovery). Classic unloads WindowServer. iland userspace DRM/KMS/GBM presents fullscreen Metal (`libwayland-mac.dylib`, `wwn-igetty` VTs). Aqua is not drawn. Still never `/dev/dri`. Logout or Ctrl+Option+Backspace returns Aqua. Restage with `WAWONA_MODEB_STAGE=1 nix run .#install`. LockScreen greeter and Android Default Home + LockScreen APIs are still planned. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/) and [iland](/docs/iland/).
+On macOS desktop-host: Settings → Desktop → **Enable Desktop Replacement** (Path B; Restart; no screen takeover), then **Replace now**. SIP must be fully disabled (`csrutil disable` in Recovery). Classic unloads WindowServer. iland userspace DRM/KMS/GBM presents fullscreen Metal (`libwayland-mac.dylib`, `wwn-igetty` VTs). Aqua is not drawn. Still never `/dev/dri`. Logout or Ctrl+Option+Backspace returns Aqua. Restage with `nix run .#install`. LockScreen greeter and Android Default Home + LockScreen APIs are still planned. iOS and iPadOS: jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) only (not in the App Store app). Not Linux. Not the same as [Wawona Swinging Bridge](/docs/swinging-bridge/). See [Desktop and LockScreen](/docs/desktop/) and [iland](/docs/iland/).
 
 </div>
 </details>

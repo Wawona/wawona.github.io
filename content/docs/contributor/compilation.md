@@ -68,4 +68,4 @@ FlakeHub cache: `determinate-nixd login`. Details in the repo `docs/flakehub-cac
 
 Opening a desktop-host `Wawona.app` also syncs the helper when it is stale. Classic Desktop Replacement (not [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md)) executes that helper. A new `nix build` of `wwn-iland` or `wwn-igetty` does nothing for Take Over until you install or open the new app.
 
-User-facing notes: [Desktop and LockScreen](@/docs/user/desktop.md#install-and-updates-helper--dylib).
+User-facing notes: [Desktop and LockScreen](@/docs/user/desktop.md#install-and-updates-helper-dylib).

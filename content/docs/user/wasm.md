@@ -17,7 +17,9 @@ What you get instead is a **portable Wawona Runtime** (`wwn-wasm`) that develope
 - Install with **`wpm`** (or drop into Files) from the Mode A registry `repo.wawona.io/wasm`
 - The reviewed Runtime in the signed app interprets the module. Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
 
-There is **no Mode B flavor of the Runtime**. Jailbreak `.deb` APT is a separate channel.
+There is **no Mode B package channel** for Wasm. Jailbreak `.deb` APT is separate (`/jailbreak/`). Store Runtime never needs Mode B to *install* packages.
+
+**Mode B IPAs** ([TrollStore](@/docs/user/mode-a-b.md) or Sileo) may **JIT-execute** the same `/wasm/` packages when the JIT entitlement is present. That is an execute backend on the Mode B IPA, not a second registry. App Store builds stay interpreter-only (no Wasm JIT).
 
 Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone/2). Engineering: [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md), [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
 

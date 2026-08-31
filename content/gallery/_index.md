@@ -1,5 +1,6 @@
 +++
 title = "Gallery"
+description = "Screenshots of Wawona on macOS, Linux, Android, tvOS, watchOS, and visionOS: nested compositors, multi-window, and Machines."
 template = "gallery.html"
 sort_by = "date"
 insert_anchor_links = "right"

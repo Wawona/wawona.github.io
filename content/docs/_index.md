@@ -1,5 +1,6 @@
 +++
 title = "Documentation"
+description = "Wawona docs for users and contributors: Machines, platforms, Mode A and Mode B, graphics, Desktop, building, and the flake DAG."
 render = true
 sort_by = "weight"
 template = "docs_section.html"

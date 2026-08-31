@@ -19,51 +19,54 @@
     <meta {% for key, value in data %} {% if key=="property" and value=="og:title" %} {% set_global
         page_has_og_title=true -%} {% endif %} {% if key=="property" and value=="og:description" %} {% set_global
         page_has_og_description=true -%} {% endif %} {% if key=="name" and value=="description" %} {% set_global
-        page_has_description=true -%} {% endif %} {{ key }} None="{{ value }}" {% endfor %} />
+        page_has_description=true -%} {% endif %} {{ key }}="{{ value }}" {% endfor %} />
     {% endfor %}
     {% endif %}
 
-    {# Site title #}
+    {# Distinct Discord/Slack/iMessage previews: prefer page, then section, then site.
+       Use set_global: plain set inside if is block-scoped in Tera. #}
     {% set current_path = current_path | default(value="/") %}
+    {% set site_name = config.title | default(value="Wawona") %}
+    {% set_global meta_title = site_name %}
+    {% set_global meta_description = config.description | default(value="") %}
     {% if current_path == "/" %}
-    <title>{{ post_macros::site_title() }}</title>
-    {% if not page_has_og_title %}
-    <meta property="og:title" content="{{ post_macros::site_title() }}" />
-    {% endif %}
-
-    {% else %}
-    <title>
-        {% if page.title %}
-        {{ page.title }}
-        {% elif section.title %}
-        {{ section.title }}
-        {% elif config.title %}
-        {{ config.title }}
-        {% else %}
-        Post
+        {% set_global meta_title = site_name %}
+        {% if section.description %}
+            {% set_global meta_description = section.description %}
+        {% elif page.description %}
+            {% set_global meta_description = page.description %}
         {% endif %}
-    </title>
+    {% elif page.title %}
+        {% set_global meta_title = page.title ~ " · " ~ site_name %}
+        {% if page.description %}
+            {% set_global meta_description = page.description %}
+        {% endif %}
+    {% elif section.title %}
+        {% set_global meta_title = section.title ~ " · " ~ site_name %}
+        {% if section.description %}
+            {% set_global meta_description = section.description %}
+        {% endif %}
+    {% endif %}
 
+    <title>{{ meta_title }}</title>
     {% if not page_has_og_title %}
-    <meta property="og:title"
-        content="{% if page.title -%}{{ page.title }}{% elif config.title -%}{{ config.title }}{% else -%}Post{% endif -%}" />
+    <meta property="og:title" content="{{ meta_title }}" />
     {% endif %}
+    <meta property="og:site_name" content="{{ site_name }}" />
+    <meta property="og:type" content="{% if current_path == '/' %}website{% else %}article{% endif %}" />
+    <meta property="og:url" content="{{ current_url | default(value=config.base_url) }}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ meta_title }}" />
+
+    {% if not page_has_og_description and meta_description %}
+    <meta property="og:description" content="{{ meta_description }}" />
+    {% endif %}
+    {% if meta_description %}
+    <meta name="twitter:description" content="{{ meta_description }}" />
     {% endif %}
 
-    {% if not page_has_og_description %}
-    {% if page.description %}
-    <meta property="og:description" content="{{ page.description }}" />
-    {% elif config.description %}
-    <meta property="og:description" content="{{ config.description }}" />
-    {% endif %}
-    {% endif %}
-
-    {% if not page_has_description %}
-    {% if page.description %}
-    <meta name="description" content="{{ page.description }}" />
-    {% elif config.description %}
-    <meta name="description" content="{{ config.description }}" />
-    {% endif %}
+    {% if not page_has_description and meta_description %}
+    <meta name="description" content="{{ meta_description }}" />
     {% endif %}
 
     {# Favicon #}

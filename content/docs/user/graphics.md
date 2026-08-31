@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/graphics"]
 title = "Graphics"
-description = "Driver picker, SHM vs GPU, userspace DRM/KMS/GBM, tvOS ANGLE/MoltenVK on Metal, watchOS blocked."
+description = "Driver picker, SHM vs GPU, userspace DRM/KMS/GBM, tvOS ANGLE/MoltenVK on Metal, watchOS SpriteKit present and blocked GL/VK."
 weight = 9
 date = 2026-08-25
 
@@ -23,6 +23,6 @@ KosmicKrisp is macOS only. iOS, iPadOS, visionOS, and tvOS use MoltenVK. No kern
 ## Platform ceilings
 
 - **tvOS GPU** is available. OpenGL ES goes through ANGLE to Metal. Vulkan goes through MoltenVK to Metal. The Vulkan loader does not work on tvOS, so clients dispatch straight to the ICD (`WWN_VULKAN_LIBRARY`). No KosmicKrisp. No IOKit.
-- **watchOS GPU** is blocked. No public Metal. Present is SHM/CPU (`wwn-iland-apple-fallback`).
+- **watchOS present** is SpriteKit GPU blit of SHM frames. **watchOS GL/VK** is blocked (no public Metal). `WWN_WATCHOS_METAL=1` is research only and never in the store Watch IPA.
 
 Settings → Graphics picks the ICD. Nested clients and waypipe follow that choice.
