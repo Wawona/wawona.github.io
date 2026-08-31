@@ -21,9 +21,16 @@ Wawona speaks **waypipe-rs v0.11.0** ([mstoeckl/waypipe](https://gitlab.freedesk
 
 ## GPU vs SHM
 
-With a working Vulkan ICD, waypipe can use GPU transport. If the dmabuf path faults against Wawona, turn on **Disable GPU** on that machine (Waypipe `--no-gpu`, shared memory). tvOS can use MoltenVK. watchOS stays on the SHM/CPU path.
+Waypipe **GPU transport is the default**. Remote/container clients keep their
+own OpenGL, Vulkan, ANGLE, Mesa, or software (llvmpipe) stacks; the host
+translates dmabuf into IOSurface for Wawona (MoltenVK / KosmicKrisp /
+SwiftShader / ANGLE stay available for the compositor and native clients).
 
-Linux peers that Wawona SSH's into should default to SHM unless you have proven GPU import. See [`wwn-waypipe`](https://github.com/Wawona/wwn-waypipe).
+Turn on **Disable GPU** on that machine only to force Waypipe `--no-gpu`
+(shared memory). Software clients that already speak `wl_shm` do not need that
+toggle. tvOS can use MoltenVK. watchOS stays on the SHM/CPU path.
+
+See [`wwn-waypipe`](https://github.com/Wawona/wwn-waypipe).
 
 ## Keys
 
