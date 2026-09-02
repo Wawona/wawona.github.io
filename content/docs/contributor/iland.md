@@ -1,7 +1,7 @@
 +++
 aliases = ["docs/iland"]
 title = "iland"
-description = "Userspace DRM/KMS/GBM. Mode A in-window Metal. Mode B Classic fullscreen Metal without WindowServer."
+description = "Userspace DRM/KMS/GBM. Mode A in-window Metal. Mode B Classic fullscreen Metal. TrollStore IOMFB sink."
 weight = 23
 date = 2026-08-25
 
@@ -10,6 +10,8 @@ date = 2026-08-25
 [`wwn-iland`](https://github.com/Wawona/wwn-iland) is Wawona's **userspace DRM/KMS/GBM**. It emulates the Linux graphics objects a compositor and clients already know (connector, CRTC, plane, framebuffer, GBM bo) and presents them on the host through IOSurface + Metal (Apple) or AHardwareBuffer (Android).
 
 That is a **runtime** substitution of the platform under the client. It is not a kernel driver, not a `/dev/dri` node, and not a video capture of Aqua.
+
+Zero-copy protocol matrix (`zwp_linux_dmabuf_v1`, modifiers, sinks): [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).
 
 ## Never a real DRM device
 
@@ -44,7 +46,17 @@ Mode A is always required on macOS. Building or testing Mode B must never break 
 
 SIP can stay on. Wawona is a normal macOS app. Nested weston/niri and Wayland clients render into iland's userspace KMS, then iland presents **inside the Wawona window** (AppKit + Metal). WindowServer is still compositing Aqua around that window. That is the store-shaped / notarized `.#wawona-macos` path.
 
-On iOS family and Android, Mode A is the only iland path: in-process present to the host UI toolkit's Metal / AHardwareBuffer surface.
+On App Store / TestFlight iOS family and on Android Mode A, present is in-process to the host UI toolkit's Metal / AHardwareBuffer surface (`CAMetalLayer` or `ANativeWindow`).
+
+### iOS / iPadOS Mode B present: IOMobileFramebuffer
+
+TrollStore (`.tipa` + `ldid`) and Sileo Mode B may present via **IOMobileFramebuffer** for in-app Desktop / LockScreen own-display. That sink is **never** linked into the store IPA. TrollStore does **not** add Swinging Bridge or ElleKit; Sileo does. See [Mode A and Mode B](@/docs/user/mode-a-b.md) and [Desktop](@/docs/user/desktop.md).
+
+| Sink | When |
+|------|------|
+| `CAMetalLayer` | Mode A (store / in-window) |
+| IOMobileFramebuffer | iOS/iPadOS TrollStore and Sileo Mode B |
+| `framebufferd` (Mach) | macOS Classic Desktop only |
 
 ## Mode B: Desktop Replacement as a custom framebuffer
 
@@ -82,4 +94,4 @@ Inner weston/niri started **inside** a Classic session are ordinary Wayland clie
 
 L1 owns ANGLE, SwiftShader, MoltenVK, KosmicKrisp, Turnip hooks. Substrate 2D (cairo, pango, pixman) stays in `wwn-toolchain` (L0). Consumers that need GLES/Vulkan merge the iland fragment. tvOS ships ANGLE (OpenGL ES to Metal) and MoltenVK (Vulkan to Metal). watchOS has no public Metal and stays on the SHM/CPU fallback. See [Graphics](@/docs/user/graphics.md) and [DAG](@/docs/contributor/dag.md).
 
-Canonical engineering notes: [iland-mode-a-b-desktop.md](https://github.com/Wawona/Wawona/blob/development/docs/iland-mode-a-b-desktop.md).
+Canonical engineering notes: [iland-mode-a-b-desktop.md](https://github.com/Wawona/Wawona/blob/development/docs/iland-mode-a-b-desktop.md). Dmabuf / IOMFB completion gates: [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).

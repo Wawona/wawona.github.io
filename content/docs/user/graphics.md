@@ -11,6 +11,8 @@ Pixels come from `wl_shm` (CPU) or GPU buffers imported through userspace DRM/KM
 
 On macOS **Mode A**, present is an in-window Metal layer while Aqua stays up. On **Classic Desktop Replacement** (Mode B dylib + `wwn-igetty`), WindowServer is down and iland presents fullscreen Metal. See [iland](@/docs/contributor/iland.md) and [Desktop and LockScreen](@/docs/user/desktop.md).
 
+Zero-copy `zwp_linux_dmabuf_v1` (modifiers, present sinks including IOMobileFramebuffer on TrollStore/Sileo, completion gates): [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).
+
 ## Drivers
 
 | API | Apple GPU targets | Android |

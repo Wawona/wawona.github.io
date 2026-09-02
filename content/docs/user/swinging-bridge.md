@@ -31,7 +31,7 @@ It *helps* Desktop replacement later (e.g. Wawona as Android home app while Andr
 |----------|------|
 | macOS | planned (Mode A + Mode B) |
 | Android | planned (Mode A + Mode B) |
-| iOS / iPadOS | planned **Mode B only** via **Sileo** on [repo.wawona.io](https://repo.wawona.io) (jailbreak). Enabled **out of the box** in the full Mode B product. **Not** App Store. **Not** implied by TrollStore alone (TrollStore is JIT for VMs/containers/Wasm). See [Mode A and Mode B](@/docs/user/mode-a-b.md) |
+| iOS / iPadOS | planned **Mode B only** via **Sileo** on [repo.wawona.io](https://repo.wawona.io) (jailbreak). Enabled **out of the box** in the full Mode B product. **Not** App Store. **Not** TrollStore (TrollStore is JIT + IOMFB Desktop; no Swinging Bridge). See [Mode A and Mode B](@/docs/user/mode-a-b.md) |
 | tvOS / watchOS / visionOS / Linux | forbidden |
 
 ## Mode A vs Mode B

@@ -1,11 +1,12 @@
 +++
 aliases = ["docs/desktop"]
 title = "Desktop and LockScreen"
-description = "macOS Classic Take Over is implemented. LockScreen greeter and Android Home still planned. Not Wawona Swinging Bridge."
+description = "macOS Classic Take Over is implemented. iOS: TrollStore IOMFB in-app and Sileo tweaks. Android Home still planned. Not Wawona Swinging Bridge."
 weight = 10
 date = 2026-08-25
 
 +++
+
 
 **macOS Classic Desktop Replacement exists** on `wawona-macos-desktop-host`. For one login session Wawona unloads Apple WindowServer (after IOWatchdog coverage) and presents a native compositor or kmscube on **iland userspace DRM/KMS/GBM**. That is a custom framebuffer: Linux-shaped KMS/GBM in process, mapped to a **fullscreen Metal** view. Wawona does not open `/dev/dri`. With WindowServer gone, this session does **not** composite Aqua (no Dock, menu bar, or Finder under the compositor). Logout returns Aqua. **LockScreen** (the greeter) and **Android** Default Home + LockScreen APIs are still in development.
 
@@ -23,9 +24,19 @@ Make Wawona the **host desktop environment** and, later, the **lock screen**, wi
 |----------|------|-------------------|
 | macOS | planned (LockScreen unfinished) | Classic Take Over on `wawona-macos-desktop-host`. SIP fully disabled. KEEP_WS probe. Path C planned. |
 | Android | planned | Default Home App + LockScreen APIs. **no root**, no fallback tier |
-| iOS / iPadOS | website only | Jailbreak tweak from [repo.wawona.io](https://repo.wawona.io) (Sileo). Still in development. Same story on iPhone and iPad. |
+| iOS / iPadOS | website only | **TrollStore** `.tipa`: IOMobileFramebuffer own-display Desktop/LockScreen in-app. **Sileo** ([repo.wawona.io](https://repo.wawona.io)): same engines plus SpringBoard / ElleKit tweaks. Still in development. Same story on iPhone and iPad. |
 | App Store iOS / iPadOS / tvOS / watchOS / visionOS | forbidden | Not offered in store builds |
 | Linux | forbidden | Not supported |
+
+## iOS / iPadOS channels (Desktop)
+
+| Channel | Desktop + LockScreen | Swinging Bridge |
+|---------|----------------------|-----------------|
+| App Store / TestFlight | No | No |
+| TrollStore (`.tipa` + `ldid`) | Yes (IOMobileFramebuffer in-app) | No |
+| Sileo (`repo.wawona.io`) | Yes (IOMFB and/or SpringBoard + ElleKit) | Yes (separate product; Sileo only) |
+
+App Store / TestFlight materials must not discuss jailbreak, TrollStore, or framebuffer SPI. See [Mode A and Mode B](@/docs/user/mode-a-b.md).
 
 ## macOS: Mode A vs Mode B
 
@@ -34,7 +45,7 @@ Make Wawona the **host desktop environment** and, later, the **lock screen**, wi
 | A (default) | `libiland_userland.a` | Always legal. In-window compositor. SIP may stay on. |
 | B | `libwayland-mac.dylib` in `wawona-macos-desktop-host` | SIP **fully disabled** (`csrutil disable` in Recovery) **and** Settings → Desktop **and** Replace now. `csrutil enable --without debug` is not enough. |
 
-Default `.#wawona-macos` never ships the Mode B dylib. Mode A must keep working while you test Mode B.
+Default `.#wawona-macos` never ships the Mode B dylib. Mode A must keep working while you test Mode B. macOS is **never** App Store feature-gated. See [macOS](@/docs/user/macos.md).
 
 ### WindowServer options
 
@@ -113,7 +124,7 @@ Userspace only. Virtual `/dev/dri` terminates in iland. Never a kernel module.
 - LockScreen greeter (Phase E)
 - Path C parked WindowServer (needed for Swinging Bridge + Desktop together)
 - Android Default Home + LockScreen APIs
-- iOS/iPadOS jailbreak tweak (`repo.wawona.io` only)
+- iOS/iPadOS TrollStore IOMFB greeter and Sileo SpringBoard tweaks (`repo.wawona.io`)
 
 ## Android
 
@@ -121,6 +132,9 @@ Default Home App + LockScreen APIs. **No root required.** No MediaProjection "fa
 
 ## iOS / iPadOS and repo.wawona.io
 
-Desktop/LockScreen will ship **only** as a jailbreak tweak from **repo.wawona.io** (required Sileo source), for both iPhone and iPad. It is not part of the App Store Wawona app, and App Store / TestFlight materials must not discuss it.
+- **TrollStore**: `Wawona-{calver}-iOS-arm64.tipa` with `ldid`. Desktop/LockScreen via **IOMobileFramebuffer** inside the Mode B app. No ElleKit. No Swinging Bridge.
+- **Sileo**: Mode B IPA / rootless and rootful `.deb` from **repo.wawona.io**, plus ElleKit SpringBoard tweaks. Full Mode B including Swinging Bridge and host APT.
 
-Canonical engineering notes: [iland-mode-a-b-desktop.md](https://github.com/Wawona/Wawona/blob/development/docs/iland-mode-a-b-desktop.md).
+Neither path is part of the App Store Wawona app. Download picker: [Download](@/download/_index.md).
+
+Canonical engineering notes: [iland-mode-a-b-desktop.md](https://github.com/Wawona/Wawona/blob/development/docs/iland-mode-a-b-desktop.md). Present sinks (including IOMFB): [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).

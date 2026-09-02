@@ -1,13 +1,14 @@
 +++
 aliases = ["docs/macos"]
 title = "macOS"
-description = "Mode A in-window compositor. Classic Desktop Replacement on desktop-host. Planned Wawona Swinging Bridge."
+description = "Never App Store feature-gated. Mode A in-window compositor. Classic Desktop Replacement on desktop-host. Planned Wawona Swinging Bridge."
 weight = 6
 date = 2026-08-25
 
 +++
 
-macOS is a first-class host. It is **not** an App Store feature sandbox.
+
+macOS is a first-class host. It is **never** App Store feature-gated. Do not apply Apple-mobile store limits (no `fork`/`exec`, no JIT, in-process-only, libssh2-only) to macOS. Notarization and signing are about trust, not feature sandboxes. See [Mode A and Mode B](@/docs/user/mode-a-b.md).
 
 ## Two artifacts
 
@@ -23,7 +24,7 @@ macOS is a first-class host. It is **not** an App Store feature sandbox.
 
 Host chrome is AppKit (zoom, fullscreen, miniaturize). CSD and forced SSD are both legal.
 
-SSH is regular **OpenSSH**. Waypipe can use IOSurface/Mach.
+SSH is regular **OpenSSH**. Waypipe can use IOSurface/Mach. Zero-copy dmabuf matrix: [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).
 
 ## Desktop Replacement (Classic)
 

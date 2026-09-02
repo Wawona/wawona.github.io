@@ -1721,11 +1721,35 @@
                 </div>
                 <div class="dl-content">
                     <h3 class="dl-title">iOS and iOS family <span class="dl-version" data-release-version>latest</span></h3>
-                    <p class="dl-description">iOS, iPadOS, watchOS, tvOS, and visionOS.</p>
+                    <p class="dl-description">iOS, iPadOS, watchOS, tvOS, and visionOS. Pick Mode A <code>.ipa</code>, TrollStore <code>.tipa</code>, or Sileo <code>.deb</code>.</p>
                     <div class="dl-btn-stack">
                         <div class="dl-btn dl-btn-ghost" aria-disabled="true">App Store soon</div>
-                        <a class="dl-sideload-link" data-asset="ios-ipa"
-                            href="https://github.com/Wawona/Wawona/releases/latest" aria-label="Sideload Wawona.ipa">Sideload Wawona.ipa</a>
+                        <div class="dl-download">
+                        <div class="dl-split">
+                            <a id="ios-dl-main"
+                                href="https://github.com/Wawona/Wawona/releases/latest"
+                                class="dl-btn dl-split-main" data-asset="ios-ipa" aria-label="Download Wawona.ipa">Wawona.ipa</a>
+                            <button type="button" class="dl-btn dl-split-toggle" id="ios-pkg-toggle"
+                                aria-haspopup="true" aria-expanded="false" aria-controls="ios-pkg-menu"
+                                aria-label="Choose iOS package"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+                            <div class="dl-split-menu" id="ios-pkg-menu" role="menu">
+                                <a href="https://github.com/Wawona/Wawona/releases/latest"
+                                    data-pkg="ipa" data-asset="ios-ipa" role="menuitem">.ipa <span
+                                        class="dl-arch-sub">(Mode A sideload)</span><span class="dl-arch-hint">Default</span></a>
+                                <a href="https://github.com/Wawona/Wawona/releases/latest"
+                                    data-pkg="tipa" data-asset="ios-tipa" role="menuitem">.tipa <span
+                                        class="dl-arch-sub">(TrollStore: JIT + Desktop)</span></a>
+                                <a href="https://github.com/Wawona/Wawona/releases/latest"
+                                    data-pkg="rootless" data-asset="ios-rootless" role="menuitem">rootless.deb <span
+                                        class="dl-arch-sub">(Sileo /var/jb)</span></a>
+                                <a href="https://github.com/Wawona/Wawona/releases/latest"
+                                    data-pkg="rootful" data-asset="ios-rootful" role="menuitem">rootful.deb <span
+                                        class="dl-arch-sub">(Sileo /)</span></a>
+                            </div>
+                        </div>
+                        <p class="dl-detected" data-detected-for="ios" hidden></p>
+                        </div>
+                        <a class="dl-sideload-link" href="/docs/mode-a-b/">Mode A vs Mode B</a>
                     </div>
                 </div>
             </div>
@@ -2980,12 +3004,16 @@
             "linux-x86_64": LATEST_PAGE,
             "linux-aarch64": LATEST_PAGE,
             "android-apk": LATEST_PAGE,
-            "ios-ipa": LATEST_PAGE
+            "ios-ipa": LATEST_PAGE,
+            "ios-tipa": LATEST_PAGE,
+            "ios-rootless": LATEST_PAGE,
+            "ios-rootful": LATEST_PAGE
         };
         var linuxArch = "x86_64";
         var linuxDetected = false;
         var macosArch = "arm64";
         var macosDetected = false;
+        var iosPkg = "ipa";
 
         function setAssetHref(key, url) {
             if (!url) return;
@@ -3044,10 +3072,26 @@
             setAssetHref("ios-ipa", pickAsset(assets, function (n) {
                 return /^Wawona-[\d.]+-iOS-arm64\.ipa$/i.test(n);
             }) || pickAsset(assets, function (n) {
-                return /iOS\.ipa$/i.test(n) || /\.ipa$/i.test(n);
+                return /iOS\.ipa$/i.test(n) || (/\.ipa$/i.test(n) && !/\.tipa$/i.test(n));
+            }));
+            setAssetHref("ios-tipa", pickAsset(assets, function (n) {
+                return /^Wawona-[\d.]+-iOS-arm64\.tipa$/i.test(n);
+            }) || pickAsset(assets, function (n) {
+                return /\.tipa$/i.test(n);
+            }));
+            setAssetHref("ios-rootless", pickAsset(assets, function (n) {
+                return /^Wawona-[\d.]+-iOS-arm64-rootless\.deb$/i.test(n);
+            }) || pickAsset(assets, function (n) {
+                return /iOS-arm64-rootless\.deb$/i.test(n) || /rootless\.deb$/i.test(n);
+            }));
+            setAssetHref("ios-rootful", pickAsset(assets, function (n) {
+                return /^Wawona-[\d.]+-iOS-arm64-rootful\.deb$/i.test(n);
+            }) || pickAsset(assets, function (n) {
+                return /iOS-arm64-rootful\.deb$/i.test(n) || /rootful\.deb$/i.test(n);
             }));
             applyLinuxArch(linuxArch);
             applyMacosArch(macosArch);
+            applyIosPkg(iosPkg);
         }
 
         function fetchLatestRelease() {
@@ -3112,6 +3156,35 @@
             var key = arch === "x86_64" ? "macos-x86_64" : "macos-arm64";
             main.setAttribute("href", assetUrls[key]);
             main.setAttribute("data-asset", key);
+        }
+
+        function applyIosPkg(pkg) {
+            var labels = {
+                ipa: { key: "ios-ipa", text: "Wawona.ipa", aria: "Download Wawona.ipa" },
+                tipa: { key: "ios-tipa", text: "Wawona.tipa", aria: "Download Wawona.tipa (TrollStore)" },
+                rootless: { key: "ios-rootless", text: "Wawona-rootless.deb", aria: "Download Wawona rootless.deb (Sileo)" },
+                rootful: { key: "ios-rootful", text: "Wawona-rootful.deb", aria: "Download Wawona rootful.deb (Sileo)" }
+            };
+            var info = labels[pkg];
+            if (!info) return;
+            iosPkg = pkg;
+            var main = document.getElementById("ios-dl-main");
+            if (!main) return;
+            main.setAttribute("href", assetUrls[info.key]);
+            main.setAttribute("data-asset", info.key);
+            main.setAttribute("aria-label", info.aria);
+            main.textContent = info.text;
+            var note = document.querySelector('.dl-detected[data-detected-for="ios"]');
+            if (note) {
+                var hints = {
+                    ipa: "Mode A sideload: no JIT, no Desktop, no Swinging Bridge",
+                    tipa: "TrollStore: JIT + IOMFB Desktop. No Swinging Bridge",
+                    rootless: "Sileo rootless: full Mode B + Swinging Bridge",
+                    rootful: "Sileo rootful: full Mode B + Swinging Bridge"
+                };
+                note.textContent = hints[pkg] || "";
+                note.hidden = !hints[pkg];
+            }
         }
 
         function guessArchFromUA() {
@@ -3252,6 +3325,78 @@
             }, true);
         }
 
+
+        function bindPkgMenu(toggleId, menuId, cardId, applyFn) {
+            var toggle = document.getElementById(toggleId);
+            var menu = document.getElementById(menuId);
+            var card = document.getElementById(cardId);
+            var premium = card ? card.querySelector(".dl-card-premium") : null;
+            var menuHost = menu ? menu.parentNode : null;
+            if (!toggle || !menu) return;
+
+            function place() {
+                var rect = toggle.getBoundingClientRect();
+                menu.style.position = "fixed";
+                menu.style.top = Math.round(rect.bottom + 8) + "px";
+                menu.style.left = "auto";
+                menu.style.right = Math.max(12, Math.round(window.innerWidth - rect.right)) + "px";
+                menu.style.zIndex = "5000";
+            }
+
+            function isOpen() {
+                return menu.classList.contains("open");
+            }
+
+            function open() {
+                document.body.appendChild(menu);
+                menu.classList.add("open");
+                if (card) card.classList.add("dl-menu-open");
+                if (premium) premium.classList.add("dl-menu-open");
+                toggle.setAttribute("aria-expanded", "true");
+                place();
+            }
+
+            function close() {
+                menu.classList.remove("open");
+                if (menuHost && menu.parentNode !== menuHost) menuHost.appendChild(menu);
+                menu.style.position = "";
+                menu.style.top = "";
+                menu.style.right = "";
+                menu.style.left = "";
+                menu.style.zIndex = "";
+                if (card) card.classList.remove("dl-menu-open");
+                if (premium) premium.classList.remove("dl-menu-open");
+                toggle.setAttribute("aria-expanded", "false");
+            }
+
+            toggle.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isOpen()) close();
+                else open();
+            });
+            menu.querySelectorAll("a[data-pkg]:not([aria-disabled='true'])").forEach(function (item) {
+                item.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    applyFn(item.getAttribute("data-pkg"));
+                    close();
+                });
+            });
+            document.addEventListener("click", function (e) {
+                if (!isOpen()) return;
+                if (!menu.contains(e.target) && e.target !== toggle) close();
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && isOpen()) close();
+            });
+            window.addEventListener("resize", function () {
+                if (isOpen()) place();
+            });
+            window.addEventListener("scroll", function () {
+                if (isOpen()) place();
+            }, true);
+        }
+
         var rec = recommendedPlatform();
         applyLinuxArch("x86_64", { detected: false });
         applyMacosArch("arm64", { detected: false });
@@ -3273,6 +3418,8 @@
 
         bindArchMenu("linux-arch-toggle", "linux-arch-menu", "dl-linux", applyLinuxArch);
         bindArchMenu("macos-arch-toggle", "macos-arch-menu", "dl-macos", applyMacosArch);
+        bindPkgMenu("ios-pkg-toggle", "ios-pkg-menu", "dl-ios", applyIosPkg);
+        applyIosPkg("ipa");
         fetchLatestRelease();
 
         (function bindLinuxPkgModal() {
