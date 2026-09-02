@@ -30,6 +30,9 @@ Turn on **Disable GPU** on that machine only to force Waypipe `--no-gpu`
 (shared memory). Software clients that already speak `wl_shm` do not need that
 toggle. tvOS can use MoltenVK. watchOS stays on the SHM/CPU path.
 
+Contributor matrix for dmabuf import / present sinks (including waypipe as a
+client backend): [linux-dmabuf](@/docs/contributor/linux-dmabuf.md).
+
 See [`wwn-waypipe`](https://github.com/Wawona/wwn-waypipe).
 
 ## Keys

@@ -22,7 +22,9 @@ CalVer comes from `VERSION` (for example `26.8.12`, tag `v26.8.12`). Store **bui
 ### GitHub examples
 
 - `Wawona-26.8.12-macOS-arm64.dmg`
-- `Wawona-26.8.12-iOS-arm64.ipa`
+- `Wawona-26.8.12-iOS-arm64.ipa` (Mode A sideload)
+- `Wawona-26.8.12-iOS-arm64.tipa` (TrollStore Mode B)
+- `Wawona-26.8.12-iOS-arm64-rootless.deb` / `…-rootful.deb` (Sileo Mode B)
 - `Wawona-26.8.12-Android-arm64.apk`
 - `Wawona-26.8.12-Linux-x86_64.AppImage`
 - `Wawona-26.8.12-Linux-arm64.AppImage` (filename maps `aarch64` → `arm64`)
@@ -56,4 +58,4 @@ Repo detail: [Wawona `docs/ci.md`](https://github.com/Wawona/Wawona/blob/develop
 
 ## wawona.io download cards
 
-[`/download/`](/download/) fetches `GET /repos/Wawona/Wawona/releases/latest` and matches the GitHub pattern first, then a short legacy pass (`Wawona-macOS-arm64.dmg`, `Wawona.apk`, unversioned AppImages, `…-iOS.ipa`) until the next `v*` tag. Static href fallbacks point at the release page, not a hardcoded CalVer path.
+[`/download/`](/download/) fetches `GET /repos/Wawona/Wawona/releases/latest` and matches the GitHub pattern first, then a short legacy pass (`Wawona-macOS-arm64.dmg`, `Wawona.apk`, unversioned AppImages, `…-iOS.ipa`) until the next `v*` tag. The iOS card has a package picker for `.ipa`, `.tipa`, `rootless.deb`, and `rootful.deb`. Static href fallbacks point at the release page, not a hardcoded CalVer path.

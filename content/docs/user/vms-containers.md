@@ -16,8 +16,8 @@ Read [Mode A and Mode B](@/docs/user/mode-a-b.md) first (App Store vs TrollStore
 | Channel | Engine |
 |-------|--------|
 | **App Store** (Mode A) | **Jitless** QEMU-TCTI / TCG interpreter for VMs; containers run **inside** that VM after OCI pull |
-| **TrollStore** (JIT IPA) | **JIT** QEMU/UTM for VMs and containers (Wasm JIT allowed). Not Desktop/Swinging Bridge by itself |
-| **Sileo** ([repo.wawona.io](https://repo.wawona.io)) | Same **JIT** engines **plus** Desktop, LockScreen, and Swinging Bridge Mode B out of the box |
+| **TrollStore** (`.tipa` + `ldid`) | **JIT** QEMU/UTM for VMs and containers (Wasm JIT allowed). **Desktop/LockScreen** via IOMFB in-app. **No** Swinging Bridge |
+| **Sileo** ([repo.wawona.io](https://repo.wawona.io)) | Same **JIT** engines **plus** Desktop, LockScreen, Swinging Bridge, host APT, and ElleKit out of the box |
 
 Mode B is never shipped inside the App Store app. Store / TestFlight copy must not mention jailbreak, TrollStore, or JIT. This page may.
 
