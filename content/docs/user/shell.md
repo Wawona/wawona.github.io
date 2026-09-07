@@ -20,7 +20,7 @@ Type `help` in the shell for the catalog. `ls $WAWONA_ROOTFS/usr/bin` (or `ls ..
 **Wasm is not platform-native** (tradeoff vs a true in-process port), but it
 gives a **portable Wawona Runtime** with full App Store compliance: WASI P1/P2
 modules plus **`wpm`**. Drop a `.wasm` into Documents (Files / File Sharing) or
-install from `repo.wawona.io/wasm`, then run:
+install from the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm), then run:
 
 ```text
 wasm ./tool.wasm hello
