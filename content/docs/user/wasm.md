@@ -14,11 +14,11 @@ Wawona prefers **native in-process ports** when we can ship them (zsh, uutils, w
 What you get instead is a **portable Wawona Runtime** (`wwn-wasm`) that developers and users can target once and run across Wawona with **full App Store / Play compliance**:
 
 - Compile to **WASI P1 or P2** (`.wasm` bytecode as a document / package)
-- Browse and search packages at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). How to search and install (including jailbreak apt) is on [Packages](@/docs/user/packages.md).
+- Browse and search packages at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). How to search and install (wasm, Sileo iOS debs, Termux Android debs) is on [Packages](@/docs/user/packages.md).
 - Install with **`wpm`** (or drop into Files) from that Mode A registry
 - The reviewed Runtime in the signed app interprets the module. Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
 
-There is **no Mode B package channel** for Wasm. Jailbreak `.deb` APT is separate (`/jailbreak/`). Store Runtime never needs Mode B to *install* packages.
+There is **no Mode B package channel** for Wasm. App Store / Play extra software is wasm only. APT `.deb` is separate: Sileo on jailbroken iOS (`/jailbreak/`) and Termux on sideloaded Android (`/termux/`, not jailbreak, not Play). Store Runtime never needs Mode B to *install* packages.
 
 **Mode B IPAs** ([TrollStore](@/docs/user/mode-a-b.md) or Sileo) may **JIT-execute** the same `/wasm/` packages when the JIT entitlement is present. That is an execute backend on the Mode B IPA, not a second registry. App Store builds stay interpreter-only (no Wasm JIT).
 
