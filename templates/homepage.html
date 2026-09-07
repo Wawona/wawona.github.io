@@ -187,17 +187,20 @@
         </div>
         <p class="lp-pkg-copy">
             Search for packages you can install in Wawona. If you installed Wawona from the
-            <strong>App Store or Play</strong>, use store-safe wasm (<code>wpm</code>).
-            If you are on <strong>jailbroken iOS</strong> (Sileo) or <strong>Termux</strong>,
-            use jailbreak <code>.deb</code> apt. Two catalogs. Never one list.
+            <strong>App Store or Play</strong>, use store-safe wasm (<code>wpm</code>) only.
+            Jailbroken iOS uses <strong>Sileo</strong> debs (rootless and rootful).
+            Sideloaded Android uses <strong>Termux</strong> debs. Termux is not jailbreak
+            and not Play. Two catalogs. Never one list.
         </p>
         <div class="lp-pkg-actions">
-            <a class="lp-btn lp-btn-primary" href="https://repo.wawona.io/search/?channel=wasm" target="_blank" rel="noopener">Search App Store packages</a>
-            <a class="lp-btn lp-btn-ghost" href="https://repo.wawona.io/search/?channel=deb" target="_blank" rel="noopener">Search Sileo / Termux debs</a>
+            <a class="lp-btn lp-btn-primary" href="https://repo.wawona.io/search/?channel=wasm" target="_blank" rel="noopener">Search App Store / Play wasm</a>
+            <a class="lp-btn lp-btn-ghost" href="https://repo.wawona.io/search/?channel=deb" target="_blank" rel="noopener">Search Sileo iOS debs</a>
+            <a class="lp-btn lp-btn-ghost" href="https://repo.wawona.io/termux/" target="_blank" rel="noopener">Search Termux Android debs</a>
         </div>
         <p class="lp-pkg-note">
-            App Store / Play: wasm + <code>wpm</code>.
-            Jailbroken iPhone and iPad or Termux: Sileo / apt.
+            App Store / Play: wasm + <code>wpm</code> only.
+            Jailbroken iPhone and iPad: Sileo.
+            Sideloaded Android: Termux (not jailbreak).
             <a href="{{ get_url(path='@/docs/user/packages.md') }}">How to install</a>
         </p>
     </article>

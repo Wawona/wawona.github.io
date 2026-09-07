@@ -33,7 +33,9 @@ Coming soon as Machine kinds on Android (and macOS / iOS / iPadOS / visionOS / L
 
 ## Packages
 
-Play / store Wawona uses **`wpm`** and [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). Termux can add the jailbreak APT source `https://repo.wawona.io/` (`apt`). That is [`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb). See [Packages](@/docs/user/packages.md).
+Play / store Wawona uses **`wpm`** and [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm) only. That is the Play-compliant extra-software path.
+
+Sideloaded **Termux** can add `https://repo.wawona.io/` (`apt`) for Android `.deb` packages. That is [`/termux/`](https://repo.wawona.io/termux/). Termux is **not jailbreak** and **not Play**. See [Packages](@/docs/user/packages.md).
 
 See [Platforms](@/docs/user/platforms.md).
 

@@ -35,12 +35,15 @@ See [WASM / WASI](@/docs/user/wasm.md), [Packages](@/docs/user/packages.md), and
 ## Jailbreak apt (not the store shell)
 
 The **App Store / Play** Wawona shell has no Debian `apt`. Optional long-tail
-software there is [WASM / WASI](@/docs/user/wasm.md) via `wpm`.
+software there is [WASM / WASI](@/docs/user/wasm.md) via `wpm` only.
 
-On a **jailbroken** device (NewTerm) or **Termux**, you can add the Sileo APT
-source `https://repo.wawona.io/` and `apt install` Mode B `.deb` packages.
-That catalog is [`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb).
-It is not the wasm registry. See [Packages](@/docs/user/packages.md).
+On a **jailbroken** iPhone / iPad (NewTerm + Sileo), add
+`https://repo.wawona.io/` and `apt install` iOS `.deb` packages (rootless and
+rootful). Bookmark [`/jailbreak/`](https://repo.wawona.io/jailbreak/).
+
+On **sideloaded Termux** (Android), add the same APT URL. That is **not
+jailbreak** and **not Play**. Bookmark [`/termux/`](https://repo.wawona.io/termux/).
+See [Packages](@/docs/user/packages.md).
 
 Linux containers are a separate planned
 [Machines kind](@/docs/user/vms-containers.md).

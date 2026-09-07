@@ -17,7 +17,7 @@ Pick **Display Backend** `auto` / `wayland` / `drm` in Settings or on the machin
 
 ## Bundled clients
 
-Typical catalog: Weston terminal, foot, cubes, zsh. Extra software: [Packages](@/docs/user/packages.md) (`wpm` for wasm, Sileo/apt for jailbreak debs). A ported client must match the same upstream client streamed over waypipe. See [Porting](@/docs/contributor/porting.md).
+Typical catalog: Weston terminal, foot, cubes, zsh. Extra software: [Packages](@/docs/user/packages.md) (`wpm` for App Store / Play wasm; Sileo for jailbroken iOS debs; Termux for sideloaded Android debs, not jailbreak). A ported client must match the same upstream client streamed over waypipe. See [Porting](@/docs/contributor/porting.md).
 
 ## Multi-Touch
 

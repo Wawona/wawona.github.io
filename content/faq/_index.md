@@ -365,7 +365,7 @@ On every product target. Bundled zsh plus Weston terminal. iPhone included. watc
 </summary>
 <div class="faq-answer">
 
-[repo.wawona.io/search](https://repo.wawona.io/search/) is a chooser. **Mode A wasm** (App Store / Play, `wpm`): [search/?channel=wasm](https://repo.wawona.io/search/?channel=wasm). **Mode B jailbreak debs** (Sileo / Termux apt): [search/?channel=deb](https://repo.wawona.io/search/?channel=deb). They are never one list. How to install: [Packages](/docs/packages/).
+[repo.wawona.io/search](https://repo.wawona.io/search/) is a chooser. **Wasm** (App Store / Play, `wpm` only): [search/?channel=wasm](https://repo.wawona.io/search/?channel=wasm). **Sileo debs** (jailbroken iOS, rootless/rootful): [search/?channel=deb](https://repo.wawona.io/search/?channel=deb). **Termux debs** (sideloaded Android, not jailbreak, not Play): [termux](https://repo.wawona.io/termux/). They are never one list. How to install: [Packages](/docs/packages/).
 
 </div>
 </details>

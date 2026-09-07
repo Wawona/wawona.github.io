@@ -35,8 +35,9 @@ Before tapping Weston panel icons or nested clients, set **Touch Input Type** to
 
 Two catalogs. Pick a lane at [repo.wawona.io/search](https://repo.wawona.io/search/).
 
-- **App Store / Play:** search wasm, then `wpm install` in the Wawona shell.
-- **Jailbreak / Termux:** add `https://repo.wawona.io/` in Sileo or apt.
+- **App Store / Play:** search wasm, then `wpm install` in the Wawona shell. Wasm only.
+- **Jailbroken iOS:** add `https://repo.wawona.io/` in Sileo (rootless and rootful).
+- **Sideloaded Android:** add the same URL in Termux `apt`. Termux is not jailbreak and not Play.
 
 See [Packages](@/docs/user/packages.md).
 
