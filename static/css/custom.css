@@ -22,7 +22,7 @@
    Do not set a:hover { background: transparent } globally: that
    wipes <a class="dl-btn"> and other filled button links. */
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link),
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.lp-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link),
 .dn-copy a,
 .dn-note a,
 .dn-kofi-under a,
@@ -40,8 +40,8 @@ main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-
     color: var(--primary-color);
 }
 
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):hover,
-main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):focus-visible,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.lp-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):hover,
+main a:not(.stretched-link):not(.zola-anchor):not(.dl-btn):not(.lp-btn):not(.dn-btn):not(.dn-choice):not(.dn-thanks-go):not(.dn-thanks-next):not(#lpHeroVersion):not(.docs-card):not(.docs-prevnext-link):focus-visible,
 .dn-copy a:hover,
 .dn-note a:hover,
 .dn-kofi-under a:hover,
