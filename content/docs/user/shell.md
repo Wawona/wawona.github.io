@@ -20,7 +20,7 @@ Type `help` in the shell for the catalog. `ls $WAWONA_ROOTFS/usr/bin` (or `ls ..
 **Wasm is not platform-native** (tradeoff vs a true in-process port), but it
 gives a **portable Wawona Runtime** with full App Store compliance: WASI P1/P2
 modules plus **`wpm`**. Drop a `.wasm` into Documents (Files / File Sharing) or
-install from the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm), then run:
+install from the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm) with **`wpm`**, then run:
 
 ```text
 wasm ./tool.wasm hello
@@ -29,14 +29,20 @@ wasm ./tool.wasm hello
 
 The module is a document. Apple does not sign it. The interpreter (Wasmtime
 Pulley on iPhone) is inside the reviewed app. Native ports stay first-class.
-See [WASM / WASI](@/docs/user/wasm.md) and
+See [WASM / WASI](@/docs/user/wasm.md), [Packages](@/docs/user/packages.md), and
 [wasm-wasi.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-wasi.md).
 
-## What is not shipping
+## Jailbreak apt (not the store shell)
 
-There is no Debian/`apt` or StoreKit ODR module catalog. Optional long-tail
-software is [WASM / WASI](@/docs/user/wasm.md) for Wawona Runtime (Files drop-in
-or the bundled Wasm package client). Linux containers are a separate planned
+The **App Store / Play** Wawona shell has no Debian `apt`. Optional long-tail
+software there is [WASM / WASI](@/docs/user/wasm.md) via `wpm`.
+
+On a **jailbroken** device (NewTerm) or **Termux**, you can add the Sileo APT
+source `https://repo.wawona.io/` and `apt install` Mode B `.deb` packages.
+That catalog is [`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb).
+It is not the wasm registry. See [Packages](@/docs/user/packages.md).
+
+Linux containers are a separate planned
 [Machines kind](@/docs/user/vms-containers.md).
 
 ## watchOS

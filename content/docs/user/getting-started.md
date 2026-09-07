@@ -31,6 +31,15 @@ Open Wawona. Create or pick a **Machine**. Start it. Use **Focus** to show the c
 
 Before tapping Weston panel icons or nested clients, set **Touch Input Type** to Multi-Touch (iOS family) or turn **Touchpad Mode** off (Android). See [Usage](@/docs/user/usage.md).
 
+## Extra software
+
+Two catalogs. Pick a lane at [repo.wawona.io/search](https://repo.wawona.io/search/).
+
+- **App Store / Play:** search wasm, then `wpm install` in the Wawona shell.
+- **Jailbreak / Termux:** add `https://repo.wawona.io/` in Sileo or apt.
+
+See [Packages](@/docs/user/packages.md).
+
 ## Build from source
 
 Contributors: [Compilation](@/docs/contributor/compilation.md), [Nix](@/docs/contributor/nix-build-system.md), and [AI + MCP](@/docs/contributor/wwn-mcp.md) (wire `wwn-mcp` so agents retrieve Wawona knowledge). You need Determinate Nix, Xcode on Apple, and `TEAM_ID` in `.envrc` for signed iOS family builds.

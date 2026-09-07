@@ -1,6 +1,6 @@
 +++
 title = "FAQ"
-description = "Frequently asked questions about Wawona: Machines, Mode A and Mode B, Desktop, Swinging Bridge, platforms, and how to get started."
+description = "Frequently asked questions about Wawona: Machines, packages, Mode A and Mode B, Desktop, Swinging Bridge, platforms, and how to get started."
 render = true
 sort_by = "none"
 template = "faq_section.html"
@@ -352,6 +352,20 @@ GitHub assets on each `v*` tag (CalVer `YY.M.D`, for example `v26.8.12`). TestFl
 <div class="faq-answer">
 
 On every product target. Bundled zsh plus Weston terminal. iPhone included. watchOS gets a constrained zsh. That is the **on-device shell**, not a VM or container. See [On-device shell](/docs/shell/) and [VMs and containers](/docs/vms/).
+
+</div>
+</details>
+<details id="where-packages">
+<summary>
+    Where do I search for packages?
+    <button type="button" class="faq-share" data-faq-id="where-packages" title="Copy link to this question" aria-label="Copy link to this question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span class="faq-share-label">Link</span>
+    </button>
+</summary>
+<div class="faq-answer">
+
+[repo.wawona.io/search](https://repo.wawona.io/search/) is a chooser. **Mode A wasm** (App Store / Play, `wpm`): [search/?channel=wasm](https://repo.wawona.io/search/?channel=wasm). **Mode B jailbreak debs** (Sileo / Termux apt): [search/?channel=deb](https://repo.wawona.io/search/?channel=deb). They are never one list. How to install: [Packages](/docs/packages/).
 
 </div>
 </details>

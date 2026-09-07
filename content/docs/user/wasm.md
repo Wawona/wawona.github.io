@@ -2,7 +2,7 @@
 aliases = ["docs/wasm"]
 title = "WASM / WASI"
 description = "Drop a .wasm into Files and run it. The interpreter is in the app; Apple does not sign the module."
-weight = 13
+weight = 14
 date = 2026-08-15
 
 +++
@@ -14,7 +14,7 @@ Wawona prefers **native in-process ports** when we can ship them (zsh, uutils, w
 What you get instead is a **portable Wawona Runtime** (`wwn-wasm`) that developers and users can target once and run across Wawona with **full App Store / Play compliance**:
 
 - Compile to **WASI P1 or P2** (`.wasm` bytecode as a document / package)
-- Browse and search packages at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm)
+- Browse and search packages at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). How to search and install (including jailbreak apt) is on [Packages](@/docs/user/packages.md).
 - Install with **`wpm`** (or drop into Files) from that Mode A registry
 - The reviewed Runtime in the signed app interprets the module. Apple does not sign the `.wasm`, and there is **no** unsigned Mach-O download path
 
@@ -26,7 +26,7 @@ Milestone: [Support WASI P1 P2 WASM!](https://github.com/Wawona/Wawona/milestone
 
 ## On device
 
-1. Browse the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). Put `tool.wasm` in the Wawona Documents folder (Files.app, iTunes File Sharing, or `scp`), **or** install with `wpm`.
+1. Browse the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm), or follow [Packages](@/docs/user/packages.md). Put `tool.wasm` in the Wawona Documents folder (Files.app, iTunes File Sharing, or `scp`), **or** install with `wpm`.
 2. In the on-device shell:
 
 ```text
@@ -61,7 +61,7 @@ Demos: [`wwn-wasm/examples`](https://github.com/Wawona/wwn-wasm/tree/development
 
 ## Package manager (`wpm`)
 
-**`wpm`** is Wawona Runtime’s dedicated package manager: iSH-like UX for **Wasm packages**, not `.deb` and not OCI containers. Default registry: [`repo.wawona.io/wasm/v1`](https://repo.wawona.io/wasm/v1) (store-safe Mode A). The web catalog is [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm) (same `index.json`). Phase 1 ships the local store + CLI + registry client in `wwn-wasm`.
+**`wpm`** is Wawona Runtime’s dedicated package manager: iSH-like UX for **Wasm packages**, not `.deb` and not OCI containers. Default registry: [`repo.wawona.io/wasm/v1`](https://repo.wawona.io/wasm/v1) (store-safe Mode A). The web catalog is [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm) (same `index.json`). Jailbreak `.deb` search is a different catalog ([`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb), Sileo / apt). See [Packages](@/docs/user/packages.md).
 
 See [Mode A and Mode B](@/docs/user/mode-a-b.md) and [wasm-package-manager.md](https://github.com/Wawona/Wawona/blob/development/docs/wasm-package-manager.md).
 

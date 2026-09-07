@@ -31,5 +31,9 @@ Separate app bridge for Android apps on Wayland. Mode A for Play-shaped builds; 
 
 Coming soon as Machine kinds on Android (and macOS / iOS / iPadOS / visionOS / Linux). Forbidden on tvOS and watchOS. See [VMs and containers](@/docs/user/vms-containers.md).
 
+## Packages
+
+Play / store Wawona uses **`wpm`** and [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). Termux can add the jailbreak APT source `https://repo.wawona.io/` (`apt`). That is [`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb). See [Packages](@/docs/user/packages.md).
+
 See [Platforms](@/docs/user/platforms.md).
 

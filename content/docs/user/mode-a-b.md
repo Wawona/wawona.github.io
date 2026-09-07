@@ -60,13 +60,13 @@ Same guest images and Machines UI. Different compile flavor. Never a store binar
 | iOS VMs and containers | Jitless QEMU-TCTI | JIT QEMU/UTM |
 | iOS shell | Sandboxed `wwn-zsh` | Unsandboxed / NewTerm-class + host APT (Sileo) |
 | Desktop / LockScreen (iOS) | Not in the store app | Sileo / jailbreak |
-| Packages | Wasm from `repo.wawona.io/wasm` + Files + `wpm` | Wasm (JIT OK in B IPA) **plus** jailbreak `.deb` on Sileo |
+| Packages | Wasm from `repo.wawona.io/wasm/v1` + Files + `wpm`. Search: [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm) | Same wasm registry (JIT OK in B IPA) **plus** jailbreak `.deb` on Sileo / apt. Search: [`/search/?channel=deb`](https://repo.wawona.io/search/?channel=deb) |
 
-Wasm packages stay **bytecode** on `/wasm/`. Mode A never JIT-executes them. Mode B IPAs may. See [WASM / WASI](@/docs/user/wasm.md).
+Wasm packages stay **bytecode** on `/wasm/`. Mode A never JIT-executes them. Mode B IPAs may. How to search and install: [Packages](@/docs/user/packages.md). Runtime details: [WASM / WASI](@/docs/user/wasm.md).
 
 ## Related
 
 - [VMs and containers](@/docs/user/vms-containers.md)
-- [WASM / packages](@/docs/user/wasm.md)
+- [WASM / packages](@/docs/user/wasm.md) · [Packages (search / wpm / apt)](@/docs/user/packages.md)
 - [Desktop](@/docs/user/desktop.md) · [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md)
 - Plans: [vms-mode-a-b](https://github.com/Wawona/Wawona/blob/development/docs/vms-mode-a-b.md), [containers-mode-a-b](https://github.com/Wawona/Wawona/blob/development/docs/containers-mode-a-b.md)

@@ -39,7 +39,7 @@ Linux: native + remote available; VM/containers planned; Desktop/LockScreen and 
 - **On-device shell**. Bundled zsh (Mode A); Mode B may use unsandboxed jailbreak shell. See [On-device shell](@/docs/user/shell.md).
 - **Desktop / LockScreen**. macOS Classic Take Over is implemented on desktop-host; LockScreen greeter and Android Home still planned. iOS/iPadOS via [repo.wawona.io](https://repo.wawona.io) (website only). See [Desktop and LockScreen](@/docs/user/desktop.md).
 - **Wawona Swinging Bridge**. Separate host-app → Wayland bridge. See [Wawona Swinging Bridge](@/docs/user/swinging-bridge.md).
-- **Wasm packages**. Mode A-safe Runtime packages. Browse the catalog at [`repo.wawona.io/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm). See [WASM](@/docs/user/wasm.md).
+- **Wasm packages**. Mode A-safe Runtime packages. Browse [`/search/?channel=wasm`](https://repo.wawona.io/search/?channel=wasm), install with `wpm`. Jailbreak debs are a different catalog. See [Packages](@/docs/user/packages.md) and [WASM](@/docs/user/wasm.md).
 - **tvOS GPU** is available: OpenGL ES (ANGLE to Metal) and Vulkan (MoltenVK to Metal). Direct ICD dispatch; the Vulkan loader is not used. **watchOS present** is SpriteKit. **watchOS GL/VK** is blocked: no `Metal.framework` in the SDK.
 - **iCloud Drive** (Settings → iCloud Sync for shell HOME) is blocked on tvOS
   and watchOS. Apple QA1935: Drive is unavailable; `ubiquityIdentityToken` is
