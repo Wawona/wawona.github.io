@@ -21,7 +21,7 @@ Machine APIs stay split: [`/wasm/v1`](https://repo.wawona.io/wasm/v1/index.json)
 ## Search on the website
 
 1. Open [repo.wawona.io/search](https://repo.wawona.io/search/).
-2. Choose **App Store / Play wasm** or **Jailbreak debs**. Bookmarks: [`/wasm/`](https://repo.wawona.io/wasm/) and [`/deb/`](https://repo.wawona.io/deb/) redirect into those lanes.
+2. Choose **App Store / Play wasm** or **Jailbreak debs**. Bookmarks: [`/wasm/`](https://repo.wawona.io/wasm/) and [`/deb/`](https://repo.wawona.io/deb/) redirect into those lanes. [`/jailbreak/`](https://repo.wawona.io/jailbreak/) is the same deb landing. Sileo still uses `https://repo.wawona.io/` as the APT source.
 3. Type a name. Expand a card for install commands, digest, and maintainers.
 4. Copy the command for **that** lane. Do not paste a Sileo URL into `wpm`, and do not paste a `wpm install` line into apt.
 
